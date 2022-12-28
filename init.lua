@@ -56,6 +56,9 @@ require("packer").startup(function(use)
 	use("tpope/vim-rhubarb")
 	use("lewis6991/gitsigns.nvim")
 
+	-- Github Copilot
+	use("github/copilot.vim")
+
 	-- Themes
 	use("navarasu/onedark.nvim")
 	use("folke/tokyonight.nvim")
@@ -553,7 +556,7 @@ local formatting_group = vim.api.nvim_create_augroup("FormattingGroup", { clear 
 vim.api.nvim_create_autocmd("BufWritePost", {
 	command = "FormatWriteLock",
 	group = formatting_group,
-	pattern = { "*.tsx", "*.ts" },
+	pattern = { "*.tsx", "*.ts", "*.lua" },
 })
 
 -- The line beneath this is called `modeline`. See `:help modeline`
