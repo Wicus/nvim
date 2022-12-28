@@ -11,7 +11,8 @@ require("packer").startup(function(use)
   -- Package manager
   use "wbthomason/packer.nvim"
 
-  use { -- LSP Configuration & Plugins
+  -- LSP Configuration & Plugins
+  use {
     "neovim/nvim-lspconfig",
     requires = {
       -- Automatically install LSPs to stdpath for neovim
@@ -26,19 +27,26 @@ require("packer").startup(function(use)
     },
   }
 
-  use { -- Autocompletion
+  -- Autocompletion
+  use {
     "hrsh7th/nvim-cmp",
-    requires = { "hrsh7th/cmp-nvim-lsp", "L3MON4D3/LuaSnip", "saadparwaiz1/cmp_luasnip" },
+    requires = {
+      "hrsh7th/cmp-nvim-lsp",
+      "L3MON4D3/LuaSnip",
+      "saadparwaiz1/cmp_luasnip"
+    },
   }
 
-  use { -- Highlight, edit, and navigate code
+  -- Highlight, edit, and navigate code
+  use {
     "nvim-treesitter/nvim-treesitter",
     run = function()
       pcall(require("nvim-treesitter.install").update { with_sync = true })
     end,
   }
 
-  use { -- Additional text objects via treesitter
+  -- Additional text objects via treesitter
+  use {
     "nvim-treesitter/nvim-treesitter-textobjects",
     after = "nvim-treesitter",
   }
@@ -48,11 +56,15 @@ require("packer").startup(function(use)
   use "tpope/vim-rhubarb"
   use "lewis6991/gitsigns.nvim"
 
-  use "navarasu/onedark.nvim" -- Theme inspired by Atom
+  -- Themes
+  use "navarasu/onedark.nvim"
+  use "folke/tokyonight.nvim"
+
   use "nvim-lualine/lualine.nvim" -- Fancier statusline
   use "lukas-reineke/indent-blankline.nvim" -- Add indentation guides even on blank lines
   use "numToStr/Comment.nvim" -- "gc" to comment visual regions/lines
   use "tpope/vim-sleuth" -- Detect tabstop and shiftwidth automatically
+  use "mhartington/formatter.nvim" -- Formatting
 
   -- Fuzzy Finder (files, lsp, etc)
   use { "nvim-telescope/telescope.nvim", branch = "0.1.x", requires = { "nvim-lua/plenary.nvim" } }
@@ -102,9 +114,6 @@ vim.o.hlsearch = false
 vim.wo.number = true
 vim.o.relativenumber = true
 
--- Enable mouse mode
-vim.o.mouse = "a"
-
 -- Enable break indent
 vim.o.breakindent = true
 
@@ -142,6 +151,9 @@ vim.o.colorcolumn = "80"
 --  NOTE: Must happen before plugins are required (otherwise wrong leader will be used)
 vim.g.mapleader = " "
 vim.g.maplocalleader = ","
+vim.g.netrw_browse_split = 0
+vim.g.netrw_banner = 0
+vim.g.netrw_winsize = 25
 
 -- Keymaps for better default experience
 -- See `:help vim.keymap.set()`
@@ -156,9 +168,11 @@ vim.keymap.set("n", "<leader>ft", vim.cmd.Ex)
 
 -- Remapping for better yank and paste
 vim.keymap.set("x", "<leader>p", "\"_dP")
+
 vim.keymap.set("n", "<leader>y", "\"+y")
 vim.keymap.set("v", "<leader>y", "\"+y")
 vim.keymap.set("n", "<leader>Y", "\"+Y")
+
 vim.keymap.set("n", "<leader>d", "\"_d")
 vim.keymap.set("v", "<leader>d", "\"_d")
 
@@ -174,6 +188,12 @@ vim.keymap.set("n", "<C-d>", "<C-d>zz")
 vim.keymap.set("n", "<C-u>", "<C-u>zz")
 vim.keymap.set("n", "n", "nzzzv")
 vim.keymap.set("n", "N", "Nzzzv")
+
+-- Window navigation
+vim.keymap.set("n", "<C-h>", "<C-w>h")
+vim.keymap.set("n", "<C-j>", "<C-w>j")
+vim.keymap.set("n", "<C-k>", "<C-w>k")
+vim.keymap.set("n", "<C-l>", "<C-w>l")
 
 -- Buffer commands
 vim.keymap.set("n", "<leader>bd", vim.cmd.bdelete, { desc = "[B]uffer [D]elete" })
@@ -278,7 +298,7 @@ vim.keymap.set("n", "<leader>en", vim.diagnostic.goto_next, { desc = "[E]rror [N
 -- See `:help nvim-treesitter`
 require("nvim-treesitter.configs").setup {
   -- Add languages to be installed here that you want installed for treesitter
-  ensure_installed = { "c", "cpp", "lua", "python", "typescript", "help" },
+  ensure_installed = { "c", "cpp", "lua", "python", "typescript", "tsx", "help" },
 
   highlight = { enable = true },
   indent = { enable = true, disable = { "python" } },
@@ -360,7 +380,6 @@ local on_attach = function(_, bufnr)
   nmap("<leader>sj", require("telescope.builtin").lsp_document_symbols, "[S]ymbols [J]ump: Document symbols")
   nmap("<leader>sp", require("telescope.builtin").lsp_dynamic_workspace_symbols, "[S]ymbols [P]roject: Workspace symbols")
 
-  nmap("<C-.>", vim.lsp.buf.code_action, "[C-.] Code Action")
   nmap("<localleader>r.", vim.lsp.buf.code_action, "[R]efactor: Code Actions")
 
   nmap("gd", vim.lsp.buf.definition, "[G]oto [D]efinition")
@@ -390,9 +409,9 @@ local on_attach = function(_, bufnr)
   end, "[P]roject [L]ist folders: Workspace list folders")
 
   -- Create a command `:Format` local to the LSP buffer
-  vim.api.nvim_buf_create_user_command(bufnr, "Format", function(_)
-    vim.lsp.buf.format()
-  end, { desc = "Format current buffer with LSP" })
+  -- vim.api.nvim_buf_create_user_command(bufnr, "Format", function(_)
+  --   vim.lsp.buf.format()
+  -- end, { desc = "Format current buffer with LSP" })
 end
 
 -- Enable the following language servers
@@ -405,8 +424,8 @@ local servers = {
   -- gopls = {},
   -- pyright = {},
   -- rust_analyzer = {},
-  -- tsserver = {},
-
+  tsserver = {},
+  eslint = {},
   sumneko_lua = {
     Lua = {
       workspace = { checkThirdParty = false },
@@ -458,8 +477,8 @@ cmp.setup {
   mapping = cmp.mapping.preset.insert {
     ["<C-d>"] = cmp.mapping.scroll_docs(-4),
     ["<C-u>"] = cmp.mapping.scroll_docs(4),
-    ["<C-y>"] = cmp.mapping.complete({}),
-    ["<C-l>"] = cmp.mapping.confirm({
+    ["<C-n>"] = cmp.mapping.complete({}),
+    ["<C-y>"] = cmp.mapping.confirm({
       behavior = cmp.ConfirmBehavior.Replace,
       select = true,
     }),
@@ -491,6 +510,29 @@ cmp.setup {
     { name = "luasnip" },
   },
 }
+
+-- Formatter setup
+require("formatter").setup({
+  filetype = {
+    lua = {
+      require("formatter.filetypes.lua").stylua,
+    },
+    typescript = {
+      require("formatter.filetypes.typescript").prettierd,
+    },
+    typescriptreact = {
+      require("formatter.filetypes.typescriptreact").prettierd,
+    },
+  }
+})
+
+-- Format on save autocommand
+local formatting_group = vim.api.nvim_create_augroup("FormattingGroup", { clear = true })
+vim.api.nvim_create_autocmd("BufWritePost", {
+  command = "FormatWriteLock",
+  group = formatting_group,
+  pattern = { "*.tsx", "*.ts", },
+})
 
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et
