@@ -63,17 +63,21 @@ require("packer").startup(function(use)
 	use("navarasu/onedark.nvim")
 	use("folke/tokyonight.nvim")
 
-	use("nvim-lualine/lualine.nvim") -- Fancier statusline
-	use("lukas-reineke/indent-blankline.nvim") -- Add indentation guides even on blank lines
-	use("numToStr/Comment.nvim") -- "gc" to comment visual regions/lines
-	use("tpope/vim-sleuth") -- Detect tabstop and shiftwidth automatically
-	use("mhartington/formatter.nvim") -- Formatting
+	-- Nvim Tree
+	use("nvim-tree/nvim-tree.lua")
 
 	-- Fuzzy Finder (files, lsp, etc)
 	use({ "nvim-telescope/telescope.nvim", branch = "0.1.x", requires = { "nvim-lua/plenary.nvim" } })
 
 	-- Fuzzy Finder Algorithm which requires local dependencies to be built. Only load if `make` is available
 	use({ "nvim-telescope/telescope-fzf-native.nvim", run = "make", cond = vim.fn.executable("make") == 1 })
+
+	use("nvim-lualine/lualine.nvim") -- Fancier statusline
+	use("lukas-reineke/indent-blankline.nvim") -- Add indentation guides even on blank lines
+	use("numToStr/Comment.nvim") -- "gc" to comment visual regions/lines
+	use("tpope/vim-sleuth") -- Detect tabstop and shiftwidth automatically
+	use("mhartington/formatter.nvim") -- Formatting
+	use("kylechui/nvim-surround") -- Surround text objects with anything
 
 	-- Add custom plugins to packer from ~/.config/nvim/lua/custom/plugins.lua
 	local has_plugins, plugins = pcall(require, "custom.plugins")
@@ -109,6 +113,10 @@ vim.api.nvim_create_autocmd("BufWritePost", {
 
 -- [[ Setting options ]]
 -- See `:help vim.o`
+
+-- disable netrw at the very start of your init.lua (strongly advised)
+vim.g.loaded_netrw = 1
+vim.g.loaded_netrwPlugin = 1
 
 -- Set highlight on search
 vim.o.hlsearch = false
@@ -166,9 +174,6 @@ vim.keymap.set({ "n", "v" }, "<Space>", "<Nop>", { silent = true })
 vim.keymap.set("n", "k", 'v:count == 0 ? "gk" : "k"', { expr = true, silent = true })
 vim.keymap.set("n", "j", 'v:count == 0 ? "gj" : "j"', { expr = true, silent = true })
 
--- File explorer
-vim.keymap.set("n", "<leader>ft", vim.cmd.Ex)
-
 -- Remapping for better yank and paste
 vim.keymap.set("x", "<leader>p", '"_dP')
 
@@ -197,6 +202,9 @@ vim.keymap.set("n", "<C-h>", "<C-w>h")
 vim.keymap.set("n", "<C-j>", "<C-w>j")
 vim.keymap.set("n", "<C-k>", "<C-w>k")
 vim.keymap.set("n", "<C-l>", "<C-w>l")
+
+-- File tree navigation
+vim.keymap.set("n", "<leader>ft", vim.cmd.NvimTreeToggle, { desc = "[F]ile [T]ree" })
 
 -- Buffer commands
 vim.keymap.set("n", "<leader>bd", vim.cmd.bdelete, { desc = "[B]uffer [D]elete" })
@@ -557,6 +565,49 @@ vim.api.nvim_create_autocmd("BufWritePost", {
 	command = "FormatWriteLock",
 	group = formatting_group,
 	pattern = { "*.tsx", "*.ts", "*.lua" },
+})
+
+-- Nvim tree setup
+require("nvim-tree").setup({
+	update_focused_file = {
+		enable = true,
+		update_cwd = true,
+	},
+	renderer = {
+		highlight_opened_files = "all",
+		root_folder_modifier = ":t",
+		icons = {
+			show = {
+				file = false,
+				folder = false,
+				folder_arrow = false,
+				git = false,
+			},
+		},
+	},
+	diagnostics = {
+		enable = true,
+		show_on_dirs = true,
+		debounce_delay = 250,
+		icons = {
+			hint = "H",
+			info = "I",
+			warning = "W",
+			error = "E",
+		},
+	},
+	view = {
+		adaptive_size = true,
+		side = "left",
+		mappings = {
+			list = {
+				{ key = { "l", "<cr>", "o" }, cb = require("nvim-tree.config").nvim_tree_callback("edit") },
+				{ key = "h", cb = require("nvim-tree.config").nvim_tree_callback("close_node") },
+				{ key = "v", cb = require("nvim-tree.config").nvim_tree_callback("vsplit") },
+			},
+		},
+	},
+	hijack_cursor = true,
 })
 
 -- The line beneath this is called `modeline`. See `:help modeline`
