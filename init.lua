@@ -32,8 +32,15 @@ require("packer").startup(function(use)
 		"hrsh7th/nvim-cmp",
 		requires = {
 			"hrsh7th/cmp-nvim-lsp",
-			"L3MON4D3/LuaSnip",
 			"saadparwaiz1/cmp_luasnip",
+		},
+	})
+
+	-- Snippets
+	use({
+		"L3MON4D3/LuaSnip",
+		requires = {
+			"rafamadriz/friendly-snippets",
 		},
 	})
 
@@ -564,11 +571,13 @@ cmp.setup({
 		end, { "i", "s" }),
 	}),
 	sources = {
-		{ name = "copilot" },
 		{ name = "nvim_lsp" },
 		{ name = "luasnip" },
 	},
 })
+
+-- Snippets
+require("luasnip.loaders.from_vscode").lazy_load()
 
 -- Formatter setup
 require("formatter").setup({
