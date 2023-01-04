@@ -64,7 +64,6 @@ require("packer").startup(function(use)
 	use("folke/tokyonight.nvim")
 
 	-- Nvim Tree
-	use("nvim-tree/nvim-tree.lua")
 
 	-- Fuzzy Finder (files, lsp, etc)
 	use({ "nvim-telescope/telescope.nvim", branch = "0.1.x", requires = { "nvim-lua/plenary.nvim" } })
@@ -78,6 +77,8 @@ require("packer").startup(function(use)
 	use("tpope/vim-sleuth") -- Detect tabstop and shiftwidth automatically
 	use("mhartington/formatter.nvim") -- Formatting
 	use("kylechui/nvim-surround") -- Surround text objects with anything
+	use("nvim-tree/nvim-tree.lua") -- File tree explorer
+	use("ThePrimeagen/harpoon") -- Manage multiple buffers
 
 	-- Add custom plugins to packer from ~/.config/nvim/lua/custom/plugins.lua
 	local has_plugins, plugins = pcall(require, "custom.plugins")
@@ -214,6 +215,23 @@ vim.keymap.set("n", "<leader>bn", vim.cmd.bnext, { desc = "[B]uffer [N]ext" })
 -- Format
 vim.keymap.set("n", "<leader>==", vim.cmd.Format, { desc = "[==] Format" })
 
+-- Harpoon keymaps
+vim.keymap.set("n", "<leader>fa", require("harpoon.mark").add_file, { desc = "[F]ile [A]dd: Harpoon add file" })
+vim.keymap.set("n", "<leader>0", require("harpoon.ui").toggle_quick_menu, { desc = "[0] Harpoon quick menu" })
+
+vim.keymap.set("n", "<leader>1", function()
+	require("harpoon.ui").nav_file(1)
+end, { desc = "[1] Harpoon goto file 1" })
+vim.keymap.set("n", "<leader>2", function()
+	require("harpoon.ui").nav_file(2)
+end, { desc = "[2] Harpoon goto file 2" })
+vim.keymap.set("n", "<leader>3", function()
+	require("harpoon.ui").nav_file(3)
+end, { desc = "[3] Harpoon goto file 3" })
+vim.keymap.set("n", "<leader>4", function()
+	require("harpoon.ui").nav_file(4)
+end, { desc = "[4] Harpoon goto file 4" })
+
 -- [[ Highlight on yank ]]
 -- See `:help vim.highlight.on_yank()`
 local highlight_group = vim.api.nvim_create_augroup("YankHighlight", { clear = true })
@@ -298,7 +316,15 @@ vim.keymap.set("n", "<leader>ss", function()
 	}))
 end, { desc = "[S]earch [S]earch: Fuzzily search in current buffer" })
 
-vim.keymap.set("n", "<leader>/", require("telescope.builtin").live_grep, { desc = "[/]: Search in project" })
+vim.keymap.set("n", "<leader>/", function()
+	require("telescope.builtin").live_grep({
+		glob_pattern = {
+			"!src/shared/dygraphs/**",
+			"!src/shared/canvas-gauges/**",
+		},
+	})
+end, { desc = "[/]: Search in project" })
+
 vim.keymap.set(
 	"n",
 	"<leader>*",
