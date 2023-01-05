@@ -202,6 +202,7 @@ vim.keymap.set("n", "J", "mzJ`z")
 vim.keymap.set("n", "<C-d>", "<C-d>zz")
 vim.keymap.set("n", "<C-u>", "<C-u>zz")
 vim.keymap.set("n", "n", "nzzzv")
+vim.keymap.set("n", "*", "*zzzv")
 vim.keymap.set("n", "N", "Nzzzv")
 
 -- Window navigation
@@ -240,6 +241,29 @@ end, { desc = "[4] Harpoon goto file 4" })
 
 -- Toggle commands
 vim.keymap.set("n", "<leader>th", vim.cmd.IlluminateToggle, { desc = "[T]oggle [H]ighlight" })
+
+-- Close quickfix window
+vim.keymap.set("n", "<leader>qq", vim.cmd.cclose, { desc = "[Q][Q]uickfix close" })
+
+-- Search and replace commands
+vim.keymap.set(
+	"n",
+	"<leader>sa",
+	":%s/\\<<C-r><C-w>\\>/<C-r><C-w>/gI<Left><Left><Left>",
+	{ desc = "[S]earch and replace [A]ll in buffer" }
+)
+vim.keymap.set(
+	"n",
+	"<leader>sl",
+	":s/\\<<C-r><C-w>\\>/<C-r><C-w>/gI<Left><Left><Left>",
+	{ desc = "[S]earch and replace [l]" }
+)
+vim.keymap.set(
+	"n",
+	"<leader>sq",
+	":cdo s/\\<<C-r><C-w>\\>/<C-r><C-w>/gc<Left><Left><Left>",
+	{ desc = "[S]earch and replace in [Q]uickfix" }
+)
 
 -- [[ Highlight on yank ]]
 -- See `:help vim.highlight.on_yank()`
@@ -340,6 +364,13 @@ vim.keymap.set(
 	require("telescope.builtin").grep_string,
 	{ desc = "[*]: Search current word in project" }
 )
+vim.keymap.set(
+	"v",
+	"<leader>*",
+	require("telescope.builtin").grep_string,
+	{ desc = "[*]: Search current word in project" }
+)
+
 vim.keymap.set("n", "<leader>pf", require("telescope.builtin").find_files, { desc = "[P]roject [F]iles" })
 vim.keymap.set(
 	"n",
