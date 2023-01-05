@@ -51,6 +51,7 @@ require("packer").startup(function(use)
 			pcall(require("nvim-treesitter.install").update({ with_sync = true }))
 		end,
 	})
+	use("RRethy/vim-illuminate")
 
 	-- Additional text objects via treesitter
 	use({
@@ -70,8 +71,6 @@ require("packer").startup(function(use)
 	use("navarasu/onedark.nvim")
 	use("folke/tokyonight.nvim")
 
-	-- Nvim Tree
-
 	-- Fuzzy Finder (files, lsp, etc)
 	use({ "nvim-telescope/telescope.nvim", branch = "0.1.x", requires = { "nvim-lua/plenary.nvim" } })
 
@@ -83,9 +82,9 @@ require("packer").startup(function(use)
 	use("numToStr/Comment.nvim") -- "gc" to comment visual regions/lines
 	use("tpope/vim-sleuth") -- Detect tabstop and shiftwidth automatically
 	use("mhartington/formatter.nvim") -- Formatting
-	use("kylechui/nvim-surround") -- Surround text objects with anything
-	use("nvim-tree/nvim-tree.lua") -- File tree explorer
-	use("ThePrimeagen/harpoon") -- Manage multiple buffers
+	use("tpope/vim-surround") -- Surround text objects with quotes, brackets, etc
+	use("nvim-tree/nvim-tree.lua") -- File explorer
+	use("ThePrimeagen/harpoon") -- Manage multiple buffers and jump between them easily
 
 	-- Add custom plugins to packer from ~/.config/nvim/lua/custom/plugins.lua
 	local has_plugins, plugins = pcall(require, "custom.plugins")
@@ -212,7 +211,7 @@ vim.keymap.set("n", "<C-k>", "<C-w>k")
 vim.keymap.set("n", "<C-l>", "<C-w>l")
 
 -- File tree navigation
-vim.keymap.set("n", "<leader>ft", vim.cmd.NvimTreeToggle, { desc = "[F]ile [T]ree" })
+vim.keymap.set("n", "<leader>ft", require("nvim-tree.api").tree.toggle, { desc = "[F]ile [T]ree" })
 
 -- Buffer commands
 vim.keymap.set("n", "<leader>bd", vim.cmd.bdelete, { desc = "[B]uffer [D]elete" })
@@ -238,6 +237,9 @@ end, { desc = "[3] Harpoon goto file 3" })
 vim.keymap.set("n", "<leader>4", function()
 	require("harpoon.ui").nav_file(4)
 end, { desc = "[4] Harpoon goto file 4" })
+
+-- Toggle commands
+vim.keymap.set("n", "<leader>th", vim.cmd.IlluminateToggle, { desc = "[T]oggle [H]ighlight" })
 
 -- [[ Highlight on yank ]]
 -- See `:help vim.highlight.on_yank()`
@@ -447,6 +449,7 @@ local on_attach = function(_, bufnr)
 	)
 
 	nmap("<localleader>r.", vim.lsp.buf.code_action, "[R]efactor: Code Actions")
+	nmap("<localleader>rr", vim.lsp.buf.rename, "[R]efactor [R]ename")
 
 	nmap("gd", vim.lsp.buf.definition, "[G]oto [D]efinition")
 	nmap("<localleader>gd", vim.lsp.buf.definition, "[G]oto [D]efinition")
@@ -636,14 +639,32 @@ require("nvim-tree").setup({
 		side = "left",
 		mappings = {
 			list = {
-				{ key = { "l", "<cr>", "o" }, cb = require("nvim-tree.config").nvim_tree_callback("edit") },
-				{ key = "h", cb = require("nvim-tree.config").nvim_tree_callback("close_node") },
-				{ key = "v", cb = require("nvim-tree.config").nvim_tree_callback("vsplit") },
+				{ key = "l", action = "edit" },
+				{ key = "h", action = "close_node" },
+				{ key = "v", action = "vsplit" },
 			},
 		},
 	},
 	hijack_cursor = true,
+	actions = {
+		open_file = {
+			quit_on_open = true,
+		},
+	},
 })
+
+-- Illuminate setup and coloring
+
+require("illuminate").configure({
+	delay = 500,
+	min_count_to_highlight = 2,
+})
+
+vim.cmd.highlight("IlluminatedWord guibg=#3b4261")
+vim.cmd.highlight("IlluminatedCurWord guibg=#3b4261")
+vim.cmd.highlight("IlluminatedWordText guibg=#3b4261")
+vim.cmd.highlight("IlluminatedWordRead guibg=#3b4261")
+vim.cmd.highlight("IlluminatedWordWrite guibg=#3b4261")
 
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et
