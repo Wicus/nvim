@@ -10,6 +10,8 @@ end
 require("packer").startup(function(use)
 	-- Package manager
 	use("wbthomason/packer.nvim")
+	use("nvim-lua/plenary.nvim")
+	use("nvim-treesitter/playground")
 
 	-- LSP Configuration & Plugins
 	use({
@@ -67,12 +69,14 @@ require("packer").startup(function(use)
 	-- Github Copilot
 	use("github/copilot.vim")
 
-	-- Themes
+	-- Colorschemes
 	use("navarasu/onedark.nvim")
 	use("folke/tokyonight.nvim")
+	use("EdenEast/nightfox.nvim")
+	use("bluz71/vim-nightfly-colors")
 
 	-- Fuzzy Finder (files, lsp, etc)
-	use({ "nvim-telescope/telescope.nvim", branch = "0.1.x", requires = { "nvim-lua/plenary.nvim" } })
+	use({ "nvim-telescope/telescope.nvim", branch = "0.1.x" })
 
 	-- Fuzzy Finder Algorithm which requires local dependencies to be built. Only load if `make` is available
 	use({ "nvim-telescope/telescope-fzf-native.nvim", run = "make", cond = vim.fn.executable("make") == 1 })
@@ -125,6 +129,10 @@ vim.api.nvim_create_autocmd("BufWritePost", {
 vim.g.loaded_netrw = 1
 vim.g.loaded_netrwPlugin = 1
 
+vim.g.nightflyNormalFloat = true
+vim.g.nightflyCursorColor = true
+vim.g.nightflyItalics = false
+
 -- Set highlight on search
 vim.o.hlsearch = false
 
@@ -150,9 +158,19 @@ vim.o.smartcase = true
 vim.o.updatetime = 50
 vim.wo.signcolumn = "yes"
 
+local custom_highlight = vim.api.nvim_create_augroup("CustomHighlight", {})
+vim.api.nvim_create_autocmd("ColorScheme", {
+	pattern = "nightfly",
+	callback = function()
+		vim.api.nvim_set_hl(0, "@variable.builtin", { fg = "#21c7a8" })
+	end,
+	group = custom_highlight,
+})
+
 -- Set colorscheme
+vim.o.background = "dark"
 vim.o.termguicolors = true
-vim.cmd.colorscheme("onedark")
+vim.cmd.colorscheme("nightfly")
 
 -- Set completeopt to have a better completion experience
 vim.o.completeopt = "menuone,noselect"
@@ -162,6 +180,16 @@ vim.o.cursorline = true
 
 -- Color column
 vim.o.colorcolumn = "80"
+
+vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(vim.lsp.handlers.hover, {
+	border = "single",
+})
+
+vim.lsp.handlers["textDocument/signatureHelp"] = vim.lsp.with(vim.lsp.handlers.signatureHelp, {
+	border = "single",
+})
+
+vim.diagnostic.config({ float = { border = "single" } })
 
 -- [[ Basic Keymaps ]]
 -- Set <space> as the leader key
@@ -248,10 +276,12 @@ vim.keymap.set("n", "<leader>qq", vim.cmd.cclose, { desc = "[Q][Q]uickfix close"
 -- Search and replace commands
 vim.keymap.set(
 	"n",
-	"<leader>sa",
+	"<leader>sr",
 	":%s/\\<<C-r><C-w>\\>/<C-r><C-w>/gI<Left><Left><Left>",
-	{ desc = "[S]earch and replace [A]ll in buffer" }
+	{ desc = "[S]earch and [R]eplace in buffer" }
 )
+vim.keymap.set("v", "<leader>sr", ":s///gI<Left><Left><Left><Left>", { desc = "[S]earch and [R]eplace in visual mode" })
+
 vim.keymap.set(
 	"n",
 	"<leader>sl",
@@ -280,10 +310,30 @@ vim.api.nvim_create_autocmd("TextYankPost", {
 
 -- Set lualine as statusline
 -- See `:help lualine.txt`
+
+-- new colors for theme
+local new_colors = {
+	blue = "#65D1FF",
+	green = "#3EFFDC",
+	violet = "#FF61EF",
+	yellow = "#FFDA7B",
+	black = "#000000",
+}
+-- change nightlfy theme colors
+require("lualine.themes.nightfly").normal.a.bg = new_colors.blue
+require("lualine.themes.nightfly").insert.a.bg = new_colors.green
+require("lualine.themes.nightfly").visual.a.bg = new_colors.violet
+require("lualine.themes.nightfly").command = {
+	a = {
+		gui = "bold",
+		bg = new_colors.yellow,
+		fg = new_colors.black, -- black
+	},
+}
 require("lualine").setup({
 	options = {
 		icons_enabled = false,
-		theme = "onedark",
+		theme = require("lualine.themes.nightfly"),
 		component_separators = "|",
 		section_separators = "",
 	},
@@ -378,6 +428,7 @@ vim.keymap.set(
 	require("telescope.builtin").help_tags,
 	{ desc = "[ ]: Open neovim command help" }
 )
+vim.keymap.set("n", "<leader>rl", require("telescope.builtin").resume, { desc = "[R]esume [L]ast search" })
 
 -- Diagnostic keymaps
 vim.keymap.set("n", "<leader>el", require("telescope.builtin").diagnostics, { desc = "[E]rror [L]ist [T]elescope" })
@@ -566,12 +617,18 @@ require("fidget").setup()
 -- nvim-cmp setup
 local cmp = require("cmp")
 local luasnip = require("luasnip")
-
+local winhighlight = {
+	winhighlight = "Normal:NormalFloat,FloatBorder:FloatBorder,CursorLine:PmenuSel",
+}
 cmp.setup({
 	snippet = {
 		expand = function(args)
 			luasnip.lsp_expand(args.body)
 		end,
+	},
+	window = {
+		completion = cmp.config.window.bordered(winhighlight),
+		documentation = cmp.config.window.bordered(winhighlight),
 	},
 	mapping = cmp.mapping.preset.insert({
 		["<C-d>"] = cmp.mapping.scroll_docs(-4),
@@ -649,8 +706,19 @@ require("nvim-tree").setup({
 			show = {
 				file = false,
 				folder = false,
-				folder_arrow = false,
-				git = false,
+				folder_arrow = true,
+				git = true,
+			},
+			glyphs = {
+				git = {
+					unstaged = "~",
+					renamed = "_",
+					untracked = "+",
+					deleted = "-",
+					unmerged = "",
+					staged = "",
+					ignored = "",
+				},
 			},
 		},
 	},
@@ -676,7 +744,6 @@ require("nvim-tree").setup({
 			},
 		},
 	},
-	hijack_cursor = true,
 	actions = {
 		open_file = {
 			quit_on_open = true,
