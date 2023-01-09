@@ -34,6 +34,7 @@ require("packer").startup(function(use)
 		"hrsh7th/nvim-cmp",
 		requires = {
 			"hrsh7th/cmp-nvim-lsp",
+			"f3fora/cmp-spell",
 			"saadparwaiz1/cmp_luasnip",
 		},
 	})
@@ -163,6 +164,10 @@ vim.o.cursorline = true
 
 -- Color column
 vim.o.colorcolumn = "80"
+
+-- Spelling
+vim.o.spell = true
+vim.o.spellinglang = "en_us"
 
 -- Colorscheme setup
 require("tokyonight").setup({
@@ -430,7 +435,7 @@ vim.keymap.set("n", "<leader>en", vim.diagnostic.goto_next, { desc = "[E]rror [N
 -- See `:help nvim-treesitter`
 require("nvim-treesitter.configs").setup({
 	-- Add languages to be installed here that you want installed for treesitter
-	ensure_installed = { "c", "cpp", "lua", "python", "typescript", "tsx", "help" },
+	ensure_installed = { "c", "cpp", "lua", "python", "typescript", "tsx", "help", "markdown" },
 
 	highlight = { enable = true },
 	indent = { enable = true, disable = { "python" } },
@@ -653,6 +658,7 @@ cmp.setup({
 	sources = {
 		{ name = "nvim_lsp" },
 		{ name = "luasnip" },
+		{ name = "spell" },
 	},
 })
 
