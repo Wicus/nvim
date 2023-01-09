@@ -69,11 +69,8 @@ require("packer").startup(function(use)
 	-- Github Copilot
 	use("github/copilot.vim")
 
-	-- Colorschemes
-	use("navarasu/onedark.nvim")
+	-- Colorscheme
 	use("folke/tokyonight.nvim")
-	use("EdenEast/nightfox.nvim")
-	use("bluz71/vim-nightfly-colors")
 
 	-- Fuzzy Finder (files, lsp, etc)
 	use({ "nvim-telescope/telescope.nvim", branch = "0.1.x" })
@@ -129,10 +126,6 @@ vim.api.nvim_create_autocmd("BufWritePost", {
 vim.g.loaded_netrw = 1
 vim.g.loaded_netrwPlugin = 1
 
-vim.g.nightflyNormalFloat = true
-vim.g.nightflyCursorColor = true
-vim.g.nightflyItalics = false
-
 -- Set highlight on search
 vim.o.hlsearch = false
 
@@ -158,19 +151,9 @@ vim.o.smartcase = true
 vim.o.updatetime = 50
 vim.wo.signcolumn = "yes"
 
-local custom_highlight = vim.api.nvim_create_augroup("CustomHighlight", {})
-vim.api.nvim_create_autocmd("ColorScheme", {
-	pattern = "nightfly",
-	callback = function()
-		vim.api.nvim_set_hl(0, "@variable.builtin", { fg = "#21c7a8" })
-	end,
-	group = custom_highlight,
-})
-
 -- Set colorscheme
 vim.o.background = "dark"
 vim.o.termguicolors = true
-vim.cmd.colorscheme("nightfly")
 
 -- Set completeopt to have a better completion experience
 vim.o.completeopt = "menuone,noselect"
@@ -181,14 +164,36 @@ vim.o.cursorline = true
 -- Color column
 vim.o.colorcolumn = "80"
 
-vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(vim.lsp.handlers.hover, {
-	border = "single",
+-- Colorscheme setup
+require("tokyonight").setup({
+	styles = {
+		floats = "normal",
+	},
+	lualine_bold = true,
+	on_highlights = function(hl, colors)
+		local selectionColor = "#3b4261"
+		hl.IlluminatedWord = { bg = selectionColor }
+		hl.IlluminatedCurWord = { bg = selectionColor }
+		hl.IlluminatedWordText = { bg = selectionColor }
+		hl.IlluminatedWordRead = { bg = selectionColor }
+		hl.IlluminatedWordWrite = { bg = selectionColor }
+		hl.FloatBorder = { fg = colors.fg_gutter }
+		hl.TeleScopeBorder = { fg = colors.fg_gutter }
+	end,
+	on_colors = function(colors)
+		---@diagnostic disable-next-line: assign-type-mismatch
+		colors.gitSigns.add = colors.green
+		---@diagnostic disable-next-line: assign-type-mismatch
+		colors.gitSigns.change = colors.orange
+		colors.gitSigns.delete = colors.red1
+	end,
 })
 
-vim.lsp.handlers["textDocument/signatureHelp"] = vim.lsp.with(vim.lsp.handlers.signatureHelp, {
-	border = "single",
-})
+vim.cmd.colorscheme("tokyonight-night")
 
+-- Set border for floating windows
+vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(vim.lsp.handlers.hover, { border = "single" })
+vim.lsp.handlers["textDocument/signatureHelp"] = vim.lsp.with(vim.lsp.handlers.signatureHelp, { border = "single" })
 vim.diagnostic.config({ float = { border = "single" } })
 
 -- [[ Basic Keymaps ]]
@@ -310,30 +315,10 @@ vim.api.nvim_create_autocmd("TextYankPost", {
 
 -- Set lualine as statusline
 -- See `:help lualine.txt`
-
--- new colors for theme
-local new_colors = {
-	blue = "#65D1FF",
-	green = "#3EFFDC",
-	violet = "#FF61EF",
-	yellow = "#FFDA7B",
-	black = "#000000",
-}
--- change nightlfy theme colors
-require("lualine.themes.nightfly").normal.a.bg = new_colors.blue
-require("lualine.themes.nightfly").insert.a.bg = new_colors.green
-require("lualine.themes.nightfly").visual.a.bg = new_colors.violet
-require("lualine.themes.nightfly").command = {
-	a = {
-		gui = "bold",
-		bg = new_colors.yellow,
-		fg = new_colors.black, -- black
-	},
-}
 require("lualine").setup({
 	options = {
 		icons_enabled = false,
-		theme = require("lualine.themes.nightfly"),
+		theme = "tokyonight",
 		component_separators = "|",
 		section_separators = "",
 	},
@@ -617,9 +602,7 @@ require("fidget").setup()
 -- nvim-cmp setup
 local cmp = require("cmp")
 local luasnip = require("luasnip")
-local winhighlight = {
-	winhighlight = "Normal:NormalFloat,FloatBorder:FloatBorder,CursorLine:PmenuSel",
-}
+
 cmp.setup({
 	snippet = {
 		expand = function(args)
@@ -627,8 +610,14 @@ cmp.setup({
 		end,
 	},
 	window = {
-		completion = cmp.config.window.bordered(winhighlight),
-		documentation = cmp.config.window.bordered(winhighlight),
+		completion = cmp.config.window.bordered({
+			border = "single",
+			winhighlight = "Normal:NormalFloat,FloatBorder:FloatBorder,CursorLine:PmenuSel",
+		}),
+		documentation = cmp.config.window.bordered({
+			border = "single",
+			winhighlight = "Normal:NormalFloat,FloatBorder:FloatBorder,CursorLine:PmenuSel",
+		}),
 	},
 	mapping = cmp.mapping.preset.insert({
 		["<C-d>"] = cmp.mapping.scroll_docs(-4),
@@ -719,6 +708,10 @@ require("nvim-tree").setup({
 					staged = "",
 					ignored = "",
 				},
+				folder = {
+					arrow_open = "v",
+					arrow_closed = ">",
+				},
 			},
 		},
 	},
@@ -751,18 +744,11 @@ require("nvim-tree").setup({
 	},
 })
 
--- Illuminate setup and coloring
-
+-- Illuminate setup
 require("illuminate").configure({
 	delay = 500,
 	min_count_to_highlight = 2,
 })
-
-vim.cmd.highlight("IlluminatedWord guibg=#3b4261")
-vim.cmd.highlight("IlluminatedCurWord guibg=#3b4261")
-vim.cmd.highlight("IlluminatedWordText guibg=#3b4261")
-vim.cmd.highlight("IlluminatedWordRead guibg=#3b4261")
-vim.cmd.highlight("IlluminatedWordWrite guibg=#3b4261")
 
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et
