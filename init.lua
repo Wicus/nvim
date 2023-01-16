@@ -153,7 +153,6 @@ vim.o.smartcase = true
 
 -- Decrease update time
 vim.o.updatetime = 50
-vim.wo.signcolumn = "yes"
 
 -- Set colorscheme
 vim.o.background = "dark"
@@ -169,8 +168,21 @@ vim.o.cursorline = true
 vim.o.colorcolumn = "80"
 
 -- Spelling
-vim.o.spell = true
+vim.o.spell = false
 vim.o.spellinglang = "en_us"
+
+-- Clipboard
+vim.o.clipboard = "unnamedplus"
+
+-- Always show the signcolumn, otherwise it would shift the text each time
+vim.wo.signcolumn = "yes"
+
+-- We don't need to see things like -- INSERT -- anymore
+vim.opt.showmode = false
+
+-- Better splits when opening buffers
+vim.opt.splitbelow = true
+vim.opt.splitright = true
 
 -- Colorscheme setup
 require("tokyonight").setup({
@@ -223,7 +235,7 @@ vim.keymap.set("n", "k", 'v:count == 0 ? "gk" : "k"', { expr = true, silent = tr
 vim.keymap.set("n", "j", 'v:count == 0 ? "gj" : "j"', { expr = true, silent = true })
 
 -- Remapping for better yank and paste
-vim.keymap.set("x", "<leader>p", '"_dP')
+vim.keymap.set("x", "p", '"_dP')
 
 vim.keymap.set("n", "<leader>y", '"+y')
 vim.keymap.set("v", "<leader>y", '"+y')
@@ -261,7 +273,8 @@ vim.keymap.set("n", "<leader>bp", vim.cmd.bprevious, { desc = "[B]uffer [P]revio
 vim.keymap.set("n", "<leader>bn", vim.cmd.bnext, { desc = "[B]uffer [N]ext" })
 
 -- Format
-vim.keymap.set("n", "<leader>==", vim.cmd.Format, { desc = "[==] Format" })
+vim.keymap.set("n", "<leader>ff", vim.cmd.Format, { desc = "[F]ile [F]ormat" })
+vim.keymap.set("v", "<leader>f", vim.cmd.Format, { desc = "[F]ormat in visual mode" })
 
 -- Harpoon keymaps
 vim.keymap.set("n", "<leader>fa", require("harpoon.mark").add_file, { desc = "[F]ile [A]dd: Harpoon add file" })
@@ -282,6 +295,9 @@ end, { desc = "[4] Harpoon goto file 4" })
 
 -- Toggle commands
 vim.keymap.set("n", "<leader>th", vim.cmd.IlluminateToggle, { desc = "[T]oggle [H]ighlight" })
+vim.keymap.set("n", "<leader>ts", function()
+	vim.cmd.set("invspell")
+end, { desc = "[T]oggle [S]pell" })
 
 -- Close quickfix window
 vim.keymap.set("n", "<leader>qq", vim.cmd.cclose, { desc = "[Q][Q]uickfix close" })
@@ -362,7 +378,7 @@ require("telescope").setup({
 			i = {
 				["<C-j>"] = require("telescope.actions").move_selection_next,
 				["<C-k>"] = require("telescope.actions").move_selection_previous,
-				["<esc>"] = require("telescope.actions").close,
+				-- ["<esc>"] = require("telescope.actions").close,
 			},
 		},
 	},
@@ -438,7 +454,7 @@ vim.keymap.set("n", "<leader>en", vim.diagnostic.goto_next, { desc = "[E]rror [N
 -- See `:help nvim-treesitter`
 require("nvim-treesitter.configs").setup({
 	-- Add languages to be installed here that you want installed for treesitter
-	ensure_installed = { "c", "cpp", "lua", "python", "typescript", "tsx", "help", "markdown" },
+	ensure_installed = { "c", "cpp", "lua", "python", "typescript", "tsx", "help", "markdown", "c_sharp" },
 
 	highlight = { enable = true },
 	indent = { enable = true, disable = { "python" } },
@@ -563,18 +579,20 @@ end
 --  Add any additional override configuration in the following tables. They will be passed to
 --  the `settings` field of the server config. You must look up that documentation yourself.
 local servers = {
-	-- clangd = {},
-	-- gopls = {},
-	-- pyright = {},
-	-- rust_analyzer = {},
-	tsserver = {},
-	eslint = {},
 	sumneko_lua = {
 		Lua = {
 			workspace = { checkThirdParty = false },
 			telemetry = { enable = false },
 		},
 	},
+	tsserver = {},
+	eslint = {},
+	clangd = {},
+
+	-- clangd = {},
+	-- gopls = {},
+	-- pyright = {},
+	-- rust_analyzer = {},
 }
 
 -- Setup neovim lua configuration
@@ -602,6 +620,50 @@ mason_lspconfig.setup_handlers({
 			settings = servers[server_name],
 		})
 	end,
+})
+
+require("lspconfig").omnisharp.setup({
+	capabilities = capabilities,
+	on_attach = on_attach,
+	cmd = {
+		"dotnet",
+		"C:\\Users\\Wicus Pretorius\\.vscode\\extensions\\ms-dotnettools.csharp-1.25.2-win32-x64\\.omnisharp\\1.39.2-net6.0\\OmniSharp.dll",
+	},
+
+	-- Enables support for reading code style, naming convention and analyzer
+	-- settings from .editorconfig.
+	enable_editorconfig_support = true,
+
+	-- If true, MSBuild project system will only load projects for files that
+	-- were opened in the editor. This setting is useful for big C# codebases
+	-- and allows for faster initialization of code navigation features only
+	-- for projects that are relevant to code that is being edited. With this
+	-- setting enabled OmniSharp may load fewer projects and may thus display
+	-- incomplete reference lists for symbols.
+	enable_ms_build_load_projects_on_demand = false,
+
+	-- Enables support for roslyn analyzers, code fixes and rulesets.
+	enable_roslyn_analyzers = true,
+
+	-- Specifies whether 'using' directives should be grouped and sorted during
+	-- document formatting.
+	organize_imports_on_format = false,
+
+	-- Enables support for showing unimported types and unimported extension
+	-- methods in completion lists. When committed, the appropriate using
+	-- directive will be added at the top of the current file. This option can
+	-- have a negative impact on initial completion responsiveness,
+	-- particularly for the first few completion sessions after opening a
+	-- solution.
+	enable_import_completion = true,
+
+	-- Specifies whether to include preview versions of the .NET SDK when
+	-- determining which version to use for project loading.
+	sdk_include_prereleases = true,
+
+	-- Only run analyzers against open files when 'enableRoslynAnalyzers' is
+	-- true
+	analyze_open_documents_only = false,
 })
 
 -- Turn on lsp status information
@@ -680,6 +742,15 @@ require("formatter").setup({
 		typescriptreact = {
 			require("formatter.filetypes.typescriptreact").prettierd,
 		},
+		cs = {
+			function()
+				return {
+					exe = "dotnet",
+					args = { "csharpier" },
+					stdin = true,
+				}
+			end,
+		},
 	},
 })
 
@@ -688,7 +759,7 @@ local formatting_group = vim.api.nvim_create_augroup("FormattingGroup", { clear 
 vim.api.nvim_create_autocmd("BufWritePost", {
 	command = "FormatWriteLock",
 	group = formatting_group,
-	pattern = { "*.tsx", "*.ts", "*.lua" },
+	pattern = { "*.tsx", "*.ts", "*.lua", "*.cs" },
 })
 
 -- Nvim tree setup
@@ -748,7 +819,8 @@ require("nvim-tree").setup({
 	},
 	actions = {
 		open_file = {
-			quit_on_open = true,
+			-- Set this to automatically close the tree when opening a file
+			quit_on_open = false,
 		},
 	},
 })
