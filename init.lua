@@ -82,6 +82,8 @@ require("packer").startup(function(use)
 		run = "cmake -S. -Bbuild -DCMAKE_BUILD_TYPE=Release && cmake --build build --config Release && cmake --install build --prefix build",
 	})
 
+	use("Shatur/neovim-tasks")
+
 	use("nvim-lualine/lualine.nvim") -- Fancier statusline
 	use("lukas-reineke/indent-blankline.nvim") -- Add indentation guides even on blank lines
 	use("numToStr/Comment.nvim") -- "gc" to comment visual regions/lines
@@ -323,6 +325,12 @@ vim.keymap.set(
 	":cdo s/\\<<C-r><C-w>\\>/<C-r><C-w>/gc<Left><Left><Left>",
 	{ desc = "[S]earch and replace in [Q]uickfix" }
 )
+vim.keymap.set("n", "<leader>cmc", "<cmd>Task start cmake configure<CR>", { desc = "[CM]ake [C]onfigure" })
+vim.keymap.set("n", "<leader>cmt", "<cmd>Task set_module_param cmake target<CR>", { desc = "[CM]ake set [T]arget" })
+vim.keymap.set("n", "<leader>cmb", "<cmd>Task start cmake build<CR>", { desc = "[CM]ake [B]uild" })
+-- Optional :Task set_task_param cmake run
+-- :Task start cmake run
+-- :Task start cmake debug
 
 -- [[ Highlight on yank ]]
 -- See `:help vim.highlight.on_yank()`
@@ -833,6 +841,30 @@ require("nvim-tree").setup({
 require("illuminate").configure({
 	delay = 500,
 	min_count_to_highlight = 2,
+})
+
+-- Neovim tasks setup
+require("tasks").setup({
+	default_params = { -- Default module parameters with which `neovim.json` will be created.
+		cmake = {
+			cmd = "cmake", -- CMake executable to use, can be changed using `:Task set_module_param cmake cmd`.
+			build_dir = tostring(require("plenary.path"):new("{cwd}", "build", "{os}-{build_type}")), -- Build directory. The expressions `{cwd}`, `{os}` and `{build_type}` will be expanded with the corresponding text values. Could be a function that return the path to the build directory.
+			build_type = "Debug", -- Build type, can be changed using `:Task set_module_param cmake build_type`.
+			dap_name = "lldb", -- DAP configuration name from `require('dap').configurations`. If there is no such configuration, a new one with this name as `type` will be created.
+			args = { -- Task default arguments.
+				configure = { "-D", "CMAKE_EXPORT_COMPILE_COMMANDS=1", "-G", "Ninja" },
+			},
+		},
+	},
+	save_before_run = true, -- If true, all files will be saved before executing a task.
+	params_file = "neovim.json", -- JSON file to store module and task parameters.
+	quickfix = {
+		pos = "botright", -- Default quickfix position.
+		height = 12, -- Default height.
+	},
+	dap_open_command = function()
+		return require("dap").repl.open()
+	end, -- Command to run after starting DAP session. You can set it to `false` if you don't want to open anything or `require('dapui').open` if you are using https://github.com/rcarriga/nvim-dap-ui
 })
 
 -- The line beneath this is called `modeline`. See `:help modeline`
