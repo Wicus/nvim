@@ -165,11 +165,11 @@ vim.o.completeopt = "menuone,noselect"
 vim.o.cursorline = true
 
 -- Color column
-vim.o.colorcolumn = "80"
+vim.o.colorcolumn = "120"
 
 -- Spelling
 vim.o.spell = false
-vim.o.spellinglang = "en_us"
+vim.o.spelllang = "en_us"
 
 -- Clipboard
 vim.o.clipboard = "unnamedplus"
@@ -431,16 +431,11 @@ vim.keymap.set(
 )
 
 vim.keymap.set("n", "<leader>pf", require("telescope.builtin").find_files, { desc = "[P]roject [F]iles" })
-vim.keymap.set(
-	"n",
-	"<leader><space>",
-	require("telescope.builtin").help_tags,
-	{ desc = "[ ]: Open neovim command help" }
-)
+vim.keymap.set("n", "<leader><space>", require("telescope.builtin").commands, { desc = "[ ]: Open neovim commands" })
 vim.keymap.set("n", "<leader>rl", require("telescope.builtin").resume, { desc = "[R]esume [L]ast search" })
 
 -- Diagnostic keymaps
-vim.keymap.set("n", "<leader>el", require("telescope.builtin").diagnostics, { desc = "[E]rror [L]ist [T]elescope" })
+vim.keymap.set("n", "<leader>el", require("telescope.builtin").diagnostics, { desc = "[E]rror [L]ist" })
 vim.keymap.set("n", "<leader>ee", vim.diagnostic.open_float, { desc = "[E]rror [L]ist [.]: List error under cursor" })
 vim.keymap.set("n", "<leader>eq", vim.diagnostic.setloclist, { desc = "[E]rror [L]ist [Q]uickfix" })
 
@@ -530,7 +525,15 @@ local on_attach = function(_, bufnr)
 		vim.keymap.set("n", keys, func, { buffer = bufnr, desc = desc })
 	end
 
-	nmap("<leader>br", vim.lsp.buf.rename, "[B]uffer [R]ename")
+	local imap = function(keys, func, desc)
+		if desc then
+			desc = "LSP: " .. desc
+		end
+
+		vim.keymap.set("i", keys, func, { buffer = bufnr, desc = desc })
+	end
+
+	nmap("<leader>nr", vim.lsp.buf.rename, "[B]uffer [R]ename")
 
 	nmap("<leader>sj", require("telescope.builtin").lsp_document_symbols, "[S]ymbols [J]ump: Document symbols")
 	nmap(
@@ -554,8 +557,9 @@ local on_attach = function(_, bufnr)
 	nmap("<localleader>gt", vim.lsp.buf.type_definition, "[G]oto [T]ype definition")
 
 	-- See `:help K` for why this keymap
-	nmap("K", vim.lsp.buf.hover, "[K]: Hover Documentation")
-	nmap("gh", vim.lsp.buf.signature_help, "[G]oto [H]elp: Signature Documentation")
+	nmap("K", vim.lsp.buf.hover, "Hover Documentation")
+	imap("<C-k>", vim.lsp.buf.signature_help, "Signature Documentation")
+	nmap("gh", vim.lsp.buf.signature_help, "Signature Documentation")
 
 	-- Lesser used LSP functionality
 	nmap("gD", vim.lsp.buf.declaration, "[G]oto [D]eclaration")
@@ -632,7 +636,7 @@ require("lspconfig").omnisharp.setup({
 
 	-- Enables support for reading code style, naming convention and analyzer
 	-- settings from .editorconfig.
-	enable_editorconfig_support = true,
+	enable_editorconfig_support = false,
 
 	-- If true, MSBuild project system will only load projects for files that
 	-- were opened in the editor. This setting is useful for big C# codebases
@@ -643,7 +647,7 @@ require("lspconfig").omnisharp.setup({
 	enable_ms_build_load_projects_on_demand = false,
 
 	-- Enables support for roslyn analyzers, code fixes and rulesets.
-	enable_roslyn_analyzers = true,
+	enable_roslyn_analyzers = false,
 
 	-- Specifies whether 'using' directives should be grouped and sorted during
 	-- document formatting.
@@ -655,11 +659,11 @@ require("lspconfig").omnisharp.setup({
 	-- have a negative impact on initial completion responsiveness,
 	-- particularly for the first few completion sessions after opening a
 	-- solution.
-	enable_import_completion = true,
+	enable_import_completion = false,
 
 	-- Specifies whether to include preview versions of the .NET SDK when
 	-- determining which version to use for project loading.
-	sdk_include_prereleases = true,
+	sdk_include_prereleases = false,
 
 	-- Only run analyzers against open files when 'enableRoslynAnalyzers' is
 	-- true
@@ -759,7 +763,7 @@ local formatting_group = vim.api.nvim_create_augroup("FormattingGroup", { clear 
 vim.api.nvim_create_autocmd("BufWritePost", {
 	command = "FormatWriteLock",
 	group = formatting_group,
-	pattern = { "*.tsx", "*.ts", "*.lua", "*.cs" },
+	pattern = { "*.tsx", "*.ts", "*.lua" },
 })
 
 -- Nvim tree setup
