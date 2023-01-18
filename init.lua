@@ -332,7 +332,9 @@ vim.keymap.set("n", "<leader>cmb", "<cmd>Task start cmake build<CR>", { desc = "
 -- :Task start cmake run
 -- :Task start cmake debug
 
--- [[ Highlight on yank ]]
+-- [[ Autocommands ]]
+
+-- Highlight on yank
 -- See `:help vim.highlight.on_yank()`
 local highlight_group = vim.api.nvim_create_augroup("YankHighlight", { clear = true })
 vim.api.nvim_create_autocmd("TextYankPost", {
@@ -343,6 +345,28 @@ vim.api.nvim_create_autocmd("TextYankPost", {
 	end,
 	group = highlight_group,
 	pattern = "*",
+})
+
+-- Format on save autocommand
+local formatting_group = vim.api.nvim_create_augroup("FormattingGroup", { clear = true })
+vim.api.nvim_create_autocmd("BufWritePost", {
+	command = "FormatWriteLock",
+	group = formatting_group,
+	pattern = { "*.tsx", "*.ts", "*.lua" },
+})
+
+-- Formatting issues on Mecalc source files autocommand
+local disable_vim_sleuth_group = vim.api.nvim_create_augroup("DisableVimSleuthGroup", { clear = true })
+vim.api.nvim_create_autocmd("BufEnter", {
+	callback = function()
+		-- Set sane defaults for Mecalc cpp files
+		vim.opt.tabstop = 4
+		vim.opt.softtabstop = 4
+		vim.opt.shiftwidth = 4
+		vim.opt.expandtab = true
+	end,
+	group = disable_vim_sleuth_group,
+	pattern = { "*.h", "*.c", "*.hpp", "*.cpp" },
 })
 
 -- Set lualine as statusline
@@ -764,14 +788,6 @@ require("formatter").setup({
 			end,
 		},
 	},
-})
-
--- Format on save autocommand
-local formatting_group = vim.api.nvim_create_augroup("FormattingGroup", { clear = true })
-vim.api.nvim_create_autocmd("BufWritePost", {
-	command = "FormatWriteLock",
-	group = formatting_group,
-	pattern = { "*.tsx", "*.ts", "*.lua" },
 })
 
 -- Nvim tree setup
