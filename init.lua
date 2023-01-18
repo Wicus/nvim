@@ -590,8 +590,7 @@ local on_attach = function(_, bufnr)
 
 	-- See `:help K` for why this keymap
 	nmap("K", vim.lsp.buf.hover, "Hover Documentation")
-	imap("<C-k>", vim.lsp.buf.signature_help, "Signature Documentation")
-	nmap("gh", vim.lsp.buf.signature_help, "Signature Documentation")
+	imap("<C-k>", vim.lsp.buf.hover, "Hover Documentation")
 
 	-- Lesser used LSP functionality
 	nmap("gD", vim.lsp.buf.declaration, "[G]oto [D]eclaration")
@@ -855,7 +854,6 @@ require("nvim-tree").setup({
 
 -- Illuminate setup
 require("illuminate").configure({
-	delay = 500,
 	min_count_to_highlight = 2,
 })
 
