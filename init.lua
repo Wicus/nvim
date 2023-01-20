@@ -174,17 +174,23 @@ vim.o.spell = false
 vim.o.spelllang = "en_us"
 
 -- Clipboard
-vim.o.clipboard = "unnamedplus"
+-- vim.o.clipboard = "unnamedplus"
 
 -- Always show the signcolumn, otherwise it would shift the text each time
 vim.wo.signcolumn = "yes"
 
 -- We don't need to see things like -- INSERT -- anymore
-vim.opt.showmode = false
+vim.o.showmode = false
 
 -- Better splits when opening buffers
-vim.opt.splitbelow = true
-vim.opt.splitright = true
+vim.o.splitbelow = true
+vim.o.splitright = true
+
+-- Set Winbar
+vim.o.winbar = "%f %m"
+
+-- Set Winbar
+vim.o.guifont = "Consolas:h12"
 
 -- Colorscheme setup
 require("tokyonight").setup({
@@ -208,6 +214,8 @@ require("tokyonight").setup({
 		---@diagnostic disable-next-line: assign-type-mismatch
 		colors.gitSigns.change = colors.orange
 		colors.gitSigns.delete = colors.red1
+		-- colors.bg = colors.none
+		-- colors.bg_float = colors.none
 	end,
 })
 
@@ -301,9 +309,6 @@ vim.keymap.set("n", "<leader>ts", function()
 	vim.cmd.set("invspell")
 end, { desc = "[T]oggle [S]pell" })
 
--- Close quickfix window
-vim.keymap.set("n", "<leader>qq", vim.cmd.cclose, { desc = "[Q][Q]uickfix close" })
-
 -- Search and replace commands
 vim.keymap.set(
 	"n",
@@ -328,6 +333,14 @@ vim.keymap.set(
 vim.keymap.set("n", "<leader>cmc", "<cmd>Task start cmake configure<CR>", { desc = "[CM]ake [C]onfigure" })
 vim.keymap.set("n", "<leader>cmt", "<cmd>Task set_module_param cmake target<CR>", { desc = "[CM]ake set [T]arget" })
 vim.keymap.set("n", "<leader>cmb", "<cmd>Task start cmake build<CR>", { desc = "[CM]ake [B]uild" })
+
+-- Quickfix
+vim.keymap.set("n", "<leader>cc", vim.cmd.cclose, { desc = "[C][C]lose Quickfix" })
+vim.keymap.set("n", "[c", vim.cmd.cprevious)
+vim.keymap.set("n", "<leader>cp", vim.cmd.cprevious, { desc = "[C][P]revious Quickfix" })
+vim.keymap.set("n", "]c", vim.cmd.cnext)
+vim.keymap.set("n", "<leader>cn", vim.cmd.cnext, { desc = "[C][N]ext Quickfix" })
+
 -- Optional :Task set_task_param cmake run
 -- :Task start cmake run
 -- :Task start cmake debug
@@ -475,10 +488,10 @@ vim.keymap.set("n", "<leader>el", require("telescope.builtin").diagnostics, { de
 vim.keymap.set("n", "<leader>ee", vim.diagnostic.open_float, { desc = "[E]rror [L]ist [.]: List error under cursor" })
 vim.keymap.set("n", "<leader>eq", vim.diagnostic.setloclist, { desc = "[E]rror [L]ist [Q]uickfix" })
 
-vim.keymap.set("n", "[e", vim.diagnostic.goto_prev)
+vim.keymap.set("n", "[d", vim.diagnostic.goto_prev)
 vim.keymap.set("n", "<leader>ep", vim.diagnostic.goto_prev, { desc = "[E]rror [P]revious" })
 
-vim.keymap.set("n", "]e", vim.diagnostic.goto_next)
+vim.keymap.set("n", "]d", vim.diagnostic.goto_next)
 vim.keymap.set("n", "<leader>en", vim.diagnostic.goto_next, { desc = "[E]rror [N]ext" })
 
 -- [[ Configure Treesitter ]]
@@ -573,9 +586,9 @@ local on_attach = function(_, bufnr)
 
 	nmap("<leader>sj", require("telescope.builtin").lsp_document_symbols, "[S]ymbols [J]ump: Document symbols")
 	nmap(
-		"<leader>sp",
+		"<leader>sw",
 		require("telescope.builtin").lsp_dynamic_workspace_symbols,
-		"[S]ymbols [P]roject: Workspace symbols"
+		"[S]ymbols [W]orkspace: Workspace symbols"
 	)
 
 	nmap("<localleader>r.", vim.lsp.buf.code_action, "[R]efactor: Code Actions")
