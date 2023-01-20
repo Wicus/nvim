@@ -82,8 +82,6 @@ require("packer").startup(function(use)
 		run = "cmake -S. -Bbuild -DCMAKE_BUILD_TYPE=Release && cmake --build build --config Release && cmake --install build --prefix build",
 	})
 
-	use("Shatur/neovim-tasks")
-
 	use("nvim-lualine/lualine.nvim") -- Fancier statusline
 	use("lukas-reineke/indent-blankline.nvim") -- Add indentation guides even on blank lines
 	use("numToStr/Comment.nvim") -- "gc" to comment visual regions/lines
@@ -92,6 +90,8 @@ require("packer").startup(function(use)
 	use("tpope/vim-surround") -- Surround text objects with quotes, brackets, etc
 	use("nvim-tree/nvim-tree.lua") -- File explorer
 	use("ThePrimeagen/harpoon") -- Manage multiple buffers and jump between them easily
+	use("ahmedkhalf/project.nvim") -- Project management
+	use("Shatur/neovim-tasks") -- Task management (CMake and Rust)
 
 	-- Add custom plugins to packer from ~/.config/nvim/lua/custom/plugins.lua
 	local has_plugins, plugins = pcall(require, "custom.plugins")
@@ -419,6 +419,9 @@ require("telescope").setup({
 -- Enable telescope fzf native, if installed
 pcall(require("telescope").load_extension, "fzf")
 
+-- Enable telescope projects
+pcall(require("telescope").load_extension, "projects")
+
 -- See `:help telescope.builtin`
 vim.keymap.set(
 	"n",
@@ -463,6 +466,7 @@ vim.keymap.set(
 )
 
 vim.keymap.set("n", "<leader>pf", require("telescope.builtin").find_files, { desc = "[P]roject [F]iles" })
+vim.keymap.set("n", "<leader>po", require("telescope").extensions.projects.projects, { desc = "[P]rojects [O]pen" })
 vim.keymap.set("n", "<leader><space>", require("telescope.builtin").commands, { desc = "[ ]: Open neovim commands" })
 vim.keymap.set("n", "<leader>rl", require("telescope.builtin").resume, { desc = "[R]esume [L]ast search" })
 
@@ -793,7 +797,7 @@ require("formatter").setup({
 require("nvim-tree").setup({
 	update_focused_file = {
 		enable = true,
-		update_cwd = true,
+		update_cwd = false,
 	},
 	renderer = {
 		highlight_opened_files = "all",
@@ -879,6 +883,19 @@ require("tasks").setup({
 	dap_open_command = function()
 		return require("dap").repl.open()
 	end, -- Command to run after starting DAP session. You can set it to `false` if you don't want to open anything or `require('dapui').open` if you are using https://github.com/rcarriga/nvim-dap-ui
+})
+
+-- Project setup
+
+require("project_nvim").setup({
+	sync_root_with_cwd = true,
+	respect_buf_cwd = true,
+	update_focused_file = {
+		enable = true,
+		update_root = true,
+	},
+	detection_methods = { "pattern" },
+	patterns = { ".git", "package.json" },
 })
 
 -- The line beneath this is called `modeline`. See `:help modeline`
