@@ -761,6 +761,16 @@ require("formatter").setup({
 		typescriptreact = {
 			require("formatter.filetypes.typescriptreact").prettierd,
 		},
+		c = {
+			require("formatter.filetypes.c").clangformat,
+		},
+		cpp = {
+			require("formatter.filetypes.cpp").clangformat,
+		},
+		-- To Test
+		-- cs = {
+		--   require("formatter.filetypes.cs").clangformat,
+		-- },
 		cs = {
 			function()
 				return {
@@ -786,7 +796,7 @@ require("nvim-tree").setup({
 			show = {
 				file = false,
 				folder = false,
-				folder_arrow = true,
+				folder_arrow = false,
 				git = true,
 			},
 			glyphs = {
@@ -798,10 +808,6 @@ require("nvim-tree").setup({
 					unmerged = "",
 					staged = "",
 					ignored = "",
-				},
-				folder = {
-					arrow_open = "v",
-					arrow_closed = ">",
 				},
 			},
 		},
