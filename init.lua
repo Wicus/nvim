@@ -192,6 +192,11 @@ vim.o.winbar = "%f %m"
 -- Set Winbar
 vim.o.guifont = "Consolas:h12"
 
+-- Disable NetRw
+vim.g.netrw_browse_split = 0
+vim.g.netrw_banner = 0
+vim.g.netrw_winsize = 25
+
 -- Colorscheme setup
 require("tokyonight").setup({
 	styles = {
@@ -232,9 +237,6 @@ vim.diagnostic.config({ float = { border = "single" } })
 --  NOTE: Must happen before plugins are required (otherwise wrong leader will be used)
 vim.g.mapleader = " "
 vim.g.maplocalleader = ","
-vim.g.netrw_browse_split = 0
-vim.g.netrw_banner = 0
-vim.g.netrw_winsize = 25
 
 -- Keymaps for better default experience
 -- See `:help vim.keymap.set()`
@@ -279,17 +281,12 @@ vim.keymap.set("n", "<leader>ft", require("nvim-tree.api").tree.toggle, { desc =
 
 -- Buffer commands
 vim.keymap.set("n", "<leader>bd", vim.cmd.bdelete, { desc = "[B]uffer [D]elete" })
-vim.keymap.set("n", "<leader>bp", vim.cmd.bprevious, { desc = "[B]uffer [P]revious" })
-vim.keymap.set("n", "<leader>bn", vim.cmd.bnext, { desc = "[B]uffer [N]ext" })
-
--- Format
-vim.keymap.set("n", "<leader>ff", vim.cmd.Format, { desc = "[F]ile [F]ormat" })
-vim.keymap.set("v", "<leader>f", vim.cmd.Format, { desc = "[F]ormat in visual mode" })
+vim.keymap.set("n", "[b", vim.cmd.bprevious, { desc = "[B]uffer [P]revious" })
+vim.keymap.set("n", "]b", vim.cmd.bnext, { desc = "[B]uffer [N]ext" })
 
 -- Harpoon keymaps
 vim.keymap.set("n", "<leader>fa", require("harpoon.mark").add_file, { desc = "[F]ile [A]dd: Harpoon add file" })
 vim.keymap.set("n", "<leader>0", require("harpoon.ui").toggle_quick_menu, { desc = "[0] Harpoon quick menu" })
-
 vim.keymap.set("n", "<leader>1", function()
 	require("harpoon.ui").nav_file(1)
 end, { desc = "[1] Harpoon goto file 1" })
@@ -316,37 +313,13 @@ vim.keymap.set(
 	":%s/\\<<C-r><C-w>\\>/<C-r><C-w>/gI<Left><Left><Left>",
 	{ desc = "[S]earch and [R]eplace in buffer" }
 )
-vim.keymap.set("v", "<leader>sr", ":s///gI<Left><Left><Left><Left>", { desc = "[S]earch and [R]eplace in visual mode" })
-
-vim.keymap.set(
-	"n",
-	"<leader>sl",
-	":s/\\<<C-r><C-w>\\>/<C-r><C-w>/gI<Left><Left><Left>",
-	{ desc = "[S]earch and replace [l]" }
-)
-vim.keymap.set(
-	"n",
-	"<leader>sq",
-	":cdo s/\\<<C-r><C-w>\\>/<C-r><C-w>/gc<Left><Left><Left>",
-	{ desc = "[S]earch and replace in [Q]uickfix" }
-)
-vim.keymap.set("n", "<leader>cmc", "<cmd>Task start cmake configure<CR>", { desc = "[CM]ake [C]onfigure" })
-vim.keymap.set("n", "<leader>cmt", "<cmd>Task set_module_param cmake target<CR>", { desc = "[CM]ake set [T]arget" })
-vim.keymap.set("n", "<leader>cmb", "<cmd>Task start cmake build<CR>", { desc = "[CM]ake [B]uild" })
 
 -- Quickfix
 vim.keymap.set("n", "<leader>cc", vim.cmd.cclose, { desc = "[C][C]lose Quickfix" })
 vim.keymap.set("n", "[c", vim.cmd.cprevious)
-vim.keymap.set("n", "<leader>cp", vim.cmd.cprevious, { desc = "[C][P]revious Quickfix" })
 vim.keymap.set("n", "]c", vim.cmd.cnext)
-vim.keymap.set("n", "<leader>cn", vim.cmd.cnext, { desc = "[C][N]ext Quickfix" })
-
--- Optional :Task set_task_param cmake run
--- :Task start cmake run
--- :Task start cmake debug
 
 -- [[ Autocommands ]]
-
 -- Highlight on yank
 -- See `:help vim.highlight.on_yank()`
 local highlight_group = vim.api.nvim_create_augroup("YankHighlight", { clear = true })
@@ -479,20 +452,15 @@ vim.keymap.set(
 )
 
 vim.keymap.set("n", "<leader>pf", require("telescope.builtin").find_files, { desc = "[P]roject [F]iles" })
-vim.keymap.set("n", "<leader>po", require("telescope").extensions.projects.projects, { desc = "[P]rojects [O]pen" })
+vim.keymap.set("n", "<leader>pp", require("telescope").extensions.projects.projects, { desc = "[P]rojects [P]rojects" })
 vim.keymap.set("n", "<leader><space>", require("telescope.builtin").commands, { desc = "[ ]: Open neovim commands" })
 vim.keymap.set("n", "<leader>rl", require("telescope.builtin").resume, { desc = "[R]esume [L]ast search" })
 
 -- Diagnostic keymaps
-vim.keymap.set("n", "<leader>el", require("telescope.builtin").diagnostics, { desc = "[E]rror [L]ist" })
-vim.keymap.set("n", "<leader>ee", vim.diagnostic.open_float, { desc = "[E]rror [L]ist [.]: List error under cursor" })
-vim.keymap.set("n", "<leader>eq", vim.diagnostic.setloclist, { desc = "[E]rror [L]ist [Q]uickfix" })
-
+vim.keymap.set("n", "<leader>el", vim.diagnostic.setloclist, { desc = "[E]rror [L]ist [Q]uickfix" })
+vim.keymap.set("n", "gh", vim.diagnostic.open_float, { desc = "[E]rror [L]ist [.]: List error under cursor" })
 vim.keymap.set("n", "[d", vim.diagnostic.goto_prev)
-vim.keymap.set("n", "<leader>ep", vim.diagnostic.goto_prev, { desc = "[E]rror [P]revious" })
-
 vim.keymap.set("n", "]d", vim.diagnostic.goto_next)
-vim.keymap.set("n", "<leader>en", vim.diagnostic.goto_next, { desc = "[E]rror [N]ext" })
 
 -- [[ Configure Treesitter ]]
 -- See `:help nvim-treesitter`
@@ -597,10 +565,10 @@ local on_attach = function(_, bufnr)
 	nmap("gd", vim.lsp.buf.definition, "[G]oto [D]efinition")
 	nmap("<localleader>gd", vim.lsp.buf.definition, "[G]oto [D]efinition")
 
-	nmap("gr", require("telescope.builtin").lsp_references, "[G]oto [R]eferences")
-	nmap("<localleader>gr", require("telescope.builtin").lsp_references, "[G]oto [R]eferences")
+	nmap("gr", vim.lsp.buf.references, "[G]oto [R]eferences")
+	nmap("<localleader>gr", vim.lsp.buf.references, "[G]oto [R]eferences")
 
-	nmap("gI", vim.lsp.buf.implementation, "[G]oto [I]mplementation")
+	nmap("gi", vim.lsp.buf.implementation, "[G]oto [I]mplementation")
 	nmap("<localleader>gi", vim.lsp.buf.implementation, "[G]oto [I]mplementation")
 
 	nmap("<localleader>gt", vim.lsp.buf.type_definition, "[G]oto [T]ype definition")
@@ -641,7 +609,6 @@ local servers = {
 	eslint = {},
 	clangd = {},
 
-	-- clangd = {},
 	-- gopls = {},
 	-- pyright = {},
 	-- rust_analyzer = {},
