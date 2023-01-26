@@ -63,7 +63,7 @@ require("packer").startup(function(use)
 	})
 
 	-- Git related plugins
-	use("tpope/vim-fugitive")
+	-- use("tpope/vim-fugitive")
 	use("tpope/vim-rhubarb")
 	use("lewis6991/gitsigns.nvim")
 
@@ -92,6 +92,7 @@ require("packer").startup(function(use)
 	use("ThePrimeagen/harpoon") -- Manage multiple buffers and jump between them easily
 	use("ahmedkhalf/project.nvim") -- Project management
 	use("Shatur/neovim-tasks") -- Task management (CMake and Rust)
+	-- use("mg979/vim-visual-multi")
 
 	-- Add custom plugins to packer from ~/.config/nvim/lua/custom/plugins.lua
 	local has_plugins, plugins = pcall(require, "custom.plugins")
@@ -126,71 +127,77 @@ vim.api.nvim_create_autocmd("BufWritePost", {
 })
 
 -- [[ Setting options ]]
--- See `:help vim.o`
+-- See `:help vim.opt`
 
 -- disable netrw at the very start of your init.lua (strongly advised)
 vim.g.loaded_netrw = 1
 vim.g.loaded_netrwPlugin = 1
 
+-- Sane defaults for tabs and spaces
+vim.opt.tabstop = 2
+vim.opt.softtabstop = 2
+vim.opt.shiftwidth = 2
+vim.opt.expandtab = true
+
 -- Set highlight on search
-vim.o.hlsearch = false
+vim.opt.hlsearch = true
 
 -- Make line numbers default
 vim.wo.number = true
-vim.o.relativenumber = true
+vim.opt.relativenumber = true
 
 -- Enable break indent
-vim.o.breakindent = true
+vim.opt.breakindent = true
 
 -- Disable backup files
-vim.o.backup = false
-vim.o.swapfile = false
+vim.opt.backup = false
+vim.opt.swapfile = false
 
 -- Save undo history
-vim.o.undofile = true
+vim.opt.undofile = true
 
 -- Case insensitive searching UNLESS /C or capital in search
-vim.o.ignorecase = true
-vim.o.smartcase = true
+vim.opt.ignorecase = true
+vim.opt.smartcase = true
 
 -- Decrease update time
-vim.o.updatetime = 50
+vim.opt.updatetime = 50
 
 -- Set colorscheme
-vim.o.background = "dark"
-vim.o.termguicolors = true
+vim.opt.background = "dark"
+vim.opt.termguicolors = true
 
 -- Set completeopt to have a better completion experience
-vim.o.completeopt = "menuone,noselect"
+vim.opt.completeopt = "menuone,noselect"
 
 -- Highlight current linenumber
-vim.o.cursorline = true
+vim.opt.cursorline = true
 
 -- Color column
-vim.o.colorcolumn = "120"
+vim.opt.colorcolumn = "120"
 
 -- Spelling
-vim.o.spell = false
-vim.o.spelllang = "en_us"
+vim.opt.spell = false
+vim.opt.spelllang = "en_us"
 
 -- Clipboard
--- vim.o.clipboard = "unnamedplus"
+-- vim.opt.clipboard = "unnamedplus"
 
 -- Always show the signcolumn, otherwise it would shift the text each time
 vim.wo.signcolumn = "yes"
 
 -- We don't need to see things like -- INSERT -- anymore
-vim.o.showmode = false
+vim.opt.showmode = false
 
 -- Better splits when opening buffers
-vim.o.splitbelow = true
-vim.o.splitright = true
+vim.opt.splitbelow = true
+vim.opt.splitright = true
 
 -- Set Winbar
-vim.o.winbar = "%f %m"
+vim.opt.winbar = "%f %m"
 
 -- Set Winbar
-vim.o.guifont = "Consolas:h12"
+vim.opt.guifont = "Consolas:h12"
 
 -- Disable NetRw
 vim.g.netrw_browse_split = 0
@@ -205,11 +212,6 @@ require("tokyonight").setup({
 	lualine_bold = true,
 	on_highlights = function(hl, colors)
 		local selectionColor = "#3b4261"
-		hl.IlluminatedWord = { bg = selectionColor }
-		hl.IlluminatedCurWord = { bg = selectionColor }
-		hl.IlluminatedWordText = { bg = selectionColor }
-		hl.IlluminatedWordRead = { bg = selectionColor }
-		hl.IlluminatedWordWrite = { bg = selectionColor }
 		hl.FloatBorder = { fg = colors.fg_gutter }
 		hl.TeleScopeBorder = { fg = colors.fg_gutter }
 	end,
@@ -308,16 +310,24 @@ end, { desc = "[T]oggle [S]pell" })
 
 -- Search and replace commands
 vim.keymap.set(
-	"n",
-	"<leader>sr",
+	"v",
+	"<leader>se",
 	":%s/\\<<C-r><C-w>\\>/<C-r><C-w>/gI<Left><Left><Left>",
-	{ desc = "[S]earch and [R]eplace in buffer" }
+	{ desc = "[S]earch and [E]dit in buffer" }
 )
+vim.keymap.set("n", "<leader>se", ":%s//gI<Left><Left><Left>", { desc = "[S]earch and [E]dit in buffer" })
 
 -- Quickfix
-vim.keymap.set("n", "<leader>cc", vim.cmd.cclose, { desc = "[C][C]lose Quickfix" })
-vim.keymap.set("n", "[c", vim.cmd.cprevious)
-vim.keymap.set("n", "]c", vim.cmd.cnext)
+vim.keymap.set("n", "<leader>qc", vim.cmd.cclose, { desc = "[Q]uickfix [C]lose" })
+vim.keymap.set("n", "[q", vim.cmd.cprevious)
+vim.keymap.set("n", "]q", vim.cmd.cnext)
+
+-- No Highlight
+vim.keymap.set("n", "<leader>nh", vim.cmd.nohl, { desc = "[N]o [H]ighlight" })
+
+-- Stay in visual mode after indenting
+vim.keymap.set("v", "<", "<gv")
+vim.keymap.set("v", ">", ">gv")
 
 -- [[ Autocommands ]]
 -- Highlight on yank
@@ -339,20 +349,6 @@ vim.api.nvim_create_autocmd("BufWritePost", {
 	command = "FormatWriteLock",
 	group = formatting_group,
 	pattern = { "*.tsx", "*.ts", "*.lua" },
-})
-
--- Formatting issues on Mecalc source files autocommand
-local disable_vim_sleuth_group = vim.api.nvim_create_augroup("DisableVimSleuthGroup", { clear = true })
-vim.api.nvim_create_autocmd("BufEnter", {
-	callback = function()
-		-- Set sane defaults for Mecalc cpp files
-		vim.opt.tabstop = 4
-		vim.opt.softtabstop = 4
-		vim.opt.shiftwidth = 4
-		vim.opt.expandtab = true
-	end,
-	group = disable_vim_sleuth_group,
-	pattern = { "*.h", "*.c", "*.hpp", "*.cpp" },
 })
 
 -- Set lualine as statusline
@@ -386,6 +382,34 @@ require("gitsigns").setup({
 		topdelete = { text = "‾" },
 		changedelete = { text = "~" },
 	},
+	on_attach = function(bufnr)
+		local gs = package.loaded.gitsigns
+
+		vim.keymap.set("n", "]g", function()
+			if vim.wo.diff then
+				return "]g"
+			end
+			vim.schedule(function()
+				gs.next_hunk()
+			end)
+			return "<Ignore>"
+		end, { expr = true })
+
+		vim.keymap.set("n", "[g", function()
+			if vim.wo.diff then
+				return "[g"
+			end
+			vim.schedule(function()
+				gs.prev_hunk()
+			end)
+			return "<Ignore>"
+		end, { expr = true })
+
+		vim.keymap.set("n", "<leader>gp", gs.preview_hunk)
+		vim.keymap.set("n", "<leader>gr", gs.reset_hunk)
+		vim.keymap.set("n", "<leader>gR", gs.reset_buffer)
+		vim.keymap.set("n", "<leader>gs", gs.diffthis)
+	end,
 })
 
 -- [[ Configure Telescope ]]
