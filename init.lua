@@ -90,7 +90,6 @@ require("packer").startup(function(use)
 	use("tpope/vim-surround") -- Surround text objects with quotes, brackets, etc
 	use("nvim-tree/nvim-tree.lua") -- File explorer
 	use("ThePrimeagen/harpoon") -- Manage multiple buffers and jump between them easily
-	use("ahmedkhalf/project.nvim") -- Project management
 	use("Shatur/neovim-tasks") -- Task management (CMake and Rust)
 	-- use("mg979/vim-visual-multi")
 
@@ -318,7 +317,7 @@ vim.keymap.set(
 vim.keymap.set("n", "<leader>se", ":%s//gI<Left><Left><Left>", { desc = "[S]earch and [E]dit in buffer" })
 
 -- Quickfix
-vim.keymap.set("n", "<leader>qc", vim.cmd.cclose, { desc = "[Q]uickfix [C]lose" })
+vim.keymap.set("n", "<leader>qq", vim.cmd.cclose, { desc = "[Q]uickfix [Q]uit" })
 vim.keymap.set("n", "[q", vim.cmd.cprevious)
 vim.keymap.set("n", "]q", vim.cmd.cnext)
 
@@ -429,9 +428,6 @@ require("telescope").setup({
 -- Enable telescope fzf native, if installed
 pcall(require("telescope").load_extension, "fzf")
 
--- Enable telescope projects
-pcall(require("telescope").load_extension, "projects")
-
 -- See `:help telescope.builtin`
 vim.keymap.set(
 	"n",
@@ -476,7 +472,6 @@ vim.keymap.set(
 )
 
 vim.keymap.set("n", "<leader>pf", require("telescope.builtin").find_files, { desc = "[P]roject [F]iles" })
-vim.keymap.set("n", "<leader>pp", require("telescope").extensions.projects.projects, { desc = "[P]rojects [P]rojects" })
 vim.keymap.set("n", "<leader><space>", require("telescope.builtin").commands, { desc = "[ ]: Open neovim commands" })
 vim.keymap.set("n", "<leader>rl", require("telescope.builtin").resume, { desc = "[R]esume [L]ast search" })
 
@@ -893,19 +888,6 @@ require("tasks").setup({
 	dap_open_command = function()
 		return require("dap").repl.open()
 	end, -- Command to run after starting DAP session. You can set it to `false` if you don't want to open anything or `require('dapui').open` if you are using https://github.com/rcarriga/nvim-dap-ui
-})
-
--- Project setup
-
-require("project_nvim").setup({
-	sync_root_with_cwd = true,
-	respect_buf_cwd = true,
-	update_focused_file = {
-		enable = true,
-		update_root = true,
-	},
-	detection_methods = { "pattern" },
-	patterns = { ".git", "package.json" },
 })
 
 -- The line beneath this is called `modeline`. See `:help modeline`
