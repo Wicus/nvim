@@ -193,11 +193,8 @@ vim.opt.showmode = false
 vim.opt.splitbelow = true
 vim.opt.splitright = true
 
--- Set Winbar
-vim.opt.winbar = "%f %m"
-
--- Set Winbar
-vim.opt.guifont = "Consolas:h12"
+-- Set guifont
+vim.opt.guifont = "Consolas:h9"
 
 -- Disable NetRw
 vim.g.netrw_browse_split = 0
@@ -319,8 +316,13 @@ vim.keymap.set("n", "<leader>se", ":%s//gI<Left><Left><Left>", { desc = "[S]earc
 
 -- Quickfix
 vim.keymap.set("n", "<leader>qq", vim.cmd.cclose, { desc = "[Q]uickfix [Q]uit" })
-vim.keymap.set("n", "[q", vim.cmd.cprevious)
-vim.keymap.set("n", "]q", vim.cmd.cnext)
+vim.keymap.set("n", "<C-k>", vim.cmd.cprevious)
+vim.keymap.set("n", "<C-j>", vim.cmd.cnext)
+
+-- Location list
+vim.keymap.set("n", "<leader>lq", vim.cmd.lclose, { desc = "[L]ocation [Q]uit" })
+vim.keymap.set("n", "<leader>k", vim.cmd.lprevious)
+vim.keymap.set("n", "<leader>j", vim.cmd.lnext)
 
 -- No Highlight
 vim.keymap.set("n", "<leader>nh", vim.cmd.nohl, { desc = "[N]o [H]ighlight" })
@@ -361,6 +363,12 @@ require("lualine").setup({
 		theme = "tokyonight",
 		component_separators = "|",
 		section_separators = "",
+	},
+	sections = {
+		lualine_c = { { "filename", path = 1 } },
+	},
+	winbar = {
+		lualine_c = { "filename" },
 	},
 })
 
@@ -420,9 +428,8 @@ require("telescope").setup({
 	defaults = {
 		mappings = {
 			i = {
-				["<C-j>"] = require("telescope.actions").move_selection_next,
-				["<C-k>"] = require("telescope.actions").move_selection_previous,
-				-- ["<esc>"] = require("telescope.actions").close,
+				["<C-u>"] = false,
+				["<C-d>"] = false,
 			},
 		},
 		path_display = { "truncate" },
@@ -478,8 +485,13 @@ vim.keymap.set("n", "<leader><space>", require("telescope.builtin").commands, { 
 vim.keymap.set("n", "<leader>rl", require("telescope.builtin").resume, { desc = "[R]esume [L]ast search" })
 
 -- Diagnostic keymaps
-vim.keymap.set("n", "<leader>el", vim.diagnostic.setloclist, { desc = "[E]rror [L]ist [Q]uickfix" })
-vim.keymap.set("n", "gh", vim.diagnostic.open_float, { desc = "[E]rror [L]ist [.]: List error under cursor" })
+vim.keymap.set("n", "<leader>dl", vim.diagnostic.setloclist, { desc = "[D]iagnostic [L]ist" })
+vim.keymap.set(
+	"n",
+	"<leader>dh",
+	vim.diagnostic.open_float,
+	{ desc = "[D]iagnostic [H]ighlight: List diagnostic under cursor" }
+)
 vim.keymap.set("n", "[d", vim.diagnostic.goto_prev)
 vim.keymap.set("n", "]d", vim.diagnostic.goto_next)
 
@@ -745,7 +757,7 @@ cmp.setup({
 	mapping = cmp.mapping.preset.insert({
 		["<C-d>"] = cmp.mapping.scroll_docs(-4),
 		["<C-u>"] = cmp.mapping.scroll_docs(4),
-		["<C-n>"] = cmp.mapping.complete({}),
+		["<C-l>"] = cmp.mapping.complete({}),
 		["<C-y>"] = cmp.mapping.confirm({
 			behavior = cmp.ConfirmBehavior.Replace,
 			select = true,
@@ -754,7 +766,7 @@ cmp.setup({
 			behavior = cmp.ConfirmBehavior.Replace,
 			select = true,
 		}),
-		["<C-j>"] = cmp.mapping(function(fallback)
+		["<C-n>"] = cmp.mapping(function(fallback)
 			if cmp.visible() then
 				cmp.select_next_item()
 			elseif luasnip.expand_or_jumpable() then
@@ -763,7 +775,7 @@ cmp.setup({
 				fallback()
 			end
 		end, { "i", "s" }),
-		["<C-k>"] = cmp.mapping(function(fallback)
+		["<C-p>"] = cmp.mapping(function(fallback)
 			if cmp.visible() then
 				cmp.select_prev_item()
 			elseif luasnip.jumpable(-1) then
