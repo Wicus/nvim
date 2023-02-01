@@ -91,6 +91,7 @@ require("packer").startup(function(use)
 	use("nvim-tree/nvim-tree.lua") -- File explorer
 	use("ThePrimeagen/harpoon") -- Manage multiple buffers and jump between them easily
 	use("Shatur/neovim-tasks") -- Task management (CMake and Rust)
+	use("folke/zen-mode.nvim") -- Distraction free mode
 	-- use("mg979/vim-visual-multi")
 
 	-- Add custom plugins to packer from ~/.config/nvim/lua/custom/plugins.lua
@@ -328,6 +329,8 @@ vim.keymap.set("n", "<leader>nh", vim.cmd.nohl, { desc = "[N]o [H]ighlight" })
 vim.keymap.set("v", "<", "<gv")
 vim.keymap.set("v", ">", ">gv")
 
+vim.keymap.set("n", "<leader>z", vim.cmd.ZenMode, { desc = "[Z]en Mode Toggle" })
+
 -- [[ Autocommands ]]
 -- Highlight on yank
 -- See `:help vim.highlight.on_yank()`
@@ -422,6 +425,7 @@ require("telescope").setup({
 				-- ["<esc>"] = require("telescope.actions").close,
 			},
 		},
+		path_display = { "truncate" },
 	},
 })
 
@@ -429,12 +433,10 @@ require("telescope").setup({
 pcall(require("telescope").load_extension, "fzf")
 
 -- See `:help telescope.builtin`
-vim.keymap.set(
-	"n",
-	"<leader>fr",
-	require("telescope.builtin").oldfiles,
-	{ desc = "[F]ile [R]ecent: Find recently opened files" }
-)
+vim.keymap.set("n", "<leader>fr", function()
+	require("telescope.builtin").oldfiles({ cwd_only = true })
+end, { desc = "[F]ile [R]ecent: Find recently opened files" })
+
 vim.keymap.set(
 	"n",
 	"<leader>bb",
@@ -485,7 +487,20 @@ vim.keymap.set("n", "]d", vim.diagnostic.goto_next)
 -- See `:help nvim-treesitter`
 require("nvim-treesitter.configs").setup({
 	-- Add languages to be installed here that you want installed for treesitter
-	ensure_installed = { "c", "cpp", "lua", "python", "typescript", "tsx", "help", "markdown", "c_sharp" },
+	ensure_installed = {
+		"c",
+		"cpp",
+		"lua",
+		"python",
+		"typescript",
+		"tsx",
+		"help",
+		"markdown",
+		"c_sharp",
+		"html",
+		"css",
+		"javascript",
+	},
 
 	highlight = { enable = true },
 	indent = { enable = true, disable = { "python" } },
@@ -759,9 +774,10 @@ cmp.setup({
 		end, { "i", "s" }),
 	}),
 	sources = {
-		{ name = "nvim_lsp" },
 		{ name = "luasnip" },
+		{ name = "nvim_lsp" },
 		{ name = "spell" },
+		{ name = "nvim_lua" },
 	},
 })
 
@@ -859,6 +875,9 @@ require("nvim-tree").setup({
 			quit_on_open = false,
 		},
 	},
+	git = {
+		ignore = true,
+	},
 })
 
 -- Illuminate setup
@@ -889,6 +908,8 @@ require("tasks").setup({
 		return require("dap").repl.open()
 	end, -- Command to run after starting DAP session. You can set it to `false` if you don't want to open anything or `require('dapui').open` if you are using https://github.com/rcarriga/nvim-dap-ui
 })
+
+require("zen-mode").setup({})
 
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et
