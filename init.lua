@@ -90,7 +90,6 @@ require("packer").startup(function(use)
 	use("tpope/vim-surround") -- Surround text objects with quotes, brackets, etc
 	use("nvim-tree/nvim-tree.lua") -- File explorer
 	use("ThePrimeagen/harpoon") -- Manage multiple buffers and jump between them easily
-	use("Shatur/neovim-tasks") -- Task management (CMake and Rust)
 	use("folke/zen-mode.nvim") -- Distraction free mode
 	-- use("mg979/vim-visual-multi")
 
@@ -315,14 +314,14 @@ vim.keymap.set(
 vim.keymap.set("n", "<leader>se", ":%s//gI<Left><Left><Left>", { desc = "[S]earch and [E]dit in buffer" })
 
 -- Quickfix
-vim.keymap.set("n", "<leader>qq", vim.cmd.cclose, { desc = "[Q]uickfix [Q]uit" })
-vim.keymap.set("n", "<C-k>", vim.cmd.cprevious)
-vim.keymap.set("n", "<C-j>", vim.cmd.cnext)
+vim.keymap.set("n", "<leader>qq", vim.cmd.cclose, { desc = "[Q]uit [Q]uickfix" })
+vim.keymap.set("n", "[f", vim.cmd.cprevious)
+vim.keymap.set("n", "]f", vim.cmd.cnext)
 
 -- Location list
-vim.keymap.set("n", "<leader>lq", vim.cmd.lclose, { desc = "[L]ocation [Q]uit" })
-vim.keymap.set("n", "<leader>k", vim.cmd.lprevious)
-vim.keymap.set("n", "<leader>j", vim.cmd.lnext)
+vim.keymap.set("n", "<leader>ql", vim.cmd.lclose, { desc = "[Q]uit [L]ocation" })
+vim.keymap.set("n", "[s", vim.cmd.lprevious)
+vim.keymap.set("n", "]s", vim.cmd.lnext)
 
 -- No Highlight
 vim.keymap.set("n", "<leader>nh", vim.cmd.nohl, { desc = "[N]o [H]ighlight" })
@@ -503,6 +502,7 @@ require("nvim-treesitter.configs").setup({
 		"c",
 		"cpp",
 		"lua",
+		"vim",
 		"python",
 		"typescript",
 		"tsx",
@@ -692,7 +692,7 @@ require("lspconfig").omnisharp.setup({
 	on_attach = on_attach,
 	cmd = {
 		"dotnet",
-		"C:\\Users\\Wicus Pretorius\\.vscode\\extensions\\ms-dotnettools.csharp-1.25.2-win32-x64\\.omnisharp\\1.39.2-net6.0\\OmniSharp.dll",
+		"C:\\Users\\Wicus Pretorius\\scoop\\apps\\omnisharp-net6\\current\\OmniSharp.dll",
 	},
 
 	-- Enables support for reading code style, naming convention and analyzer
@@ -843,7 +843,7 @@ require("nvim-tree").setup({
 			show = {
 				file = false,
 				folder = false,
-				folder_arrow = false,
+				folder_arrow = true,
 				git = true,
 			},
 			glyphs = {
@@ -893,34 +893,9 @@ require("nvim-tree").setup({
 })
 
 -- Illuminate setup
-require("illuminate").configure({
-	min_count_to_highlight = 2,
-})
+require("illuminate").configure({ min_count_to_highlight = 2 })
 
--- Neovim tasks setup
-require("tasks").setup({
-	default_params = { -- Default module parameters with which `neovim.json` will be created.
-		cmake = {
-			cmd = "cmake", -- CMake executable to use, can be changed using `:Task set_module_param cmake cmd`.
-			build_dir = tostring(require("plenary.path"):new("{cwd}", "build", "{os}-{build_type}")), -- Build directory. The expressions `{cwd}`, `{os}` and `{build_type}` will be expanded with the corresponding text values. Could be a function that return the path to the build directory.
-			build_type = "Debug", -- Build type, can be changed using `:Task set_module_param cmake build_type`.
-			dap_name = "lldb", -- DAP configuration name from `require('dap').configurations`. If there is no such configuration, a new one with this name as `type` will be created.
-			args = { -- Task default arguments.
-				configure = { "-D", "CMAKE_EXPORT_COMPILE_COMMANDS=1", "-G", "Ninja" },
-			},
-		},
-	},
-	save_before_run = true, -- If true, all files will be saved before executing a task.
-	params_file = "neovim.json", -- JSON file to store module and task parameters.
-	quickfix = {
-		pos = "botright", -- Default quickfix position.
-		height = 12, -- Default height.
-	},
-	dap_open_command = function()
-		return require("dap").repl.open()
-	end, -- Command to run after starting DAP session. You can set it to `false` if you don't want to open anything or `require('dapui').open` if you are using https://github.com/rcarriga/nvim-dap-ui
-})
-
+-- Zen mode setup
 require("zen-mode").setup({})
 
 -- The line beneath this is called `modeline`. See `:help modeline`
