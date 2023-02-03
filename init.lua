@@ -312,11 +312,12 @@ vim.keymap.set(
 	{ desc = "[S]earch and [E]dit in buffer" }
 )
 vim.keymap.set("n", "<leader>se", ":%s//gI<Left><Left><Left>", { desc = "[S]earch and [E]dit in buffer" })
+vim.keymap.set("n", "<leader>sq", ":cdo s//gc<Left><Left><Left>", { desc = "[S]earch and edit in [Q]uickfix" })
 
 -- Quickfix
 vim.keymap.set("n", "<leader>qq", vim.cmd.cclose, { desc = "[Q]uit [Q]uickfix" })
-vim.keymap.set("n", "[f", vim.cmd.cprevious)
-vim.keymap.set("n", "]f", vim.cmd.cnext)
+vim.keymap.set("n", "[f", "<cmd>cprevious<cr>zz")
+vim.keymap.set("n", "]f", "<cmd>cnext<cr>zz")
 
 -- Location list
 vim.keymap.set("n", "<leader>ql", vim.cmd.lclose, { desc = "[Q]uit [L]ocation" })
@@ -331,6 +332,8 @@ vim.keymap.set("v", "<", "<gv")
 vim.keymap.set("v", ">", ">gv")
 
 vim.keymap.set("n", "<leader>z", vim.cmd.ZenMode, { desc = "[Z]en Mode Toggle" })
+
+vim.keymap.set("n", "<leader>ff", vim.cmd.Format, { desc = "[F]ormat buffer" })
 
 -- [[ Autocommands ]]
 -- Highlight on yank
@@ -362,6 +365,7 @@ require("lualine").setup({
 		theme = "tokyonight",
 		component_separators = "|",
 		section_separators = "",
+		disabled_filetypes = { "NvimTree" },
 	},
 	sections = {
 		lualine_c = { { "filename", path = 1 } },
@@ -894,7 +898,14 @@ require("nvim-tree").setup({
 })
 
 -- Illuminate setup
-require("illuminate").configure({ min_count_to_highlight = 2 })
+require("illuminate").configure({
+	min_count_to_highlight = 2,
+	filetypes_denylist = {
+		"dirvish",
+		"fugitive",
+		"NvimTree",
+	},
+})
 
 -- Zen mode setup
 require("zen-mode").setup({})
