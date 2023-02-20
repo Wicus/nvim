@@ -26,6 +26,9 @@ require("packer").startup(function(use)
 
 			-- Additional lua configuration, makes nvim stuff amazing
 			"folke/neodev.nvim",
+
+			-- OmniSharp extended LSP
+			"Hoffs/omnisharp-extended-lsp.nvim",
 		},
 	})
 
@@ -195,6 +198,8 @@ vim.opt.splitright = true
 -- Set guifont
 vim.opt.guifont = "Consolas:h9"
 
+vim.opt.wrap = false
+
 -- Disable NetRw
 vim.g.netrw_browse_split = 0
 vim.g.netrw_banner = 0
@@ -207,14 +212,11 @@ require("tokyonight").setup({
 	},
 	lualine_bold = true,
 	on_highlights = function(hl, colors)
-		local selectionColor = "#3b4261"
 		hl.FloatBorder = { fg = colors.fg_gutter }
 		hl.TeleScopeBorder = { fg = colors.fg_gutter }
 	end,
 	on_colors = function(colors)
-		---@diagnostic disable-next-line: assign-type-mismatch
 		colors.gitSigns.add = colors.green
-		---@diagnostic disable-next-line: assign-type-mismatch
 		colors.gitSigns.change = colors.orange
 		colors.gitSigns.delete = colors.red1
 		-- colors.bg = colors.none
@@ -335,6 +337,20 @@ vim.keymap.set("n", "<leader>z", vim.cmd.ZenMode, { desc = "[Z]en Mode Toggle" }
 
 vim.keymap.set("n", "<leader>ff", vim.cmd.Format, { desc = "[F]ormat buffer" })
 
+-- Resize window
+vim.keymap.set("n", "<C-Up>", function()
+	vim.cmd.resize("+2")
+end)
+vim.keymap.set("n", "<C-Down>", function()
+	vim.cmd.resize("-2")
+end)
+vim.keymap.set("n", "<C-Left>", function()
+	vim.cmd("vertical resize -2")
+end)
+vim.keymap.set("n", "<C-Right>", function()
+	vim.cmd("vertical resize +2")
+end)
+
 -- [[ Autocommands ]]
 -- Highlight on yank
 -- See `:help vim.highlight.on_yank()`
@@ -354,8 +370,13 @@ local formatting_group = vim.api.nvim_create_augroup("FormattingGroup", { clear 
 vim.api.nvim_create_autocmd("BufWritePost", {
 	command = "FormatWriteLock",
 	group = formatting_group,
-	pattern = { "*.tsx", "*.ts", "*.lua" },
+	pattern = { "*.tsx", "*.ts", "*.lua", "*.cs" },
 })
+
+vim.api.nvim_create_user_command("Dark", function(_)
+	vim.cmd.highlight("Normal guibg=none")
+	vim.cmd.highlight("NormalFloat guibg=none")
+end, { desc = "Dark background" })
 
 -- Set lualine as statusline
 -- See `:help lualine.txt`
@@ -371,6 +392,9 @@ require("lualine").setup({
 		lualine_c = { { "filename", path = 1 } },
 	},
 	winbar = {
+		lualine_c = { "filename" },
+	},
+	inactive_winbar = {
 		lualine_c = { "filename" },
 	},
 })
@@ -492,9 +516,9 @@ vim.keymap.set("n", "<leader>rl", require("telescope.builtin").resume, { desc = 
 vim.keymap.set("n", "<leader>dl", vim.diagnostic.setloclist, { desc = "[D]iagnostic [L]ist" })
 vim.keymap.set(
 	"n",
-	"<leader>dh",
+	"gh",
 	vim.diagnostic.open_float,
-	{ desc = "[D]iagnostic [H]ighlight: List diagnostic under cursor" }
+	{ desc = "[G]oto diagnostic [H]elp: List diagnostic under cursor" }
 )
 vim.keymap.set("n", "[d", vim.diagnostic.goto_prev)
 vim.keymap.set("n", "]d", vim.diagnostic.goto_next)
@@ -699,6 +723,9 @@ require("lspconfig").omnisharp.setup({
 		"dotnet",
 		"C:\\Users\\Wicus Pretorius\\scoop\\apps\\omnisharp-net6\\current\\OmniSharp.dll",
 	},
+	handlers = {
+		["textDocument/definition"] = require("omnisharp_extended").handler,
+	},
 
 	-- Enables support for reading code style, naming convention and analyzer
 	-- settings from .editorconfig.
@@ -819,19 +846,7 @@ require("formatter").setup({
 		cpp = {
 			require("formatter.filetypes.cpp").clangformat,
 		},
-		-- To Test
-		-- cs = {
-		--   require("formatter.filetypes.cs").clangformat,
-		-- },
-		cs = {
-			function()
-				return {
-					exe = "dotnet",
-					args = { "csharpier" },
-					stdin = true,
-				}
-			end,
-		},
+		cs = vim.lsp.buf.format,
 	},
 })
 
@@ -899,7 +914,11 @@ require("nvim-tree").setup({
 
 -- Illuminate setup
 require("illuminate").configure({
-	min_count_to_highlight = 2,
+	providers = {
+		"treesitter",
+		"regex",
+		"lsp",
+	},
 	filetypes_denylist = {
 		"dirvish",
 		"fugitive",
@@ -908,7 +927,11 @@ require("illuminate").configure({
 })
 
 -- Zen mode setup
-require("zen-mode").setup({})
+require("zen-mode").setup({
+	window = {
+		width = 140,
+	},
+})
 
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et
