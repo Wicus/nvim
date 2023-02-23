@@ -94,6 +94,7 @@ require("packer").startup(function(use)
 	use("nvim-tree/nvim-tree.lua") -- File explorer
 	use("ThePrimeagen/harpoon") -- Manage multiple buffers and jump between them easily
 	use("folke/zen-mode.nvim") -- Distraction free mode
+	use("Vonr/align.nvim") -- A minimal plugin for aligning lines
 	-- use("mg979/vim-visual-multi")
 
 	-- Add custom plugins to packer from ~/.config/nvim/lua/custom/plugins.lua
@@ -134,6 +135,7 @@ vim.api.nvim_create_autocmd("BufWritePost", {
 -- disable netrw at the very start of your init.lua (strongly advised)
 vim.g.loaded_netrw = 1
 vim.g.loaded_netrwPlugin = 1
+vim.g.copilot_filetypes = { TelescopePrompt = false }
 
 -- Sane defaults for tabs and spaces
 vim.opt.tabstop = 2
@@ -179,7 +181,7 @@ vim.opt.cursorline = true
 vim.opt.colorcolumn = "120"
 
 -- Spelling
-vim.opt.spell = false
+vim.opt.spell = true
 vim.opt.spelllang = "en_us"
 
 -- Clipboard
@@ -246,13 +248,20 @@ vim.keymap.set({ "n", "v" }, "<Space>", "<Nop>", { silent = true })
 vim.keymap.set("n", "k", 'v:count == 0 ? "gk" : "k"', { expr = true, silent = true })
 vim.keymap.set("n", "j", 'v:count == 0 ? "gj" : "j"', { expr = true, silent = true })
 
--- Remapping for better yank and paste
+-- Pasting will not replace the current register with what is selected
 vim.keymap.set("x", "p", '"_dP')
 
+-- Yank to system clipboard
 vim.keymap.set("n", "<leader>y", '"+y')
 vim.keymap.set("v", "<leader>y", '"+y')
 vim.keymap.set("n", "<leader>Y", '"+Y')
 
+-- Paste from system clipboard
+vim.keymap.set("n", "<leader>p", '"+p')
+vim.keymap.set("v", "<leader>p", '"+p')
+vim.keymap.set("n", "<leader>P", '"+P')
+
+-- Delete to the black hole register
 vim.keymap.set("n", "<leader>d", '"_d')
 vim.keymap.set("v", "<leader>d", '"_d')
 
@@ -269,6 +278,8 @@ vim.keymap.set("n", "<C-u>", "<C-u>zz")
 vim.keymap.set("n", "n", "nzzzv")
 vim.keymap.set("n", "*", "*zzzv")
 vim.keymap.set("n", "N", "Nzzzv")
+vim.keymap.set("n", "<C-i>", "<C-i>zz")
+vim.keymap.set("n", "<C-o>", "<C-o>zz")
 
 -- Window navigation
 vim.keymap.set("n", "<C-h>", "<C-w>h")
@@ -317,12 +328,10 @@ vim.keymap.set("n", "<leader>se", ":%s//gI<Left><Left><Left>", { desc = "[S]earc
 vim.keymap.set("n", "<leader>sq", ":cdo s//gc<Left><Left><Left>", { desc = "[S]earch and edit in [Q]uickfix" })
 
 -- Quickfix
-vim.keymap.set("n", "<leader>qq", vim.cmd.cclose, { desc = "[Q]uit [Q]uickfix" })
 vim.keymap.set("n", "[f", "<cmd>cprevious<cr>zz")
 vim.keymap.set("n", "]f", "<cmd>cnext<cr>zz")
 
 -- Location list
-vim.keymap.set("n", "<leader>ql", vim.cmd.lclose, { desc = "[Q]uit [L]ocation" })
 vim.keymap.set("n", "[s", vim.cmd.lprevious)
 vim.keymap.set("n", "]s", vim.cmd.lnext)
 
@@ -350,6 +359,22 @@ end)
 vim.keymap.set("n", "<C-Right>", function()
 	vim.cmd("vertical resize +2")
 end)
+
+vim.keymap.set("n", "<leader>q", function()
+	vim.cmd.cclose()
+	vim.cmd.lclose()
+	vim.cmd.NvimTreeClose()
+	vim.cmd.normal("zz")
+end, { desc = "[Q]uit all extra buffers, including special buffers" })
+
+-- Align commands
+-- Aligns to a string, looking left and with previews
+vim.keymap.set("x", "aw", function()
+	require("align").align_to_string(false, true, true)
+end)
+vim.keymap.set("n", "<leader>aw", function()
+	require("align").operator(require("align").align_to_string, { is_pattern = false, reverse = true, preview = true })
+end, { desc = "[A]lign [W]ith" })
 
 -- [[ Autocommands ]]
 -- Highlight on yank
@@ -386,16 +411,15 @@ require("lualine").setup({
 		theme = "tokyonight",
 		component_separators = "|",
 		section_separators = "",
-		disabled_filetypes = { "NvimTree" },
-	},
-	sections = {
-		lualine_c = { { "filename", path = 1 } },
+		disabled_filetypes = {
+			"NvimTree",
+		},
 	},
 	winbar = {
-		lualine_c = { "filename" },
+		lualine_c = { { "filename", path = 1 } },
 	},
 	inactive_winbar = {
-		lualine_c = { "filename" },
+		lualine_c = { { "filename", path = 1 } },
 	},
 })
 
@@ -457,6 +481,8 @@ require("telescope").setup({
 			i = {
 				["<C-j>"] = require("telescope.actions").move_selection_next,
 				["<C-k>"] = require("telescope.actions").move_selection_previous,
+				["<C-p>"] = require("telescope.actions").cycle_history_prev,
+				["<C-n>"] = require("telescope.actions").cycle_history_next,
 				-- ["<esc>"] = require("telescope.actions").close,
 			},
 		},
@@ -640,8 +666,12 @@ local on_attach = function(_, bufnr)
 	nmap("gd", vim.lsp.buf.definition, "[G]oto [D]efinition")
 	nmap("<localleader>gd", vim.lsp.buf.definition, "[G]oto [D]efinition")
 
-	nmap("gr", vim.lsp.buf.references, "[G]oto [R]eferences")
-	nmap("<localleader>gr", vim.lsp.buf.references, "[G]oto [R]eferences")
+	local gotoReferences = function()
+		vim.lsp.buf.references({ includeDeclaration = false })
+	end
+
+	nmap("gr", gotoReferences, "[G]oto [R]eferences")
+	nmap("<localleader>gr", gotoReferences, "[G]oto [R]eferences")
 
 	nmap("gi", vim.lsp.buf.implementation, "[G]oto [I]mplementation")
 	nmap("<localleader>gi", vim.lsp.buf.implementation, "[G]oto [I]mplementation")
