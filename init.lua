@@ -144,7 +144,7 @@ vim.opt.shiftwidth = 2
 vim.opt.expandtab = true
 
 -- Set highlight on search
-vim.opt.hlsearch = true
+vim.opt.hlsearch = false
 
 -- Make line numbers default
 vim.wo.number = true
@@ -181,7 +181,7 @@ vim.opt.cursorline = true
 vim.opt.colorcolumn = "120"
 
 -- Spelling
-vim.opt.spell = true
+vim.opt.spell = false
 vim.opt.spelllang = "en_us"
 
 -- Clipboard
@@ -312,10 +312,13 @@ vim.keymap.set("n", "<leader>4", function()
 end, { desc = "[4] Harpoon goto file 4" })
 
 -- Toggle commands
-vim.keymap.set("n", "<leader>th", vim.cmd.IlluminateToggle, { desc = "[T]oggle [H]ighlight" })
+vim.keymap.set("n", "<leader>ti", vim.cmd.IlluminateToggle, { desc = "[T]oggle [I]lluminate" })
 vim.keymap.set("n", "<leader>ts", function()
 	vim.cmd.set("invspell")
 end, { desc = "[T]oggle [S]pell" })
+vim.keymap.set("n", "<leader>th", function()
+	vim.opt.hlsearch = not vim.opt.hlsearch:get()
+end, { desc = "[T]oggle [H]ighlight search" })
 
 -- Search and replace commands
 vim.keymap.set(
@@ -335,14 +338,11 @@ vim.keymap.set("n", "]f", "<cmd>cnext<cr>zz")
 vim.keymap.set("n", "[s", vim.cmd.lprevious)
 vim.keymap.set("n", "]s", vim.cmd.lnext)
 
--- No Highlight
-vim.keymap.set("n", "<leader>nh", vim.cmd.nohl, { desc = "[N]o [H]ighlight" })
-
 -- Stay in visual mode after indenting
 vim.keymap.set("v", "<", "<gv")
 vim.keymap.set("v", ">", ">gv")
 
-vim.keymap.set("n", "<leader>z", vim.cmd.ZenMode, { desc = "[Z]en Mode Toggle" })
+vim.keymap.set("n", "<leader>zz", vim.cmd.ZenMode, { desc = "[Z][Z]en Mode Toggle" })
 
 vim.keymap.set("n", "<leader>ff", vim.cmd.Format, { desc = "[F]ormat buffer" })
 
@@ -367,6 +367,10 @@ vim.keymap.set("n", "<leader>q", function()
 	vim.cmd.normal("zz")
 end, { desc = "[Q]uit all extra buffers, including special buffers" })
 
+vim.keymap.set("n", "<leader>zf", function()
+	vim.cmd.normal("vaf")
+	vim.cmd.normal("zf")
+end, { desc = "Create function fold [Z] [F]old" })
 -- Align commands
 -- Aligns to a string, looking left and with previews
 vim.keymap.set("x", "aw", function()
@@ -513,13 +517,27 @@ vim.keymap.set("n", "<leader>ss", function()
 end, { desc = "[S]earch [S]earch: Fuzzily search in current buffer" })
 
 vim.keymap.set("n", "<leader>/", function()
-	require("telescope.builtin").live_grep({
-		glob_pattern = {
-			"!src/shared/dygraphs/**",
-			"!src/shared/canvas-gauges/**",
-		},
-	})
+	require("telescope.builtin").live_grep()
+	-- require("telescope.builtin").live_grep({
+	-- 	glob_pattern = {
+	-- 		"!src/shared/dygraphs/**",
+	-- 		"!src/shared/canvas-gauges/**",
+	-- 	},
+	-- })
 end, { desc = "[/]: Search in project" })
+
+local function getVisualSelection()
+	vim.cmd('noau normal! "vy"')
+	local text = vim.fn.getreg("v")
+	vim.fn.setreg("v", {})
+
+	text = string.gsub(text, "\n", "")
+	if #text > 0 then
+		return text
+	else
+		return ""
+	end
+end
 
 vim.keymap.set(
 	"n",
@@ -527,14 +545,12 @@ vim.keymap.set(
 	require("telescope.builtin").grep_string,
 	{ desc = "[*]: Search current word in project" }
 )
-vim.keymap.set(
-	"v",
-	"<leader>*",
-	require("telescope.builtin").grep_string,
-	{ desc = "[*]: Search current word in project" }
-)
+vim.keymap.set("v", "<leader>*", function()
+	require("telescope.builtin").live_grep({ default_text = getVisualSelection() })
+end, { desc = "[*]: Search current word in project" })
 
 vim.keymap.set("n", "<leader>pf", require("telescope.builtin").find_files, { desc = "[P]roject [F]iles" })
+vim.keymap.set("n", "<leader>pg", require("telescope.builtin").git_status, { desc = "[P]roject [G]it status" })
 vim.keymap.set("n", "<leader><space>", require("telescope.builtin").commands, { desc = "[ ]: Open neovim commands" })
 vim.keymap.set("n", "<leader>rl", require("telescope.builtin").resume, { desc = "[R]esume [L]ast search" })
 
@@ -554,22 +570,35 @@ vim.keymap.set("n", "]d", vim.diagnostic.goto_next)
 require("nvim-treesitter.configs").setup({
 	-- Add languages to be installed here that you want installed for treesitter
 	ensure_installed = {
-		"c",
-		"cpp",
-		"lua",
-		"vim",
-		"python",
-		"typescript",
-		"tsx",
-		"help",
-		"markdown",
-		"c_sharp",
+		-- Web development
 		"html",
 		"css",
 		"javascript",
+		"typescript",
+		"tsx",
+		-- General development
+		"c",
+		"cpp",
+		"c_sharp",
+		"python",
+		-- Neovim
+		"lua",
+		"vim",
+		-- Other
+		"help",
+		"markdown",
 	},
 
-	highlight = { enable = true },
+	highlight = {
+		enable = true,
+		disable = function(_, buf)
+			local max_filesize = 100 * 1024 -- 100 KB
+			local ok, stats = pcall(vim.loop.fs_stat, vim.api.nvim_buf_get_name(buf))
+			if ok and stats and stats.size > max_filesize then
+				return true
+			end
+		end,
+	},
 	indent = { enable = true, disable = { "python" } },
 	incremental_selection = {
 		enable = true,
@@ -704,7 +733,7 @@ end
 --  Add any additional override configuration in the following tables. They will be passed to
 --  the `settings` field of the server config. You must look up that documentation yourself.
 local servers = {
-	sumneko_lua = {
+	lua_ls = {
 		Lua = {
 			workspace = { checkThirdParty = false },
 			telemetry = { enable = false },
@@ -945,8 +974,8 @@ require("nvim-tree").setup({
 -- Illuminate setup
 require("illuminate").configure({
 	providers = {
-		"treesitter",
 		"regex",
+		"treesitter",
 		"lsp",
 	},
 	filetypes_denylist = {
