@@ -95,7 +95,17 @@ require("packer").startup(function(use)
 	use("ThePrimeagen/harpoon") -- Manage multiple buffers and jump between them easily
 	use("folke/zen-mode.nvim") -- Distraction free mode
 	use("Vonr/align.nvim") -- A minimal plugin for aligning lines
+	use("norcalli/nvim-colorizer.lua") -- Highlight color codes in files
 	-- use("mg979/vim-visual-multi")
+
+	use({
+		"jackMort/ChatGPT.nvim",
+		requires = {
+			"MunifTanjim/nui.nvim",
+			"nvim-lua/plenary.nvim",
+			"nvim-telescope/telescope.nvim",
+		},
+	})
 
 	-- Add custom plugins to packer from ~/.config/nvim/lua/custom/plugins.lua
 	local has_plugins, plugins = pcall(require, "custom.plugins")
@@ -342,7 +352,7 @@ vim.keymap.set("n", "]s", vim.cmd.lnext)
 vim.keymap.set("v", "<", "<gv")
 vim.keymap.set("v", ">", ">gv")
 
-vim.keymap.set("n", "<leader>zz", vim.cmd.ZenMode, { desc = "[Z][Z]en Mode Toggle" })
+vim.keymap.set("n", "<leader>zm", vim.cmd.ZenMode, { desc = "[Z]en [M]ode Toggle" })
 
 vim.keymap.set("n", "<leader>ff", vim.cmd.Format, { desc = "[F]ormat buffer" })
 
@@ -695,12 +705,8 @@ local on_attach = function(_, bufnr)
 	nmap("gd", vim.lsp.buf.definition, "[G]oto [D]efinition")
 	nmap("<localleader>gd", vim.lsp.buf.definition, "[G]oto [D]efinition")
 
-	local gotoReferences = function()
-		vim.lsp.buf.references({ includeDeclaration = false })
-	end
-
-	nmap("gr", gotoReferences, "[G]oto [R]eferences")
-	nmap("<localleader>gr", gotoReferences, "[G]oto [R]eferences")
+	nmap("gr", vim.lsp.buf.references, "[G]oto [R]eferences")
+	nmap("<localleader>gr", vim.lsp.buf.references, "[G]oto [R]eferences")
 
 	nmap("gi", vim.lsp.buf.implementation, "[G]oto [I]mplementation")
 	nmap("<localleader>gi", vim.lsp.buf.implementation, "[G]oto [I]mplementation")
@@ -990,6 +996,14 @@ require("zen-mode").setup({
 	window = {
 		width = 140,
 	},
+})
+
+-- Colorizer setup
+require("colorizer").setup()
+
+-- ChatGPT setup
+require("chatgpt").setup({
+	welcome_message = "  Welcome to ChatGPT",
 })
 
 -- The line beneath this is called `modeline`. See `:help modeline`
