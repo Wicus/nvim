@@ -98,14 +98,14 @@ require("packer").startup(function(use)
 	use("norcalli/nvim-colorizer.lua") -- Highlight color codes in files
 	-- use("mg979/vim-visual-multi")
 
-	use({
-		"jackMort/ChatGPT.nvim",
-		requires = {
-			"MunifTanjim/nui.nvim",
-			"nvim-lua/plenary.nvim",
-			"nvim-telescope/telescope.nvim",
-		},
-	})
+	-- use({
+	-- 	"jackMort/ChatGPT.nvim",
+	-- 	requires = {
+	-- 		"MunifTanjim/nui.nvim",
+	-- 		"nvim-lua/plenary.nvim",
+	-- 		"nvim-telescope/telescope.nvim",
+	-- 	},
+	-- })
 
 	-- Add custom plugins to packer from ~/.config/nvim/lua/custom/plugins.lua
 	local has_plugins, plugins = pcall(require, "custom.plugins")
@@ -535,6 +535,7 @@ vim.keymap.set("n", "<leader>/", function()
 	-- 	},
 	-- })
 end, { desc = "[/]: Search in project" })
+-- vim.keymap.set("n", "<leader>?", vim.cmd.ChatGPT, { desc = "[?]: Chat with GPT-3" })
 
 local function getVisualSelection()
 	vim.cmd('noau normal! "vy"')
@@ -1002,9 +1003,21 @@ require("zen-mode").setup({
 require("colorizer").setup()
 
 -- ChatGPT setup
-require("chatgpt").setup({
-	welcome_message = "  Welcome to ChatGPT",
-})
+-- require("chatgpt").setup({
+-- 	welcome_message = "  Welcome to ChatGPT",
+-- 	question_sign = "~",
+-- 	answer_sign = "+",
+-- 	chat_input = {
+-- 		prompt = " ~ ",
+-- 	},
+-- 	openai_params = {
+-- 		max_tokens = 1024,
+-- 	},
+-- 	keymaps = {
+-- 		toggle = "<C-c>",
+-- 		send = "<CR>",
+-- 	},
+-- })
 
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et
