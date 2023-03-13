@@ -261,19 +261,11 @@ vim.keymap.set("n", "j", 'v:count == 0 ? "gj" : "j"', { expr = true, silent = tr
 -- Pasting will not replace the current register with what is selected
 vim.keymap.set("x", "p", '"_dP')
 
--- Yank to system clipboard
-vim.keymap.set("n", "<leader>y", '"+y')
-vim.keymap.set("v", "<leader>y", '"+y')
-vim.keymap.set("n", "<leader>Y", '"+Y')
+-- Copy to system clipboard
+vim.keymap.set("x", "<C-c>", '"+y')
 
--- Paste from system clipboard
-vim.keymap.set("n", "<leader>p", '"+p')
-vim.keymap.set("v", "<leader>p", '"+p')
-vim.keymap.set("n", "<leader>P", '"+P')
-
--- Delete to the black hole register
-vim.keymap.set("n", "<leader>d", '"_d')
-vim.keymap.set("v", "<leader>d", '"_d')
+-- Cut to system clipboard
+vim.keymap.set("x", "<C-x>", '"+yD')
 
 -- Move lines up and down with J and K
 vim.keymap.set("v", "J", ":m '>+1<CR>gv=gv")
@@ -749,9 +741,9 @@ local servers = {
 	tsserver = {},
 	eslint = {},
 	clangd = {},
+	pyright = {},
 
 	-- gopls = {},
-	-- pyright = {},
 	-- rust_analyzer = {},
 }
 
