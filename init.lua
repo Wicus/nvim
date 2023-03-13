@@ -91,7 +91,6 @@ require("packer").startup(function(use)
 	use("tpope/vim-sleuth") -- Detect tabstop and shiftwidth automatically
 	use("mhartington/formatter.nvim") -- Formatting
 	use("tpope/vim-surround") -- Surround text objects with quotes, brackets, etc
-	use("nvim-tree/nvim-tree.lua") -- File explorer
 	use("ThePrimeagen/harpoon") -- Manage multiple buffers and jump between them easily
 	use("folke/zen-mode.nvim") -- Distraction free mode
 	use("Vonr/align.nvim") -- A minimal plugin for aligning lines
@@ -886,68 +885,6 @@ require("formatter").setup({
 			require("formatter.filetypes.cpp").clangformat,
 		},
 		cs = vim.lsp.buf.format,
-	},
-})
-
--- Nvim tree setup
-require("nvim-tree").setup({
-	update_focused_file = {
-		enable = true,
-		update_cwd = false,
-	},
-	renderer = {
-		highlight_opened_files = "all",
-		root_folder_modifier = ":t",
-		icons = {
-			show = {
-				file = false,
-				folder = false,
-				folder_arrow = true,
-				git = true,
-			},
-			glyphs = {
-				git = {
-					unstaged = "~",
-					renamed = "_",
-					untracked = "+",
-					deleted = "-",
-					unmerged = "",
-					staged = "",
-					ignored = "",
-				},
-			},
-		},
-	},
-	diagnostics = {
-		enable = true,
-		show_on_dirs = true,
-		debounce_delay = 250,
-		icons = {
-			hint = "H",
-			info = "I",
-			warning = "W",
-			error = "E",
-		},
-	},
-	view = {
-		adaptive_size = true,
-		side = "left",
-		mappings = {
-			list = {
-				{ key = "l", action = "edit" },
-				{ key = "h", action = "close_node" },
-				{ key = "v", action = "vsplit" },
-			},
-		},
-	},
-	actions = {
-		open_file = {
-			-- Set this to automatically close the tree when opening a file
-			quit_on_open = false,
-		},
-	},
-	git = {
-		ignore = true,
 	},
 })
 
