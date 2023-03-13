@@ -85,6 +85,19 @@ require("packer").startup(function(use)
 		run = "cmake -S. -Bbuild -DCMAKE_BUILD_TYPE=Release && cmake --build build --config Release && cmake --install build --prefix build",
 	})
 
+	-- NeoTree
+	-- Unless you are still migrating, remove the deprecated commands from v1.x
+	vim.cmd([[ let g:neo_tree_remove_legacy_commands = 1 ]])
+
+	use({
+		"nvim-neo-tree/neo-tree.nvim",
+		branch = "v2.x",
+		requires = {
+			"nvim-lua/plenary.nvim",
+			"MunifTanjim/nui.nvim",
+		},
+	})
+
 	use("nvim-lualine/lualine.nvim") -- Fancier statusline
 	use("lukas-reineke/indent-blankline.nvim") -- Add indentation guides even on blank lines
 	use("numToStr/Comment.nvim") -- "gc" to comment visual regions/lines
@@ -277,7 +290,9 @@ vim.keymap.set("n", "<C-k>", "<C-w>k")
 vim.keymap.set("n", "<C-l>", "<C-w>l")
 
 -- File tree navigation
-vim.keymap.set("n", "<leader>ft", require("nvim-tree.api").tree.toggle, { desc = "[F]ile [T]ree" })
+vim.keymap.set("n", "<leader>ft", function()
+	vim.cmd("Neotree toggle")
+end, { desc = "[F]ile [T]ree" })
 
 -- Buffer commands
 vim.keymap.set("n", "<leader>bd", vim.cmd.bdelete, { desc = "[B]uffer [D]elete" })
@@ -405,7 +420,7 @@ require("lualine").setup({
 		component_separators = "|",
 		section_separators = "",
 		disabled_filetypes = {
-			"NvimTree",
+			"neo-tree",
 		},
 	},
 	winbar = {
@@ -911,6 +926,49 @@ require("zen-mode").setup({
 
 -- Colorizer setup
 require("colorizer").setup()
+
+-- NeoTree setup
+require("neo-tree").setup({
+	hide_root_node = true,
+	close_if_last_window = true,
+	add_blank_line_at_top = true,
+	retain_hidden_root_indent = false,
+	default_component_configs = {
+		icon = {
+			-- The next two settings are only a fallback, if you use nvim-web-devicons and configure default icons there
+			-- then these will never be used.
+			default = " ",
+		},
+		git_status = {
+			symbols = {
+				-- -- Change type
+				added = "", -- or "✚", but this is redundant info if you use git_status_colors on the name
+				modified = "", -- or "", but this is redundant info if you use git_status_colors on the name
+				deleted = "-", -- this can only be used in the git_status source
+				renamed = "_", -- this can only be used in the git_status source
+				-- Status type
+				unstaged = "~",
+				untracked = "+",
+				ignored = "",
+				staged = "",
+				conflict = "",
+			},
+		},
+	},
+	window = {
+		width = 30,
+		mappings = {
+			["l"] = "open",
+			["h"] = "close_node",
+			["v"] = "open_vsplit",
+		},
+		auto_expand_width = true,
+	},
+	filesystem = {
+		follow_current_file = true,
+		use_libuv_file_watcher = true,
+	},
+})
 
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et
