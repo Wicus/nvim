@@ -96,16 +96,6 @@ require("packer").startup(function(use)
 	use("folke/zen-mode.nvim") -- Distraction free mode
 	use("Vonr/align.nvim") -- A minimal plugin for aligning lines
 	use("norcalli/nvim-colorizer.lua") -- Highlight color codes in files
-	-- use("mg979/vim-visual-multi")
-
-	-- use({
-	-- 	"jackMort/ChatGPT.nvim",
-	-- 	requires = {
-	-- 		"MunifTanjim/nui.nvim",
-	-- 		"nvim-lua/plenary.nvim",
-	-- 		"nvim-telescope/telescope.nvim",
-	-- 	},
-	-- })
 
 	-- Add custom plugins to packer from ~/.config/nvim/lua/custom/plugins.lua
 	local has_plugins, plugins = pcall(require, "custom.plugins")
@@ -231,8 +221,6 @@ require("tokyonight").setup({
 		colors.gitSigns.add = colors.green
 		colors.gitSigns.change = colors.orange
 		colors.gitSigns.delete = colors.red1
-		-- colors.bg = colors.none
-		-- colors.bg_float = colors.none
 	end,
 })
 
@@ -489,7 +477,6 @@ require("telescope").setup({
 				["<C-k>"] = require("telescope.actions").move_selection_previous,
 				["<C-p>"] = require("telescope.actions").cycle_history_prev,
 				["<C-n>"] = require("telescope.actions").cycle_history_next,
-				-- ["<esc>"] = require("telescope.actions").close,
 			},
 		},
 		path_display = { "truncate" },
@@ -527,7 +514,6 @@ vim.keymap.set("n", "<leader>/", function()
 	-- 	},
 	-- })
 end, { desc = "[/]: Search in project" })
--- vim.keymap.set("n", "<leader>?", vim.cmd.ChatGPT, { desc = "[?]: Chat with GPT-3" })
 
 local function getVisualSelection()
 	vim.cmd('noau normal! "vy"')
@@ -719,11 +705,6 @@ local on_attach = function(_, bufnr)
 	nmap("<leader>pl", function()
 		print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
 	end, "[P]roject [L]ist folders: Workspace list folders")
-
-	-- Create a command `:Format` local to the LSP buffer
-	-- vim.api.nvim_buf_create_user_command(bufnr, "Format", function(_)
-	--   vim.lsp.buf.format()
-	-- end, { desc = "Format current buffer with LSP" })
 end
 
 -- Enable the following language servers
@@ -749,7 +730,7 @@ local servers = {
 
 -- Setup neovim lua configuration
 require("neodev").setup()
---
+
 -- nvim-cmp supports additional completion capabilities, so broadcast that to servers
 local capabilities = vim.lsp.protocol.make_client_capabilities()
 capabilities = require("cmp_nvim_lsp").default_capabilities(capabilities)
@@ -993,23 +974,6 @@ require("zen-mode").setup({
 
 -- Colorizer setup
 require("colorizer").setup()
-
--- ChatGPT setup
--- require("chatgpt").setup({
--- 	welcome_message = "  Welcome to ChatGPT",
--- 	question_sign = "~",
--- 	answer_sign = "+",
--- 	chat_input = {
--- 		prompt = " ~ ",
--- 	},
--- 	openai_params = {
--- 		max_tokens = 1024,
--- 	},
--- 	keymaps = {
--- 		toggle = "<C-c>",
--- 		send = "<CR>",
--- 	},
--- })
 
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et
