@@ -11,6 +11,7 @@ require("packer").startup(function(use)
 	-- Package manager
 	use("wbthomason/packer.nvim")
 	use("nvim-lua/plenary.nvim")
+	use("nvim-tree/nvim-web-devicons")
 	use("nvim-treesitter/playground")
 
 	-- LSP Configuration & Plugins
@@ -228,6 +229,11 @@ require("tokyonight").setup({
 	on_highlights = function(hl, colors)
 		hl.FloatBorder = { fg = colors.fg_gutter }
 		hl.TeleScopeBorder = { fg = colors.fg_gutter }
+		hl.TeleScopeTitle = { fg = colors.fg }
+		hl.NeoTreeFloatNormal = { bg = colors.bg_dark }
+		hl.NeoTreeFloatBorder = { bg = colors.bg_dark, fg = colors.fg_gutter }
+		hl.NeoTreeGitUntracked = { fg = colors.green }
+		hl.NeoTreeModified = { fg = colors.fg }
 	end,
 	on_colors = function(colors)
 		colors.gitSigns.add = colors.green
@@ -367,7 +373,7 @@ end)
 vim.keymap.set("n", "<leader>q", function()
 	vim.cmd.cclose()
 	vim.cmd.lclose()
-	vim.cmd.NvimTreeClose()
+	vim.cmd.Neotree("close")
 	vim.cmd.normal("zz")
 end, { desc = "[Q]uit all extra buffers, including special buffers" })
 
@@ -913,7 +919,7 @@ require("illuminate").configure({
 	filetypes_denylist = {
 		"dirvish",
 		"fugitive",
-		"NvimTree",
+		"neo-tree",
 	},
 })
 
@@ -931,14 +937,11 @@ require("colorizer").setup()
 require("neo-tree").setup({
 	hide_root_node = true,
 	close_if_last_window = true,
-	add_blank_line_at_top = true,
 	retain_hidden_root_indent = false,
+	popup_border_style = "single",
+	close_floats_on_escape_key = false,
+	use_popups_for_input = false,
 	default_component_configs = {
-		icon = {
-			-- The next two settings are only a fallback, if you use nvim-web-devicons and configure default icons there
-			-- then these will never be used.
-			default = " ",
-		},
 		git_status = {
 			symbols = {
 				-- -- Change type
@@ -956,7 +959,6 @@ require("neo-tree").setup({
 		},
 	},
 	window = {
-		width = 30,
 		mappings = {
 			["l"] = "open",
 			["h"] = "close_node",
@@ -967,6 +969,11 @@ require("neo-tree").setup({
 	filesystem = {
 		follow_current_file = true,
 		use_libuv_file_watcher = true,
+		filtered_items = {
+			hide_by_name = {
+				"node_modules",
+			},
+		},
 	},
 })
 
