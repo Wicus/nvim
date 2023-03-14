@@ -743,7 +743,10 @@ local servers = {
 	eslint = {},
 	clangd = {},
 	pyright = {},
-	omnisharp = {},
+	omnisharp = {
+		cmd = { "cmd", "/c", "omnisharp" },
+		handlers = { ["textDocument/definition"] = require("omnisharp_extended").handler },
+	},
 
 	-- gopls = {},
 	-- rust_analyzer = {},
@@ -768,18 +771,19 @@ mason_lspconfig.setup({
 
 mason_lspconfig.setup_handlers({
 	function(server_name)
-		local server_setup_table = {
+		local server_setup = {
 			capabilities = capabilities,
 			on_attach = on_attach,
-			settings = servers[server_name],
 		}
+		local settings = servers[server_name]
 
 		if server_name == "omnisharp" then
-			server_setup_table.cmd = { "cmd", "/c", "omnisharp" }
-			server_setup_table.handlers = { ["textDocument/definition"] = require("omnisharp_extended").handler }
+			server_setup = vim.tbl_extend("force", server_setup, settings)
+		else
+			server_setup.settings = settings
 		end
 
-		require("lspconfig")[server_name].setup(server_setup_table)
+		require("lspconfig")[server_name].setup(server_setup)
 	end,
 })
 
