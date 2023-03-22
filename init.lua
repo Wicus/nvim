@@ -234,6 +234,7 @@ require("tokyonight").setup({
 		hl.NeoTreeFloatBorder = { bg = colors.bg_dark, fg = colors.fg_gutter }
 		hl.NeoTreeGitUntracked = { fg = colors.green }
 		hl.NeoTreeModified = { fg = colors.fg }
+		hl.NeoTreeExpander = { fg = colors.fg }
 	end,
 	on_colors = function(colors)
 		colors.gitSigns.add = colors.green
@@ -331,14 +332,9 @@ vim.keymap.set("n", "<leader>th", function()
 end, { desc = "[T]oggle [H]ighlight search" })
 
 -- Search and replace commands
-vim.keymap.set(
-	"v",
-	"<leader>se",
-	":%s/\\<<C-r><C-w>\\>/<C-r><C-w>/gI<Left><Left><Left>",
-	{ desc = "[S]earch and [E]dit in buffer" }
-)
-vim.keymap.set("n", "<leader>se", ":%s//gI<Left><Left><Left>", { desc = "[S]earch and [E]dit in buffer" })
-vim.keymap.set("n", "<leader>sq", ":cdo s//gc<Left><Left><Left>", { desc = "[S]earch and edit in [Q]uickfix" })
+vim.keymap.set("n", "<leader>sa", "/\\<\\><Left><Left>", { desc = "[S]earch [A]round word in buffer" })
+vim.keymap.set("n", "<leader>se", ":%s//gcI<Left><Left><Left><Left>", { desc = "[S]earch and [E]dit in buffer" })
+vim.keymap.set("n", "<leader>sq", ":cdo s//gcI<Left><Left><Left><Left>", { desc = "[S]earch and edit in [Q]uickfix" })
 
 -- Quickfix
 vim.keymap.set("n", "[f", "<cmd>cprevious<cr>zz")
@@ -374,6 +370,7 @@ vim.keymap.set("n", "<leader>q", function()
 	vim.cmd.cclose()
 	vim.cmd.lclose()
 	vim.cmd.Neotree("close")
+	require("zen-mode").close()
 	vim.cmd.normal("zz")
 end, { desc = "[Q]uit all extra buffers, including special buffers" })
 
@@ -511,12 +508,7 @@ vim.keymap.set("n", "<leader>fr", function()
 	require("telescope.builtin").oldfiles({ cwd_only = true })
 end, { desc = "[F]ile [R]ecent: Find recently opened files" })
 
-vim.keymap.set(
-	"n",
-	"<leader>bb",
-	require("telescope.builtin").buffers,
-	{ desc = "[B]uffers [B]uffers: Find existing buffers" }
-)
+vim.keymap.set("n", "<leader>bb", require("telescope.builtin").buffers, { desc = "[B]uffers [B]uffers: Find existing buffers" })
 vim.keymap.set("n", "<leader>ss", function()
 	-- You can pass additional configuration to telescope to change theme, layout, etc.
 	require("telescope.builtin").current_buffer_fuzzy_find(require("telescope.themes").get_dropdown({
@@ -525,14 +517,15 @@ vim.keymap.set("n", "<leader>ss", function()
 	}))
 end, { desc = "[S]earch [S]earch: Fuzzily search in current buffer" })
 
+local glob_pattern = {
+	"!src/shared/dygraphs/**",
+	"!src/shared/canvas-gauges/**",
+}
+
 vim.keymap.set("n", "<leader>/", function()
-	require("telescope.builtin").live_grep()
-	-- require("telescope.builtin").live_grep({
-	-- 	glob_pattern = {
-	-- 		"!src/shared/dygraphs/**",
-	-- 		"!src/shared/canvas-gauges/**",
-	-- 	},
-	-- })
+	require("telescope.builtin").live_grep({
+		glob_pattern = glob_pattern,
+	})
 end, { desc = "[/]: Search in project" })
 
 local function getVisualSelection()
@@ -548,14 +541,9 @@ local function getVisualSelection()
 	end
 end
 
-vim.keymap.set(
-	"n",
-	"<leader>*",
-	require("telescope.builtin").grep_string,
-	{ desc = "[*]: Search current word in project" }
-)
+vim.keymap.set("n", "<leader>*", require("telescope.builtin").grep_string, { desc = "[*]: Search current word in project" })
 vim.keymap.set("v", "<leader>*", function()
-	require("telescope.builtin").live_grep({ default_text = getVisualSelection() })
+	require("telescope.builtin").live_grep({ default_text = getVisualSelection(), glob_pattern = glob_pattern })
 end, { desc = "[*]: Search current word in project" })
 
 vim.keymap.set("n", "<leader>pf", require("telescope.builtin").find_files, { desc = "[P]roject [F]iles" })
@@ -565,12 +553,7 @@ vim.keymap.set("n", "<leader>rl", require("telescope.builtin").resume, { desc = 
 
 -- Diagnostic keymaps
 vim.keymap.set("n", "<leader>dl", vim.diagnostic.setloclist, { desc = "[D]iagnostic [L]ist" })
-vim.keymap.set(
-	"n",
-	"gh",
-	vim.diagnostic.open_float,
-	{ desc = "[G]oto diagnostic [H]elp: List diagnostic under cursor" }
-)
+vim.keymap.set("n", "gh", vim.diagnostic.open_float, { desc = "[G]oto diagnostic [H]elp: List diagnostic under cursor" })
 vim.keymap.set("n", "[d", vim.diagnostic.goto_prev)
 vim.keymap.set("n", "]d", vim.diagnostic.goto_next)
 
@@ -596,6 +579,7 @@ require("nvim-treesitter.configs").setup({
 		-- Other
 		"help",
 		"markdown",
+		"markdown_inline",
 	},
 
 	highlight = {
@@ -692,11 +676,7 @@ local on_attach = function(_, bufnr)
 	nmap("<leader>nr", vim.lsp.buf.rename, "[B]uffer [R]ename")
 
 	nmap("<leader>sj", require("telescope.builtin").lsp_document_symbols, "[S]ymbols [J]ump: Document symbols")
-	nmap(
-		"<leader>sw",
-		require("telescope.builtin").lsp_dynamic_workspace_symbols,
-		"[S]ymbols [W]orkspace: Workspace symbols"
-	)
+	nmap("<leader>sw", require("telescope.builtin").lsp_dynamic_workspace_symbols, "[S]ymbols [W]orkspace: Workspace symbols")
 
 	nmap("<localleader>r.", vim.lsp.buf.code_action, "[R]efactor: Code Actions")
 	nmap("<localleader>rr", vim.lsp.buf.rename, "[R]efactor [R]ename")
