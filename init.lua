@@ -102,7 +102,6 @@ require("packer").startup(function(use)
 	use("nvim-lualine/lualine.nvim") -- Fancier statusline
 	use("lukas-reineke/indent-blankline.nvim") -- Add indentation guides even on blank lines
 	use("numToStr/Comment.nvim") -- "gc" to comment visual regions/lines
-	use("tpope/vim-sleuth") -- Detect tabstop and shiftwidth automatically
 	use("mhartington/formatter.nvim") -- Formatting
 	use("tpope/vim-surround") -- Surround text objects with quotes, brackets, etc
 	use("ThePrimeagen/harpoon") -- Manage multiple buffers and jump between them easily
@@ -151,9 +150,9 @@ vim.g.loaded_netrwPlugin = 1
 vim.g.copilot_filetypes = { TelescopePrompt = false }
 
 -- Sane defaults for tabs and spaces
-vim.opt.tabstop = 2
-vim.opt.softtabstop = 2
-vim.opt.shiftwidth = 2
+vim.opt.tabstop = 4
+vim.opt.softtabstop = 4
+vim.opt.shiftwidth = 4
 vim.opt.expandtab = true
 
 -- Set highlight on search
@@ -406,7 +405,7 @@ local formatting_group = vim.api.nvim_create_augroup("FormattingGroup", { clear 
 vim.api.nvim_create_autocmd("BufWritePost", {
 	command = "FormatWriteLock",
 	group = formatting_group,
-	pattern = { "*.tsx", "*.ts", "*.lua", "*.cs" },
+	pattern = { "*.tsx", "*.ts", "*.lua", "*.cs", "*.cpp", "*.hpp" },
 })
 
 vim.api.nvim_create_user_command("Dark", function(_)
@@ -492,8 +491,8 @@ require("telescope").setup({
 			i = {
 				["<C-j>"] = require("telescope.actions").move_selection_next,
 				["<C-k>"] = require("telescope.actions").move_selection_previous,
-				["<C-p>"] = require("telescope.actions").cycle_history_prev,
-				["<C-n>"] = require("telescope.actions").cycle_history_next,
+				-- ["<C-p>"] = require("telescope.actions").cycle_history_prev,
+				-- ["<C-n>"] = require("telescope.actions").cycle_history_next,
 			},
 		},
 		path_display = { "truncate" },
@@ -832,6 +831,12 @@ cmp.setup({
 -- Snippets
 require("luasnip.loaders.from_vscode").lazy_load()
 
+local clangformat = function()
+	local clangformat = require("formatter.defaults").clangformat()
+	clangformat.args[1] = "-style=file"
+	return clangformat
+end
+
 -- Formatter setup
 require("formatter").setup({
 	filetype = {
@@ -844,13 +849,12 @@ require("formatter").setup({
 		typescriptreact = {
 			require("formatter.filetypes.typescriptreact").prettierd,
 		},
-		c = {
-			require("formatter.filetypes.c").clangformat,
-		},
-		cpp = {
-			require("formatter.filetypes.cpp").clangformat,
-		},
+		h = { clangformat },
+		c = { clangformat },
+		cpp = { clangformat },
+		hpp = { clangformat },
 		cs = vim.lsp.buf.format,
+		python = vim.lsp.buf.format,
 	},
 })
 
