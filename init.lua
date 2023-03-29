@@ -66,9 +66,7 @@ require("packer").startup(function(use)
 		after = "nvim-treesitter",
 	})
 
-	-- Git related plugins
-	-- use("tpope/vim-fugitive")
-	use("tpope/vim-rhubarb")
+	-- Git
 	use("lewis6991/gitsigns.nvim")
 
 	-- Github Copilot
@@ -102,6 +100,7 @@ require("packer").startup(function(use)
 	use("nvim-lualine/lualine.nvim") -- Fancier statusline
 	use("lukas-reineke/indent-blankline.nvim") -- Add indentation guides even on blank lines
 	use("numToStr/Comment.nvim") -- "gc" to comment visual regions/lines
+	use("tpope/vim-sleuth") -- Detect tabstop and shiftwidth automatically
 	use("mhartington/formatter.nvim") -- Formatting
 	use("tpope/vim-surround") -- Surround text objects with quotes, brackets, etc
 	use("ThePrimeagen/harpoon") -- Manage multiple buffers and jump between them easily
@@ -374,14 +373,15 @@ vim.keymap.set("n", "<leader>q", function()
 end, { desc = "[Q]uit all extra buffers, including special buffers" })
 
 vim.keymap.set("n", "<leader>zf", function()
-	vim.cmd.normal("vaf")
+	vim.cmd.normal("va}")
 	vim.cmd.normal("zf")
-end, { desc = "Create function fold [Z] [F]old" })
+end, { desc = "Create bracket {} fold [Z] [F]old" })
 -- Align commands
 -- Aligns to a string, looking left and with previews
 vim.keymap.set("x", "aw", function()
 	require("align").align_to_string(false, true, true)
 end)
+-- What does this do? Remove
 vim.keymap.set("n", "<leader>aw", function()
 	require("align").operator(require("align").align_to_string, { is_pattern = false, reverse = true, preview = true })
 end, { desc = "[A]lign [W]ith" })
