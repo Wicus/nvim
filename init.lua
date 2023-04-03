@@ -74,6 +74,7 @@ require("packer").startup(function(use)
 
 	-- Colorscheme
 	use("folke/tokyonight.nvim")
+	use({ "catppuccin/nvim", as = "catppuccin" })
 
 	-- Fuzzy Finder (files, lsp, etc)
 	use({ "nvim-telescope/telescope.nvim", branch = "0.1.x" })
@@ -219,29 +220,72 @@ vim.g.netrw_banner = 0
 vim.g.netrw_winsize = 25
 
 -- Colorscheme setup
-require("tokyonight").setup({
-	styles = {
-		floats = "normal",
+-- require("tokyonight").setup({
+-- 	styles = {
+-- 		floats = "normal",
+-- 	},
+-- 	lualine_bold = true,
+-- 	on_highlights = function(hl, colors)
+-- 		hl.FloatBorder = { fg = colors.fg_gutter }
+-- 		hl.TeleScopeBorder = { fg = colors.fg_gutter }
+-- 		hl.TeleScopeTitle = { fg = colors.fg }
+-- 		hl.NeoTreeFloatNormal = { bg = colors.bg_dark }
+-- 		hl.NeoTreeFloatBorder = { bg = colors.bg_dark, fg = colors.fg_gutter }
+-- 		hl.NeoTreeGitUntracked = { fg = colors.green }
+-- 		hl.NeoTreeModified = { fg = colors.fg }
+-- 		hl.NeoTreeExpander = { fg = colors.fg }
+-- 	end,
+-- 	on_colors = function(colors)
+-- 		colors.gitSigns.add = colors.green
+-- 		colors.gitSigns.change = colors.orange
+-- 		colors.gitSigns.delete = colors.red1
+-- 	end,
+-- })
+
+require("catppuccin").setup({
+	flavour = "mocha", -- latte, frappe, macchiato, mocha
+	background = { -- :h background
+		light = "latte",
+		dark = "mocha",
 	},
-	lualine_bold = true,
-	on_highlights = function(hl, colors)
-		hl.FloatBorder = { fg = colors.fg_gutter }
-		hl.TeleScopeBorder = { fg = colors.fg_gutter }
-		hl.TeleScopeTitle = { fg = colors.fg }
-		hl.NeoTreeFloatNormal = { bg = colors.bg_dark }
-		hl.NeoTreeFloatBorder = { bg = colors.bg_dark, fg = colors.fg_gutter }
-		hl.NeoTreeGitUntracked = { fg = colors.green }
-		hl.NeoTreeModified = { fg = colors.fg }
-		hl.NeoTreeExpander = { fg = colors.fg }
-	end,
-	on_colors = function(colors)
-		colors.gitSigns.add = colors.green
-		colors.gitSigns.change = colors.orange
-		colors.gitSigns.delete = colors.red1
-	end,
+	transparent_background = false,
+	show_end_of_buffer = false, -- show the '~' characters after the end of buffers
+	term_colors = false,
+	dim_inactive = {
+		enabled = false,
+		shade = "dark",
+		percentage = 0.15,
+	},
+	no_italic = false, -- Force no italic
+	no_bold = false, -- Force no bold
+	styles = {
+		comments = { "italic" },
+		conditionals = { "italic" },
+		loops = {},
+		functions = {},
+		keywords = {},
+		strings = {},
+		variables = {},
+		numbers = {},
+		booleans = {},
+		properties = {},
+		types = {},
+		operators = {},
+	},
+	color_overrides = {},
+	custom_highlights = {},
+	integrations = {
+		cmp = true,
+		gitsigns = true,
+		neotree = true,
+		telescope = true,
+		illuminate = true,
+		mason = true,
+		markdown = true,
+	},
 })
 
-vim.cmd.colorscheme("tokyonight-night")
+vim.cmd.colorscheme("catppuccin")
 
 -- Set border for floating windows
 vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(vim.lsp.handlers.hover, { border = "single" })
@@ -418,7 +462,7 @@ end, { desc = "Dark background" })
 require("lualine").setup({
 	options = {
 		icons_enabled = false,
-		theme = "tokyonight",
+		theme = "catppuccin",
 		component_separators = "|",
 		section_separators = "",
 		disabled_filetypes = {
@@ -772,6 +816,33 @@ require("fidget").setup()
 -- nvim-cmp setup
 local cmp = require("cmp")
 local luasnip = require("luasnip")
+local cmp_kinds = {
+	Text = "  ",
+	Method = "  ",
+	Function = "  ",
+	Constructor = "  ",
+	Field = "  ",
+	Variable = "  ",
+	Class = "  ",
+	Interface = "  ",
+	Module = "  ",
+	Property = "  ",
+	Unit = "  ",
+	Value = "  ",
+	Enum = "  ",
+	Keyword = "  ",
+	Snippet = "  ",
+	Color = "  ",
+	File = "  ",
+	Reference = "  ",
+	Folder = "  ",
+	EnumMember = "  ",
+	Constant = "  ",
+	Struct = "  ",
+	Event = "  ",
+	Operator = "  ",
+	TypeParameter = "  ",
+}
 
 cmp.setup({
 	snippet = {
@@ -788,6 +859,12 @@ cmp.setup({
 			border = "single",
 			winhighlight = "Normal:NormalFloat,FloatBorder:FloatBorder,CursorLine:PmenuSel",
 		}),
+	},
+	formatting = {
+		format = function(_, vim_item)
+			vim_item.kind = (cmp_kinds[vim_item.kind] or "") .. vim_item.kind
+			return vim_item
+		end,
 	},
 	mapping = cmp.mapping.preset.insert({
 		["<C-d>"] = cmp.mapping.scroll_docs(-4),
