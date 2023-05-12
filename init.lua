@@ -12,7 +12,6 @@ require("packer").startup(function(use)
 	use("wbthomason/packer.nvim")
 	use("nvim-lua/plenary.nvim")
 	use("nvim-tree/nvim-web-devicons")
-	use("nvim-treesitter/playground")
 
 	-- LSP Configuration & Plugins
 	use({
@@ -72,8 +71,8 @@ require("packer").startup(function(use)
 	-- Github Copilot
 	use("github/copilot.vim")
 
-	-- Colorscheme
-	use("folke/tokyonight.nvim")
+	-- Colorschemes
+	-- use("folke/tokyonight.nvim")
 	use({ "catppuccin/nvim", as = "catppuccin" })
 
 	-- Fuzzy Finder (files, lsp, etc)
@@ -108,6 +107,15 @@ require("packer").startup(function(use)
 	use("folke/zen-mode.nvim") -- Distraction free mode
 	use("Vonr/align.nvim") -- A minimal plugin for aligning lines
 	use("norcalli/nvim-colorizer.lua") -- Highlight color codes in files
+	use("nvim-pack/nvim-spectre") -- A code search and replace tool
+	use({
+		"folke/which-key.nvim",
+		config = function()
+			vim.opt.timeout = true
+			vim.opt.timeoutlen = 300
+			require("which-key").setup({})
+		end,
+	})
 
 	-- Add custom plugins to packer from ~/.config/nvim/lua/custom/plugins.lua
 	local has_plugins, plugins = pcall(require, "custom.plugins")
@@ -221,6 +229,7 @@ vim.g.netrw_winsize = 25
 
 -- Colorscheme setup
 -- require("tokyonight").setup({
+-- 	style = "night",
 -- 	styles = {
 -- 		floats = "normal",
 -- 	},
@@ -282,14 +291,16 @@ require("catppuccin").setup({
 		illuminate = true,
 		mason = true,
 		markdown = true,
+		harpoon = true,
+		which_key = true,
 	},
 })
 
 vim.cmd.colorscheme("catppuccin")
 
 -- Set border for floating windows
-vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(vim.lsp.handlers.hover, { border = "single" })
-vim.lsp.handlers["textDocument/signatureHelp"] = vim.lsp.with(vim.lsp.handlers.signatureHelp, { border = "single" })
+vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(vim.lsp.handlers["textDocument/hover"], { border = "single" })
+vim.lsp.handlers["textDocument/signatureHelp"] = vim.lsp.with(vim.lsp.handlers["textDocument/signatureHelp"], { border = "single" })
 vim.diagnostic.config({ float = { border = "single" } })
 
 -- [[ Basic Keymaps ]]
@@ -342,6 +353,9 @@ vim.keymap.set("n", "<C-l>", "<C-w>l")
 vim.keymap.set("n", "<leader>ft", function()
 	vim.cmd("Neotree toggle")
 end, { desc = "[F]ile [T]ree" })
+vim.keymap.set("n", "<leader>e", function()
+	vim.cmd("Neotree toggle")
+end, { desc = "[E]xplorer (Neotree) toggle" })
 
 -- Buffer commands
 vim.keymap.set("n", "<leader>bd", vim.cmd.bdelete, { desc = "[B]uffer [D]elete" })
@@ -363,6 +377,9 @@ end, { desc = "[3] Harpoon goto file 3" })
 vim.keymap.set("n", "<leader>4", function()
 	require("harpoon.ui").nav_file(4)
 end, { desc = "[4] Harpoon goto file 4" })
+vim.keymap.set("n", "<leader>5", function()
+	require("harpoon.ui").nav_file(5)
+end, { desc = "[5] Harpoon goto file 5" })
 
 -- Toggle commands
 vim.keymap.set("n", "<leader>ti", vim.cmd.IlluminateToggle, { desc = "[T]oggle [I]lluminate" })
@@ -377,6 +394,7 @@ end, { desc = "[T]oggle [H]ighlight search" })
 vim.keymap.set("n", "<leader>sa", "/\\<\\><Left><Left>", { desc = "[S]earch [A]round word in buffer" })
 vim.keymap.set("n", "<leader>se", ":%s//gcI<Left><Left><Left><Left>", { desc = "[S]earch and [E]dit in buffer" })
 vim.keymap.set("n", "<leader>sq", ":cdo s//gcI<Left><Left><Left><Left>", { desc = "[S]earch and edit in [Q]uickfix" })
+vim.keymap.set("n", "<leader>sr", require("spectre").open, { desc = "[S]earch and [R]eplace" })
 
 -- Quickfix
 vim.keymap.set("n", "[f", "<cmd>cprevious<cr>zz")
@@ -409,12 +427,15 @@ vim.keymap.set("n", "<C-Right>", function()
 end)
 
 vim.keymap.set("n", "<leader>q", function()
-	vim.cmd.cclose()
-	vim.cmd.lclose()
-	vim.cmd.Neotree("close")
-	require("zen-mode").close()
-	vim.cmd.normal("zz")
-end, { desc = "[Q]uit all extra buffers, including special buffers" })
+	for _, win in ipairs(vim.fn.getwininfo()) do
+		if win.quickfix == 1 then
+			vim.cmd.cclose()
+			return
+		end
+	end
+
+	vim.cmd.copen()
+end, { desc = "[Q]uickfix toggle" })
 
 vim.keymap.set("n", "<leader>zf", function()
 	vim.cmd.normal("va}")
@@ -429,6 +450,8 @@ end)
 vim.keymap.set("n", "<leader>aw", function()
 	require("align").operator(require("align").align_to_string, { is_pattern = false, reverse = true, preview = true })
 end, { desc = "[A]lign [W]ith" })
+
+vim.keymap.set("n", "<leader>wa", vim.cmd.wa, { desc = "[W]rite [A]ll" })
 
 -- [[ Autocommands ]]
 -- Highlight on yank
@@ -449,7 +472,15 @@ local formatting_group = vim.api.nvim_create_augroup("FormattingGroup", { clear 
 vim.api.nvim_create_autocmd("BufWritePost", {
 	command = "FormatWriteLock",
 	group = formatting_group,
-	pattern = { "*.tsx", "*.ts", "*.lua", "*.cs", "*.cpp", "*.hpp" },
+	pattern = {
+		"*.tsx",
+		"*.ts", --[[ "*.jsx", "*.js", ]]
+		"*.lua",
+		"*.cs",
+		"*.cpp",
+		"*.hpp",
+		"*.json",
+	},
 })
 
 vim.api.nvim_create_user_command("Dark", function(_)
@@ -589,16 +620,29 @@ vim.keymap.set("v", "<leader>*", function()
 	require("telescope.builtin").live_grep({ default_text = getVisualSelection(), glob_pattern = glob_pattern })
 end, { desc = "[*]: Search current word in project" })
 
-vim.keymap.set("n", "<leader>pf", require("telescope.builtin").find_files, { desc = "[P]roject [F]iles" })
-vim.keymap.set("n", "<leader>pg", require("telescope.builtin").git_status, { desc = "[P]roject [G]it status" })
+vim.keymap.set("n", "<leader>sf", require("telescope.builtin").find_files, { desc = "[S]earch [F]iles" })
+vim.keymap.set("n", "<leader>sG", require("telescope.builtin").git_files, { desc = "[S]earch [G]it files" })
+vim.keymap.set("n", "<leader>sg", require("telescope.builtin").git_status, { desc = "[S]earch [G]it status" })
 vim.keymap.set("n", "<leader><space>", require("telescope.builtin").commands, { desc = "[ ]: Open neovim commands" })
-vim.keymap.set("n", "<leader>rl", require("telescope.builtin").resume, { desc = "[R]esume [L]ast search" })
+vim.keymap.set("n", "<leader>sl", require("telescope.builtin").resume, { desc = "Resume [S]earch [L]ist" })
 
 -- Diagnostic keymaps
 vim.keymap.set("n", "<leader>dl", vim.diagnostic.setloclist, { desc = "[D]iagnostic [L]ist" })
 vim.keymap.set("n", "gh", vim.diagnostic.open_float, { desc = "[G]oto diagnostic [H]elp: List diagnostic under cursor" })
-vim.keymap.set("n", "[d", vim.diagnostic.goto_prev)
-vim.keymap.set("n", "]d", vim.diagnostic.goto_next)
+vim.keymap.set("n", "[d", vim.diagnostic.goto_prev, { desc = "Previous [D]iagnostic" })
+vim.keymap.set("n", "]d", vim.diagnostic.goto_next, { desc = "Next [D]iagnostic" })
+vim.keymap.set("n", "[e", function()
+	vim.diagnostic.goto_prev({ severity = vim.diagnostic.severity["ERROR"] })
+end, { desc = "Previous [E]rror" })
+vim.keymap.set("n", "]e", function()
+	vim.diagnostic.goto_next({ severity = vim.diagnostic.severity["ERROR"] })
+end, { desc = "Next [E]rror" })
+vim.keymap.set("n", "[w", function()
+	vim.diagnostic.goto_prev({ severity = vim.diagnostic.severity["WARN"] })
+end, { desc = "Previous [W]arning" })
+vim.keymap.set("n", "]w", function()
+	vim.diagnostic.goto_next({ severity = vim.diagnostic.severity["WARN"] })
+end, { desc = "Next [W]arning" })
 
 -- [[ Configure Treesitter ]]
 -- See `:help nvim-treesitter`
@@ -611,6 +655,7 @@ require("nvim-treesitter.configs").setup({
 		"javascript",
 		"typescript",
 		"tsx",
+		"json",
 		-- General development
 		"c",
 		"cpp",
@@ -693,7 +738,7 @@ require("nvim-treesitter.configs").setup({
 
 -- LSP settings.
 --  This function gets run when an LSP connects to a particular buffer.
-local on_attach = function(_, bufnr)
+local on_attach = function(client, bufnr)
 	-- NOTE: Remember that lua is a real programming language, and as such it is possible
 	-- to define small helper and utility functions so you don"t have to repeat yourself
 	-- many times.
@@ -724,20 +769,23 @@ local on_attach = function(_, bufnr)
 	nmap("<localleader>r.", vim.lsp.buf.code_action, "[R]efactor: Code Actions")
 	nmap("<localleader>rr", vim.lsp.buf.rename, "[R]efactor [R]ename")
 
-	nmap("gd", vim.lsp.buf.definition, "[G]oto [D]efinition")
-	nmap("<localleader>gd", vim.lsp.buf.definition, "[G]oto [D]efinition")
+	-- nmap("gd", vim.lsp.buf.definition, "[G]oto [D]efinition")
+	nmap("gd", require("telescope.builtin").lsp_definitions, "[G]oto [D]efinition")
+	nmap("<localleader>gd", require("telescope.builtin").lsp_definitions, "[G]oto [D]efinition")
 
-	nmap("gr", vim.lsp.buf.references, "[G]oto [R]eferences")
-	nmap("<localleader>gr", vim.lsp.buf.references, "[G]oto [R]eferences")
+	nmap("gr", require("telescope.builtin").lsp_references, "[G]oto [R]eferences")
+	nmap("<localleader>gr", require("telescope.builtin").lsp_references, "[G]oto [R]eferences")
 
-	nmap("gi", vim.lsp.buf.implementation, "[G]oto [I]mplementation")
-	nmap("<localleader>gi", vim.lsp.buf.implementation, "[G]oto [I]mplementation")
+	nmap("gI", require("telescope.builtin").lsp_implementations, "[G]oto [I]mplementation")
+	nmap("<localleader>gI", require("telescope.builtin").lsp_implementations, "[G]oto [I]mplementation")
 
-	nmap("<localleader>gt", vim.lsp.buf.type_definition, "[G]oto [T]ype definition")
+	nmap("gt", require("telescope.builtin").lsp_type_definitions, "[G]oto [T]ype definition")
+	nmap("<localleader>gt", require("telescope.builtin").lsp_type_definitions, "[G]oto [T]ype definition")
 
 	-- See `:help K` for why this keymap
 	nmap("K", vim.lsp.buf.hover, "Hover Documentation")
-	imap("<C-k>", vim.lsp.buf.hover, "Hover Documentation")
+	nmap("gK", vim.lsp.buf.signature_help, "Signature Help")
+	imap("<C-k>", vim.lsp.buf.signature_help, "Signature Help")
 
 	-- Lesser used LSP functionality
 	nmap("gD", vim.lsp.buf.declaration, "[G]oto [D]eclaration")
@@ -748,6 +796,88 @@ local on_attach = function(_, bufnr)
 	nmap("<leader>pl", function()
 		print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
 	end, "[P]roject [L]ist folders: Workspace list folders")
+
+	vim.api.nvim_buf_create_user_command(bufnr, "Format", function(_)
+		vim.lsp.buf.format()
+	end, { desc = "Format current buffer with LSP" })
+
+	-- Hack for omnisharp
+	if client.name == "omnisharp" then
+		client.server_capabilities.semanticTokensProvider = {
+			full = vim.empty_dict(),
+			legend = {
+				tokenModifiers = { "static_symbol" },
+				tokenTypes = {
+					"comment",
+					"excluded_code",
+					"identifier",
+					"keyword",
+					"keyword_control",
+					"number",
+					"operator",
+					"operator_overloaded",
+					"preprocessor_keyword",
+					"string",
+					"whitespace",
+					"text",
+					"static_symbol",
+					"preprocessor_text",
+					"punctuation",
+					"string_verbatim",
+					"string_escape_character",
+					"class_name",
+					"delegate_name",
+					"enum_name",
+					"interface_name",
+					"module_name",
+					"struct_name",
+					"type_parameter_name",
+					"field_name",
+					"enum_member_name",
+					"constant_name",
+					"local_name",
+					"parameter_name",
+					"method_name",
+					"extension_method_name",
+					"property_name",
+					"event_name",
+					"namespace_name",
+					"label_name",
+					"xml_doc_comment_attribute_name",
+					"xml_doc_comment_attribute_quotes",
+					"xml_doc_comment_attribute_value",
+					"xml_doc_comment_cdata_section",
+					"xml_doc_comment_comment",
+					"xml_doc_comment_delimiter",
+					"xml_doc_comment_entity_reference",
+					"xml_doc_comment_name",
+					"xml_doc_comment_processing_instruction",
+					"xml_doc_comment_text",
+					"xml_literal_attribute_name",
+					"xml_literal_attribute_quotes",
+					"xml_literal_attribute_value",
+					"xml_literal_cdata_section",
+					"xml_literal_comment",
+					"xml_literal_delimiter",
+					"xml_literal_embedded_expression",
+					"xml_literal_entity_reference",
+					"xml_literal_name",
+					"xml_literal_processing_instruction",
+					"xml_literal_text",
+					"regex_comment",
+					"regex_character_class",
+					"regex_anchor",
+					"regex_quantifier",
+					"regex_grouping",
+					"regex_alternation",
+					"regex_text",
+					"regex_self_escaped_character",
+					"regex_other_escape",
+				},
+			},
+			range = true,
+		}
+	end
 end
 
 -- Enable the following language servers
@@ -757,19 +887,26 @@ end
 --  the `settings` field of the server config. You must look up that documentation yourself.
 local servers = {
 	lua_ls = {
-		Lua = {
-			workspace = { checkThirdParty = false },
-			telemetry = { enable = false },
+		settings = {
+			Lua = {
+				workspace = { checkThirdParty = false },
+				telemetry = { enable = false },
+			},
 		},
 	},
 	tsserver = {},
 	eslint = {},
-	clangd = {},
+	clangd = {
+		capabilities = {
+			offsetEncoding = { "utf-16" },
+		},
+	},
 	pyright = {},
 	omnisharp = {
 		cmd = { "cmd", "/c", "omnisharp" },
 		handlers = { ["textDocument/definition"] = require("omnisharp_extended").handler },
 	},
+	jsonls = {},
 
 	-- gopls = {},
 	-- rust_analyzer = {},
@@ -794,19 +931,15 @@ mason_lspconfig.setup({
 
 mason_lspconfig.setup_handlers({
 	function(server_name)
-		local server_setup = {
+		local setup = {
 			capabilities = capabilities,
 			on_attach = on_attach,
 		}
-		local settings = servers[server_name]
+		local server_settings = servers[server_name]
 
-		if server_name == "omnisharp" then
-			server_setup = vim.tbl_extend("force", server_setup, settings)
-		else
-			server_setup.settings = settings
-		end
+		setup = vim.tbl_deep_extend("force", setup, server_settings)
 
-		require("lspconfig")[server_name].setup(server_setup)
+		require("lspconfig")[server_name].setup(setup)
 	end,
 })
 
@@ -863,6 +996,11 @@ cmp.setup({
 	formatting = {
 		format = function(_, vim_item)
 			vim_item.kind = (cmp_kinds[vim_item.kind] or "") .. vim_item.kind
+			local label = vim_item.abbr
+			local truncated_label = vim.fn.strcharpart(label, 0, 50)
+			if truncated_label ~= vim_item.abbr then
+				vim_item.abbr = truncated_label .. "..."
+			end
 			return vim_item
 		end,
 	},
@@ -902,36 +1040,28 @@ cmp.setup({
 		{ name = "nvim_lsp" },
 		{ name = "spell" },
 		{ name = "nvim_lua" },
+		{ name = "nvim_lsp_signature_help" },
 	},
 })
 
 -- Snippets
 require("luasnip.loaders.from_vscode").lazy_load()
 
-local clangformat = function()
-	local clangformat = require("formatter.defaults").clangformat()
-	clangformat.args[1] = "-style=file"
-	return clangformat
-end
-
 -- Formatter setup
 require("formatter").setup({
 	filetype = {
-		lua = {
-			require("formatter.filetypes.lua").stylua,
-		},
-		typescript = {
-			require("formatter.filetypes.typescript").prettierd,
-		},
-		typescriptreact = {
-			require("formatter.filetypes.typescriptreact").prettierd,
-		},
-		h = { clangformat },
-		c = { clangformat },
-		cpp = { clangformat },
-		hpp = { clangformat },
+		lua = { require("formatter.filetypes.lua").stylua },
+		javascript = { require("formatter.filetypes.javascript").prettierd },
+		javascriptreact = { require("formatter.filetypes.javascriptreact").prettierd },
+		typescript = { require("formatter.filetypes.typescript").prettierd },
+		typescriptreact = { require("formatter.filetypes.typescriptreact").prettierd },
+		h = { require("formatter.defaults").clangformat },
+		c = { require("formatter.defaults").clangformat },
+		cpp = { require("formatter.defaults").clangformat },
+		hpp = { require("formatter.defaults").clangformat },
 		cs = vim.lsp.buf.format,
 		python = vim.lsp.buf.format,
+		json = { require("formatter.filetypes.json").prettierd },
 	},
 })
 
@@ -976,7 +1106,7 @@ require("neo-tree").setup({
 				deleted = "-", -- this can only be used in the git_status source
 				renamed = "_", -- this can only be used in the git_status source
 				-- Status type
-				unstaged = "~",
+				unstaged = "",
 				untracked = "+",
 				ignored = "",
 				staged = "",
