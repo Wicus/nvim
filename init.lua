@@ -97,6 +97,7 @@ require("packer").startup(function(use)
 		},
 	})
 
+	use("mbbill/undotree") -- Undo tree
 	use("nvim-lualine/lualine.nvim") -- Fancier statusline
 	use("lukas-reineke/indent-blankline.nvim") -- Add indentation guides even on blank lines
 	use("numToStr/Comment.nvim") -- "gc" to comment visual regions/lines
@@ -174,8 +175,10 @@ vim.opt.relativenumber = true
 vim.opt.breakindent = true
 
 -- Disable backup files
-vim.opt.backup = false
-vim.opt.swapfile = false
+vim.opt.backup = true
+vim.opt.backupdir = "C:\\Users\\Wicus Pretorius\\nvim-backup-folder"
+vim.opt.swapfile = true
+vim.opt.directory = "C:\\Users\\Wicus Pretorius\\nvim-swap-folder"
 
 -- Save undo history
 vim.opt.undofile = true
@@ -226,6 +229,9 @@ vim.opt.wrap = false
 vim.g.netrw_browse_split = 0
 vim.g.netrw_banner = 0
 vim.g.netrw_winsize = 25
+
+-- Linux line endings
+vim.opt.fileformats = "unix"
 
 -- Colorscheme setup
 -- require("tokyonight").setup({
@@ -410,7 +416,8 @@ vim.keymap.set("v", ">", ">gv")
 
 vim.keymap.set("n", "<leader>zm", vim.cmd.ZenMode, { desc = "[Z]en [M]ode Toggle" })
 
-vim.keymap.set("n", "<leader>ff", vim.cmd.Format, { desc = "[F]ormat buffer" })
+vim.keymap.set("n", "<leader>ff", vim.cmd.FormatWriteLock, { desc = "[F]ormat buffer" })
+vim.keymap.set("v", "<leader>ff", vim.cmd.FormatWriteLock, { desc = "[F]ormat buffer" })
 
 -- Resize window
 vim.keymap.set("n", "<C-Up>", function()
@@ -452,6 +459,7 @@ vim.keymap.set("n", "<leader>aw", function()
 end, { desc = "[A]lign [W]ith" })
 
 vim.keymap.set("n", "<leader>wa", vim.cmd.wa, { desc = "[W]rite [A]ll" })
+vim.keymap.set("n", "<leader>u", vim.cmd.UndotreeToggle, { desc = "[U]ndo tree" })
 
 -- [[ Autocommands ]]
 -- Highlight on yank
