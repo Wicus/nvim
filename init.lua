@@ -39,6 +39,7 @@ require("packer").startup(function(use)
 			"hrsh7th/cmp-nvim-lsp",
 			"f3fora/cmp-spell",
 			"saadparwaiz1/cmp_luasnip",
+			"hrsh7th/cmp-nvim-lsp-signature-help",
 		},
 	})
 
@@ -232,7 +233,7 @@ vim.g.netrw_banner = 0
 vim.g.netrw_winsize = 25
 
 -- Linux line endings
-vim.opt.fileformats = "unix"
+vim.opt.fileformats = "unix,dos"
 
 -- Colorscheme setup
 -- require("tokyonight").setup({
@@ -540,6 +541,7 @@ require("gitsigns").setup({
 	on_attach = function(bufnr)
 		local gs = package.loaded.gitsigns
 
+		-- Navigation
 		vim.keymap.set("n", "]g", function()
 			if vim.wo.diff then
 				return "]g"
@@ -858,6 +860,10 @@ local servers = {
 		handlers = { ["textDocument/definition"] = require("omnisharp_extended").handler },
 	},
 	jsonls = {},
+	intelephense = {},
+	html = {},
+	cssls = {},
+	tailwindcss = {},
 
 	-- gopls = {},
 	-- rust_analyzer = {},
