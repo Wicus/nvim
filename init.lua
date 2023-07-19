@@ -73,7 +73,6 @@ require("packer").startup(function(use)
 	use("github/copilot.vim")
 
 	-- Colorschemes
-	-- use("folke/tokyonight.nvim")
 	use({ "catppuccin/nvim", as = "catppuccin" })
 
 	-- Fuzzy Finder (files, lsp, etc)
@@ -85,19 +84,6 @@ require("packer").startup(function(use)
 		run = "cmake -S. -Bbuild -DCMAKE_BUILD_TYPE=Release && cmake --build build --config Release && cmake --install build --prefix build",
 	})
 
-	-- NeoTree
-	-- Unless you are still migrating, remove the deprecated commands from v1.x
-	vim.cmd([[ let g:neo_tree_remove_legacy_commands = 1 ]])
-
-	use({
-		"nvim-neo-tree/neo-tree.nvim",
-		branch = "v2.x",
-		requires = {
-			"nvim-lua/plenary.nvim",
-			"MunifTanjim/nui.nvim",
-		},
-	})
-
 	use("mbbill/undotree") -- Undo tree
 	use("nvim-lualine/lualine.nvim") -- Fancier statusline
 	use("lukas-reineke/indent-blankline.nvim") -- Add indentation guides even on blank lines
@@ -106,7 +92,7 @@ require("packer").startup(function(use)
 	use("mhartington/formatter.nvim") -- Formatting
 	use("tpope/vim-surround") -- Surround text objects with quotes, brackets, etc
 	use("ThePrimeagen/harpoon") -- Manage multiple buffers and jump between them easily
-	use("folke/zen-mode.nvim") -- Distraction free mode
+	use("shortcuts/no-neck-pain.nvim") -- Dead simple plugin to center the currently focused buffer to the middle of the screen.
 	use("Vonr/align.nvim") -- A minimal plugin for aligning lines
 	use("norcalli/nvim-colorizer.lua") -- Highlight color codes in files
 	use("nvim-pack/nvim-spectre") -- A code search and replace tool
@@ -118,6 +104,7 @@ require("packer").startup(function(use)
 			require("which-key").setup({})
 		end,
 	})
+	use("stevearc/oil.nvim") -- A vim-vinegar like file explorer that lets you edit your filesystem like a normal Neovim buffer.
 
 	-- Add custom plugins to packer from ~/.config/nvim/lua/custom/plugins.lua
 	local has_plugins, plugins = pcall(require, "custom.plugins")
@@ -154,11 +141,9 @@ vim.api.nvim_create_autocmd("BufWritePost", {
 -- [[ Setting options ]]
 -- See `:help vim.opt`
 
--- disable netrw at the very start of your init.lua (strongly advised)
-vim.g.loaded_netrw = 1
-vim.g.loaded_netrwPlugin = 1
-
 vim.g.copilot_filetypes = { TelescopePrompt = false, text = false }
+
+vim.opt.laststatus = 3 -- Always show statusline
 
 -- Sane defaults for tabs and spaces
 vim.opt.tabstop = 4
@@ -227,37 +212,8 @@ vim.opt.guifont = "Consolas:h9"
 
 vim.opt.wrap = false
 
--- Disable NetRw
-vim.g.netrw_browse_split = 0
-vim.g.netrw_banner = 0
-vim.g.netrw_winsize = 25
-
 -- Linux line endings
 vim.opt.fileformats = "unix,dos"
-
--- Colorscheme setup
--- require("tokyonight").setup({
--- 	style = "night",
--- 	styles = {
--- 		floats = "normal",
--- 	},
--- 	lualine_bold = true,
--- 	on_highlights = function(hl, colors)
--- 		hl.FloatBorder = { fg = colors.fg_gutter }
--- 		hl.TeleScopeBorder = { fg = colors.fg_gutter }
--- 		hl.TeleScopeTitle = { fg = colors.fg }
--- 		hl.NeoTreeFloatNormal = { bg = colors.bg_dark }
--- 		hl.NeoTreeFloatBorder = { bg = colors.bg_dark, fg = colors.fg_gutter }
--- 		hl.NeoTreeGitUntracked = { fg = colors.green }
--- 		hl.NeoTreeModified = { fg = colors.fg }
--- 		hl.NeoTreeExpander = { fg = colors.fg }
--- 	end,
--- 	on_colors = function(colors)
--- 		colors.gitSigns.add = colors.green
--- 		colors.gitSigns.change = colors.orange
--- 		colors.gitSigns.delete = colors.red1
--- 	end,
--- })
 
 require("catppuccin").setup({
 	flavour = "mocha", -- latte, frappe, macchiato, mocha
@@ -294,7 +250,6 @@ require("catppuccin").setup({
 	integrations = {
 		cmp = true,
 		gitsigns = true,
-		neotree = true,
 		telescope = true,
 		illuminate = true,
 		mason = true,
@@ -358,12 +313,7 @@ vim.keymap.set("n", "<C-k>", "<C-w>k")
 vim.keymap.set("n", "<C-l>", "<C-w>l")
 
 -- File tree navigation
-vim.keymap.set("n", "<leader>ft", function()
-	vim.cmd("Neotree toggle")
-end, { desc = "[F]ile [T]ree" })
-vim.keymap.set("n", "<leader>e", function()
-	vim.cmd("Neotree toggle")
-end, { desc = "[E]xplorer (Neotree) toggle" })
+vim.keymap.set("n", "<leader>e", require("oil").open, { desc = "[E]xplorer (Oil)" })
 
 -- Buffer commands
 vim.keymap.set("n", "<leader>bd", vim.cmd.bdelete, { desc = "[B]uffer [D]elete" })
@@ -399,7 +349,7 @@ vim.keymap.set("n", "<leader>th", function()
 end, { desc = "[T]oggle [H]ighlight search" })
 
 -- Search and replace commands
-vim.keymap.set("n", "<leader>sa", "/\\<\\><Left><Left>", { desc = "[S]earch [A]round word in buffer" })
+vim.keymap.set("n", "<leader>sa", "*N", { desc = "[S]earch [A]round word in buffer" })
 vim.keymap.set("n", "<leader>se", ":%s//gcI<Left><Left><Left><Left>", { desc = "[S]earch and [E]dit in buffer" })
 vim.keymap.set("n", "<leader>sq", ":cdo s//gcI<Left><Left><Left><Left>", { desc = "[S]earch and edit in [Q]uickfix" })
 vim.keymap.set("n", "<leader>sr", require("spectre").open, { desc = "[S]earch and [R]eplace" })
@@ -416,7 +366,7 @@ vim.keymap.set("n", "]s", vim.cmd.lnext)
 vim.keymap.set("v", "<", "<gv")
 vim.keymap.set("v", ">", ">gv")
 
-vim.keymap.set("n", "<leader>zm", vim.cmd.ZenMode, { desc = "[Z]en [M]ode Toggle" })
+vim.keymap.set("n", "<leader>zm", vim.cmd.NoNeckPain, { desc = "[Z]en [M]ode Toggle" })
 
 vim.keymap.set("n", "<leader>ff", vim.cmd.FormatWriteLock, { desc = "[F]ormat buffer" })
 vim.keymap.set("v", "<leader>ff", vim.cmd.FormatWriteLock, { desc = "[F]ormat buffer" })
@@ -462,6 +412,7 @@ end, { desc = "[A]lign [W]ith" })
 
 vim.keymap.set("n", "<leader>wa", vim.cmd.wa, { desc = "[W]rite [A]ll" })
 vim.keymap.set("n", "<leader>u", vim.cmd.UndotreeToggle, { desc = "[U]ndo tree" })
+vim.keymap.set("n", "-", require("oil").open, { desc = "[-] Open parent directory" })
 
 -- [[ Autocommands ]]
 -- Highlight on yank
@@ -858,6 +809,7 @@ local servers = {
 	omnisharp = {
 		cmd = { "cmd", "/c", "omnisharp" },
 		handlers = { ["textDocument/definition"] = require("omnisharp_extended").handler },
+		enable_roslyn_analyzers = true,
 	},
 	jsonls = {},
 	intelephense = {},
@@ -1036,56 +988,32 @@ require("illuminate").configure({
 	},
 })
 
--- Zen mode setup
-require("zen-mode").setup({
-	window = {
-		width = 140,
-	},
-})
-
 -- Colorizer setup
 require("colorizer").setup()
 
--- NeoTree setup
-require("neo-tree").setup({
-	hide_root_node = true,
-	close_if_last_window = true,
-	retain_hidden_root_indent = false,
-	popup_border_style = "single",
-	close_floats_on_escape_key = false,
-	use_popups_for_input = false,
-	default_component_configs = {
-		git_status = {
-			symbols = {
-				-- -- Change type
-				added = "", -- or "✚", but this is redundant info if you use git_status_colors on the name
-				modified = "", -- or "", but this is redundant info if you use git_status_colors on the name
-				deleted = "-", -- this can only be used in the git_status source
-				renamed = "_", -- this can only be used in the git_status source
-				-- Status type
-				unstaged = "",
-				untracked = "+",
-				ignored = "",
-				staged = "",
-				conflict = "",
-			},
-		},
+-- Oil setup
+require("oil").setup({
+	keymaps = {
+		["<leader>e"] = "actions.close",
 	},
-	window = {
-		mappings = {
-			["l"] = "open",
-			["h"] = "close_node",
-			["v"] = "open_vsplit",
-		},
-		auto_expand_width = true,
+})
+
+-- No neck pain setup
+require("no-neck-pain").setup({
+	width = 180,
+	autocmds = {
+		enableOnVimEnter = true,
 	},
-	filesystem = {
-		follow_current_file = true,
-		use_libuv_file_watcher = true,
-		filtered_items = {
-			hide_by_name = {
-				"node_modules",
-			},
+	buffers = {
+		right = {
+			enabled = false,
+		},
+		colors = {
+			blend = -0.2,
+		},
+		scratchPad = {
+			enabled = true,
+			fileName = "scratch",
 		},
 	},
 })
