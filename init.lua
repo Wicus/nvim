@@ -84,6 +84,7 @@ require("packer").startup(function(use)
 		run = "cmake -S. -Bbuild -DCMAKE_BUILD_TYPE=Release && cmake --build build --config Release && cmake --install build --prefix build",
 	})
 
+	use("stevearc/dressing.nvim") -- Extend core UI hooks (vim.ui.select and vim.ui.input) with floating windows
 	use("mbbill/undotree") -- Undo tree
 	use("nvim-lualine/lualine.nvim") -- Fancier statusline
 	use("lukas-reineke/indent-blankline.nvim") -- Add indentation guides even on blank lines
@@ -271,7 +272,6 @@ vim.diagnostic.config({ float = { border = "single" } })
 -- See `:help mapleader`
 --  NOTE: Must happen before plugins are required (otherwise wrong leader will be used)
 vim.g.mapleader = " "
-vim.g.maplocalleader = ","
 
 -- Keymaps for better default experience
 -- See `:help vim.keymap.set()`
@@ -313,7 +313,7 @@ vim.keymap.set("n", "<C-k>", "<C-w>k")
 vim.keymap.set("n", "<C-l>", "<C-w>l")
 
 -- File tree navigation
-vim.keymap.set("n", "<leader>e", require("oil").open, { desc = "[E]xplorer (Oil)" })
+vim.keymap.set("n", "-", require("oil").open, { desc = "[-] Open parent directory" })
 
 -- Buffer commands
 vim.keymap.set("n", "<leader>bd", vim.cmd.bdelete, { desc = "[B]uffer [D]elete" })
@@ -412,7 +412,6 @@ end, { desc = "[A]lign [W]ith" })
 
 vim.keymap.set("n", "<leader>wa", vim.cmd.wa, { desc = "[W]rite [A]ll" })
 vim.keymap.set("n", "<leader>u", vim.cmd.UndotreeToggle, { desc = "[U]ndo tree" })
-vim.keymap.set("n", "-", require("oil").open, { desc = "[-] Open parent directory" })
 
 -- [[ Autocommands ]]
 -- Highlight on yank
@@ -728,30 +727,22 @@ local on_attach = function(client, bufnr)
 	nmap("<leader>sj", require("telescope.builtin").lsp_document_symbols, "[S]ymbols [J]ump: Document symbols")
 	nmap("<leader>sw", require("telescope.builtin").lsp_dynamic_workspace_symbols, "[S]ymbols [W]orkspace: Workspace symbols")
 
-	nmap("<localleader>r.", vim.lsp.buf.code_action, "[R]efactor: Code Actions")
-	nmap("<localleader>rr", vim.lsp.buf.rename, "[R]efactor [R]ename")
+	nmap("<leader>ca", vim.lsp.buf.code_action, "[C]ode [A]ctions")
+	nmap("<leader>cn", vim.lsp.buf.rename, "[C]hange re[N]ame")
 
 	-- nmap("gd", vim.lsp.buf.definition, "[G]oto [D]efinition")
 	nmap("gd", require("telescope.builtin").lsp_definitions, "[G]oto [D]efinition")
-	nmap("<localleader>gd", require("telescope.builtin").lsp_definitions, "[G]oto [D]efinition")
-
 	nmap("gr", require("telescope.builtin").lsp_references, "[G]oto [R]eferences")
-	nmap("<localleader>gr", require("telescope.builtin").lsp_references, "[G]oto [R]eferences")
-
 	nmap("gI", require("telescope.builtin").lsp_implementations, "[G]oto [I]mplementation")
-	nmap("<localleader>gI", require("telescope.builtin").lsp_implementations, "[G]oto [I]mplementation")
-
 	nmap("gt", require("telescope.builtin").lsp_type_definitions, "[G]oto [T]ype definition")
-	nmap("<localleader>gt", require("telescope.builtin").lsp_type_definitions, "[G]oto [T]ype definition")
 
 	-- See `:help K` for why this keymap
 	nmap("K", vim.lsp.buf.hover, "Hover Documentation")
-	nmap("gK", vim.lsp.buf.signature_help, "Signature Help")
+	nmap("gk", vim.lsp.buf.signature_help, "Signature Help")
 	imap("<C-k>", vim.lsp.buf.signature_help, "Signature Help")
 
 	-- Lesser used LSP functionality
 	nmap("gD", vim.lsp.buf.declaration, "[G]oto [D]eclaration")
-	nmap("<localleader>gD", vim.lsp.buf.declaration, "[G]oto [D]eclaration")
 
 	nmap("<leader>pa", vim.lsp.buf.add_workspace_folder, "[P]roject [A]dd: Workspace add folder")
 	nmap("<leader>pd", vim.lsp.buf.remove_workspace_folder, "[P]roject [x] delete folder: Workspace remove folder")
@@ -766,7 +757,6 @@ local on_attach = function(client, bufnr)
 	-- Omnisharp specific settings
 	if client.name == "omnisharp" then
 		nmap("gd", require("omnisharp_extended").telescope_lsp_definitions, "[G]oto [D]efinition")
-		nmap("<localleader>gd", require("omnisharp_extended").telescope_lsp_definitions, "[G]oto [D]efinition")
 
 		-- Omnisharp Semantic tokens do not conform to the LSP specification
 		-- For more details: https://github.com/OmniSharp/omnisharp-roslyn/issues/2483#issuecomment-1546721190
@@ -809,7 +799,7 @@ local servers = {
 	omnisharp = {
 		cmd = { "cmd", "/c", "omnisharp" },
 		handlers = { ["textDocument/definition"] = require("omnisharp_extended").handler },
-		enable_roslyn_analyzers = true,
+		-- enable_roslyn_analyzers = true,
 	},
 	jsonls = {},
 	intelephense = {},
@@ -994,7 +984,7 @@ require("colorizer").setup()
 -- Oil setup
 require("oil").setup({
 	keymaps = {
-		["<leader>e"] = "actions.close",
+		["q"] = "actions.close",
 	},
 })
 
@@ -1018,5 +1008,18 @@ require("no-neck-pain").setup({
 	},
 })
 
+-- Dressing setup
+require("dressing").setup({
+	input = {
+		insert_only = true, -- Closes the window when leaving insert mode
+		start_in_insert = false,
+		title_pos = "center",
+		win_options = {
+			winblend = 0,
+		},
+		border = "single",
+		winhighlight = "Normal:NormalFloat,FloatBorder:FloatBorder,CursorLine:PmenuSel",
+	},
+})
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et
