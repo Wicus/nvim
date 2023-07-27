@@ -410,6 +410,7 @@ vim.keymap.set("n", "<leader>aw", function()
 	require("align").operator(require("align").align_to_string, { is_pattern = false, reverse = true, preview = true })
 end, { desc = "[A]lign [W]ith" })
 
+vim.api.nvim_create_user_command("Wa", "wa", { desc = "[W]rite [A]ll" })
 vim.keymap.set("n", "<leader>wa", vim.cmd.wa, { desc = "[W]rite [A]ll" })
 vim.keymap.set("n", "<leader>u", vim.cmd.UndotreeToggle, { desc = "[U]ndo tree" })
 
@@ -531,6 +532,13 @@ require("telescope").setup({
 		},
 		path_display = { "truncate" },
 	},
+	pickers = {
+		live_grep = {
+			mappings = {
+				i = { ["<c-f>"] = require("telescope.actions").to_fuzzy_refine },
+			},
+		},
+	},
 })
 
 -- Enable telescope fzf native, if installed
@@ -581,7 +589,7 @@ vim.keymap.set("n", "<leader>*", function()
 	require("telescope.builtin").live_grep({
 		default_text = get_work_under_cursor(),
 		glob_pattern = glob_pattern,
-		additional_args = { "--case-sensitive" },
+		additional_args = { "--case-sensitive", "--word-regexp" },
 	})
 end, { desc = "[*]: Search current word in project (Case Sensitive)" })
 
@@ -591,7 +599,7 @@ vim.keymap.set("v", "<leader>*", function()
 		glob_pattern = glob_pattern,
 		additional_args = { "--case-sensitive" },
 	})
-end, { desc = "[*]: Search current word in project (Case Sensitive)" })
+end, { desc = "[*]: Search current word in project (Case Sensitive) (Word Boundary)" })
 
 vim.keymap.set("n", "<leader>sf", require("telescope.builtin").find_files, { desc = "[S]earch [F]iles" })
 vim.keymap.set("n", "<leader>sG", require("telescope.builtin").git_files, { desc = "[S]earch [G]it files" })
