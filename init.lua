@@ -559,25 +559,39 @@ vim.keymap.set("n", "<leader>/", function()
 	require("telescope.builtin").live_grep({
 		glob_pattern = glob_pattern,
 	})
-end, { desc = "[/]: Search in project" })
+end, { desc = "[/]: Search in project (Smart Case)" })
 
-local function getVisualSelection()
-	vim.cmd('noau normal! "vy"')
-	local text = vim.fn.getreg("v")
-	vim.fn.setreg("v", {})
+vim.keymap.set("n", "<leader>?", function()
+	require("telescope.builtin").live_grep({
+		glob_pattern = glob_pattern,
+		additional_args = { "--case-sensitive" },
+	})
+end, { desc = "[?]: Search in project (Case Sensitive)" })
 
-	text = string.gsub(text, "\n", "")
-	if #text > 0 then
-		return text
-	else
-		return ""
-	end
+local function get_visual_selected()
+	vim.cmd('normal "vy')
+	return vim.fn.getreg("v") or ""
+end
+local function get_work_under_cursor()
+	vim.cmd('normal viw"vy')
+	return vim.fn.getreg("v") or ""
 end
 
-vim.keymap.set("n", "<leader>*", require("telescope.builtin").grep_string, { desc = "[*]: Search current word in project" })
+vim.keymap.set("n", "<leader>*", function()
+	require("telescope.builtin").live_grep({
+		default_text = get_work_under_cursor(),
+		glob_pattern = glob_pattern,
+		additional_args = { "--case-sensitive" },
+	})
+end, { desc = "[*]: Search current word in project (Case Sensitive)" })
+
 vim.keymap.set("v", "<leader>*", function()
-	require("telescope.builtin").live_grep({ default_text = getVisualSelection(), glob_pattern = glob_pattern })
-end, { desc = "[*]: Search current word in project" })
+	require("telescope.builtin").live_grep({
+		default_text = get_visual_selected(),
+		glob_pattern = glob_pattern,
+		additional_args = { "--case-sensitive" },
+	})
+end, { desc = "[*]: Search current word in project (Case Sensitive)" })
 
 vim.keymap.set("n", "<leader>sf", require("telescope.builtin").find_files, { desc = "[S]earch [F]iles" })
 vim.keymap.set("n", "<leader>sG", require("telescope.builtin").git_files, { desc = "[S]earch [G]it files" })
