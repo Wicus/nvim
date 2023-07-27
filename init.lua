@@ -162,7 +162,7 @@ vim.opt.relativenumber = true
 -- Enable break indent
 vim.opt.breakindent = true
 
--- Disable backup files
+-- Enable / Disable backup files
 vim.opt.backup = true
 vim.opt.backupdir = "C:\\Users\\Wicus Pretorius\\nvim-backup-folder"
 vim.opt.swapfile = true
@@ -525,10 +525,8 @@ require("telescope").setup({
 	defaults = {
 		mappings = {
 			i = {
-				["<C-j>"] = require("telescope.actions").move_selection_next,
-				["<C-k>"] = require("telescope.actions").move_selection_previous,
-				-- ["<C-p>"] = require("telescope.actions").cycle_history_prev,
-				-- ["<C-n>"] = require("telescope.actions").cycle_history_next,
+				["<Up>"] = require("telescope.actions").cycle_history_prev,
+				["<Down>"] = require("telescope.actions").cycle_history_next,
 			},
 		},
 		path_display = { "truncate" },
@@ -1002,7 +1000,7 @@ require("no-neck-pain").setup({
 			blend = -0.2,
 		},
 		scratchPad = {
-			enabled = true,
+			enabled = false,
 			fileName = "scratch",
 		},
 	},
