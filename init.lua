@@ -84,6 +84,7 @@ require("packer").startup(function(use)
 		run = "cmake -S. -Bbuild -DCMAKE_BUILD_TYPE=Release && cmake --build build --config Release && cmake --install build --prefix build",
 	})
 
+	use("nvim-treesitter/nvim-treesitter-context")
 	use("stevearc/dressing.nvim") -- Extend core UI hooks (vim.ui.select and vim.ui.input) with floating windows
 	use("mbbill/undotree") -- Undo tree
 	use("nvim-lualine/lualine.nvim") -- Fancier statusline
@@ -748,7 +749,7 @@ local on_attach = function(client, bufnr)
 	nmap("<leader>sw", require("telescope.builtin").lsp_dynamic_workspace_symbols, "[S]ymbols [W]orkspace: Workspace symbols")
 
 	nmap("<leader>ca", vim.lsp.buf.code_action, "[C]ode [A]ctions")
-	nmap("<leader>cn", vim.lsp.buf.rename, "[C]hange re[N]ame")
+	nmap("cn", vim.lsp.buf.rename, "[C]hange [N]ame (Rename)")
 
 	-- nmap("gd", vim.lsp.buf.definition, "[G]oto [D]efinition")
 	nmap("gd", require("telescope.builtin").lsp_definitions, "[G]oto [D]efinition")
