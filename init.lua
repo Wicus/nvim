@@ -248,7 +248,15 @@ require("catppuccin").setup({
 		operators = {},
 	},
 	color_overrides = {},
-	custom_highlights = {},
+	custom_highlights = function(colors)
+		return {
+			WhichKey = { bg = colors.mantle },
+			WhichKeyFloat = { bg = colors.mantle },
+			TreesitterContext = { bg = colors.mantle },
+			TreesitterContextLineNumber = { fg = colors.red },
+			NormalFloat = { bg = colors.none },
+		}
+	end,
 	integrations = {
 		cmp = true,
 		gitsigns = true,
@@ -258,6 +266,7 @@ require("catppuccin").setup({
 		markdown = true,
 		harpoon = true,
 		which_key = true,
+		treesitter_context = true,
 	},
 })
 
@@ -532,6 +541,7 @@ require("telescope").setup({
 			},
 		},
 		path_display = { "truncate" },
+		borderchars = { "─", "│", "─", "│", "┌", "┐", "┘", "└" },
 	},
 	pickers = {
 		live_grep = {
@@ -556,6 +566,11 @@ vim.keymap.set("n", "<leader>ss", function()
 	require("telescope.builtin").current_buffer_fuzzy_find(require("telescope.themes").get_dropdown({
 		winblend = 10,
 		previewer = false,
+		borderchars = {
+			prompt = { "─", "│", " ", "│", "┌", "┐", "│", "│" },
+			results = { "─", "│", "─", "│", "├", "┤", "┘", "└" },
+			preview = { "─", "│", "─", "│", "┌", "┐", "┘", "└" },
+		},
 	}))
 end, { desc = "[S]earch [S]earch: Fuzzily search in current buffer" })
 
@@ -906,11 +921,9 @@ cmp.setup({
 	window = {
 		completion = cmp.config.window.bordered({
 			border = "single",
-			winhighlight = "Normal:NormalFloat,FloatBorder:FloatBorder,CursorLine:PmenuSel",
 		}),
 		documentation = cmp.config.window.bordered({
 			border = "single",
-			winhighlight = "Normal:NormalFloat,FloatBorder:FloatBorder,CursorLine:PmenuSel",
 		}),
 	},
 	formatting = {
@@ -1039,8 +1052,24 @@ require("dressing").setup({
 			winblend = 0,
 		},
 		border = "single",
-		winhighlight = "Normal:NormalFloat,FloatBorder:FloatBorder,CursorLine:PmenuSel",
+	},
+	select = {
+		telescope = require("telescope.themes").get_dropdown({
+			borderchars = {
+				prompt = { "─", "│", " ", "│", "┌", "┐", "│", "│" },
+				results = { "─", "│", "─", "│", "├", "┤", "┘", "└" },
+				preview = { "─", "│", "─", "│", "┌", "┐", "┘", "└" },
+			},
+		}),
 	},
 })
+
+-- Harpoon setup
+require("harpoon").setup({
+	menu = {
+		borderchars = { "─", "│", "─", "│", "┌", "┐", "┘", "└" },
+	},
+})
+
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et
