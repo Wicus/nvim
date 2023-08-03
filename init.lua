@@ -39,7 +39,6 @@ require("packer").startup(function(use)
 			"hrsh7th/cmp-nvim-lsp",
 			"f3fora/cmp-spell",
 			"saadparwaiz1/cmp_luasnip",
-			"hrsh7th/cmp-nvim-lsp-signature-help",
 		},
 	})
 
@@ -973,7 +972,6 @@ cmp.setup({
 		{ name = "nvim_lsp" },
 		{ name = "spell" },
 		{ name = "nvim_lua" },
-		{ name = "nvim_lsp_signature_help" },
 	},
 })
 
