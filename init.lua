@@ -106,6 +106,7 @@ require("packer").startup(function(use)
 		end,
 	})
 	use("stevearc/oil.nvim") -- A vim-vinegar like file explorer that lets you edit your filesystem like a normal Neovim buffer.
+	use("folke/flash.nvim") -- Navigate your code with search labels, enhanced character motions, and Treesitter integration.
 
 	-- Add custom plugins to packer from ~/.config/nvim/lua/custom/plugins.lua
 	local has_plugins, plugins = pcall(require, "custom.plugins")
@@ -252,7 +253,7 @@ require("catppuccin").setup({
 			WhichKey = { bg = colors.mantle },
 			WhichKeyFloat = { bg = colors.mantle },
 			TreesitterContext = { bg = colors.mantle },
-			TreesitterContextLineNumber = { fg = colors.red },
+			TreesitterContextLineNumber = { bg = colors.mantle, fg = colors.red },
 			NormalFloat = { bg = colors.none },
 		}
 	end,
@@ -266,6 +267,7 @@ require("catppuccin").setup({
 		harpoon = true,
 		which_key = true,
 		treesitter_context = true,
+		flash = false,
 	},
 })
 
@@ -1068,6 +1070,9 @@ require("harpoon").setup({
 		borderchars = { "─", "│", "─", "│", "┌", "┐", "┘", "└" },
 	},
 })
+
+-- Flash setup
+require("flash").setup()
 
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et
