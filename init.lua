@@ -212,6 +212,7 @@ vim.opt.splitright = true
 -- Set guifont
 vim.opt.guifont = "Consolas:h9"
 
+-- Line wrap
 vim.opt.wrap = false
 
 -- Linux line endings
@@ -318,10 +319,10 @@ vim.keymap.set("n", "<C-i>", "<C-i>zz")
 vim.keymap.set("n", "<C-o>", "<C-o>zz")
 
 -- Window navigation
-vim.keymap.set("n", "<C-h>", "<C-w>h")
-vim.keymap.set("n", "<C-j>", "<C-w>j")
-vim.keymap.set("n", "<C-k>", "<C-w>k")
-vim.keymap.set("n", "<C-l>", "<C-w>l")
+vim.keymap.set("n", "<leader>h", "<C-w>h")
+vim.keymap.set("n", "<leader>j", "<C-w>j")
+vim.keymap.set("n", "<leader>k", "<C-w>k")
+vim.keymap.set("n", "<leader>l", "<C-w>l")
 
 -- File tree navigation
 vim.keymap.set("n", "-", require("oil").open, { desc = "[-] Open parent directory" })
@@ -366,12 +367,8 @@ vim.keymap.set("n", "<leader>sq", ":cdo s//gcI<Left><Left><Left><Left>", { desc 
 vim.keymap.set("n", "<leader>sr", require("spectre").open, { desc = "[S]earch and [R]eplace" })
 
 -- Quickfix
-vim.keymap.set("n", "[f", "<cmd>cprevious<cr>zz")
-vim.keymap.set("n", "]f", "<cmd>cnext<cr>zz")
-
--- Location list
-vim.keymap.set("n", "[s", vim.cmd.lprevious)
-vim.keymap.set("n", "]s", vim.cmd.lnext)
+vim.keymap.set("n", "<C-p>", "<cmd>cprevious<cr>zz")
+vim.keymap.set("n", "<C-n>", "<cmd>cnext<cr>zz")
 
 -- Stay in visual mode after indenting
 vim.keymap.set("v", "<", "<gv")
@@ -563,17 +560,8 @@ end, { desc = "[F]ile [R]ecent: Find recently opened files" })
 
 vim.keymap.set("n", "<leader>bb", require("telescope.builtin").buffers, { desc = "[B]uffers [B]uffers: Find existing buffers" })
 vim.keymap.set("n", "<leader>ss", function()
-	-- You can pass additional configuration to telescope to change theme, layout, etc.
-	require("telescope.builtin").current_buffer_fuzzy_find(require("telescope.themes").get_dropdown({
-		winblend = 10,
-		previewer = false,
-		borderchars = {
-			prompt = { "─", "│", " ", "│", "┌", "┐", "│", "│" },
-			results = { "─", "│", "─", "│", "├", "┤", "┘", "└" },
-			preview = { "─", "│", "─", "│", "┌", "┐", "┘", "└" },
-		},
-	}))
-end, { desc = "[S]earch [S]earch: Fuzzily search in current buffer" })
+	vim.cmd("vimgrep /" .. vim.fn.expand("<cword>") .. "/j %")
+end, { desc = "[S]earch [S]earch: Buffer search to quick list" })
 
 local glob_pattern = {
 	"!src/shared/dygraphs/**",
@@ -950,7 +938,7 @@ cmp.setup({
 			behavior = cmp.ConfirmBehavior.Replace,
 			select = true,
 		}),
-		["<C-j>"] = cmp.mapping(function(fallback)
+		["<C-n>"] = cmp.mapping(function(fallback)
 			if cmp.visible() then
 				cmp.select_next_item()
 			elseif luasnip.expand_or_jumpable() then
@@ -959,7 +947,7 @@ cmp.setup({
 				fallback()
 			end
 		end, { "i", "s" }),
-		["<C-k>"] = cmp.mapping(function(fallback)
+		["<C-p>"] = cmp.mapping(function(fallback)
 			if cmp.visible() then
 				cmp.select_prev_item()
 			elseif luasnip.jumpable(-1) then
