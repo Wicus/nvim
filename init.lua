@@ -256,6 +256,7 @@ require("catppuccin").setup({
 			TreesitterContext = { bg = colors.mantle },
 			TreesitterContextLineNumber = { bg = colors.mantle, fg = colors.red },
 			NormalFloat = { bg = colors.none },
+			VertSplit = { fg = colors.mantle, bg = colors.mantle },
 		}
 	end,
 	integrations = {
@@ -284,6 +285,7 @@ vim.diagnostic.config({ float = { border = "single" } })
 -- See `:help mapleader`
 --  NOTE: Must happen before plugins are required (otherwise wrong leader will be used)
 vim.g.mapleader = " "
+vim.g.maplocalleader = "\\"
 
 -- Keymaps for better default experience
 -- See `:help vim.keymap.set()`
@@ -393,7 +395,7 @@ vim.keymap.set("n", "<C-Right>", function()
 	vim.cmd("vertical resize +2")
 end)
 
-vim.keymap.set("n", "<leader>q", function()
+vim.keymap.set("n", "<localleader>q", function()
 	for _, win in ipairs(vim.fn.getwininfo()) do
 		if win.quickfix == 1 then
 			vim.cmd.cclose()
@@ -401,7 +403,7 @@ vim.keymap.set("n", "<leader>q", function()
 		end
 	end
 
-	vim.cmd.copen()
+	vim.cmd("botright copen")
 end, { desc = "[Q]uickfix toggle" })
 
 vim.keymap.set("n", "<leader>zf", function()
@@ -561,6 +563,7 @@ end, { desc = "[F]ile [R]ecent: Find recently opened files" })
 vim.keymap.set("n", "<leader>bb", require("telescope.builtin").buffers, { desc = "[B]uffers [B]uffers: Find existing buffers" })
 vim.keymap.set("n", "<leader>ss", function()
 	vim.cmd("vimgrep /" .. vim.fn.expand("<cword>") .. "/j %")
+	vim.cmd("botright copen")
 end, { desc = "[S]earch [S]earch: Buffer search to quick list" })
 
 local glob_pattern = {
