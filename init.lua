@@ -144,6 +144,10 @@ vim.api.nvim_create_autocmd("BufWritePost", {
 -- See `:help vim.opt`
 
 vim.g.copilot_filetypes = { TelescopePrompt = false, text = false }
+vim.g.undotree_WindowLayout = 2
+vim.g.undotree_SplitWidth = 35
+vim.g.undotree_DiffpanelHeight = 15
+vim.g.undotree_SetFocusWhenToggle = 1
 
 vim.opt.laststatus = 3 -- Always show statusline
 
@@ -164,10 +168,9 @@ vim.opt.relativenumber = true
 vim.opt.breakindent = true
 
 -- Enable / Disable backup files
+vim.opt.swapfile = false
 vim.opt.backup = true
-vim.opt.backupdir = "C:\\Users\\Wicus Pretorius\\nvim-backup-folder"
-vim.opt.swapfile = true
-vim.opt.directory = "C:\\Users\\Wicus Pretorius\\nvim-swap-folder"
+vim.opt.backupdir = "~/nvim-backup-folder"
 
 -- Save undo history
 vim.opt.undofile = true
@@ -1028,8 +1031,11 @@ require("no-neck-pain").setup({
 		},
 		scratchPad = {
 			enabled = false,
-			fileName = "scratch",
 		},
+	},
+	mappings = {
+		enabled = true,
+		toggle = "<leader>np",
 	},
 })
 
