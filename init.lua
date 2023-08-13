@@ -175,7 +175,7 @@ vim.opt.breakindent = true
 -- Enable / Disable backup files
 vim.opt.swapfile = false
 vim.opt.backup = true
-vim.opt.backupdir = "~/nvim-backup-folder"
+vim.opt.backupdir = vim.fn.expand("~/nvim-backup-folder")
 
 -- Save undo history
 vim.opt.undofile = true
@@ -679,7 +679,7 @@ require("nvim-treesitter.configs").setup({
 		"lua",
 		"vim",
 		-- Other
-		"help",
+		-- "help",
 		"markdown",
 		"markdown_inline",
 	},
