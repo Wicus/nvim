@@ -78,10 +78,15 @@ require("packer").startup(function(use)
 	use({ "nvim-telescope/telescope.nvim", branch = "0.1.x" })
 
 	-- Fuzzy Finder Algorithm which requires local dependencies to be built. Only load if `make` is available
-	use({
-		"nvim-telescope/telescope-fzf-native.nvim",
-		run = "cmake -S. -Bbuild -DCMAKE_BUILD_TYPE=Release && cmake --build build --config Release && cmake --install build --prefix build",
-	})
+	if vim.fn.has("unix") then
+		use({ "nvim-telescope/telescope-fzf-native.nvim", run = "make", cond = vim.fn.executable("make") == 1 })
+	end
+	if vim.fn.has("win32") then
+		use({
+			"nvim-telescope/telescope-fzf-native.nvim",
+			run = "cmake -S. -Bbuild -DCMAKE_BUILD_TYPE=Release && cmake --build build --config Release && cmake --install build --prefix build",
+		})
+	end
 
 	use("nvim-treesitter/nvim-treesitter-context")
 	use("stevearc/dressing.nvim") -- Extend core UI hooks (vim.ui.select and vim.ui.input) with floating windows
@@ -220,6 +225,23 @@ vim.opt.wrap = false
 
 -- Linux line endings
 vim.opt.fileformats = "unix,dos"
+
+-- Set clipboard in wsl to be able to copy to windows and wsl clipboard
+-- See `:help clipboard`
+if vim.fn.has("wsl") == 1 then
+	vim.g.clipboard = {
+		name = "WslClipboard",
+		copy = {
+			["+"] = "clip.exe",
+			["*"] = "clip.exe",
+		},
+		paste = {
+			["+"] = 'powershell.exe -c [Console]::Out.Write($(Get-Clipboard -Raw).tostring().replace("`r", ""))',
+			["*"] = 'powershell.exe -c [Console]::Out.Write($(Get-Clipboard -Raw).tostring().replace("`r", ""))',
+		},
+		cache_enabled = 0,
+	}
+end
 
 require("catppuccin").setup({
 	flavour = "mocha", -- latte, frappe, macchiato, mocha
@@ -833,7 +855,7 @@ local servers = {
 		-- enable_roslyn_analyzers = true,
 	},
 	jsonls = {},
-	intelephense = {},
+	-- intelephense = {},
 	html = {},
 	cssls = {},
 	tailwindcss = {},
@@ -973,6 +995,13 @@ cmp.setup({
 
 -- Snippets
 require("luasnip.loaders.from_vscode").lazy_load()
+
+-- TODO: Make this auto install with mason
+local formatters = {
+	"stylua",
+	"prettierd",
+	"clang-format",
+}
 
 -- Formatter setup
 require("formatter").setup({
