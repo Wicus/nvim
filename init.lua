@@ -228,7 +228,7 @@ vim.opt.fileformats = "unix,dos"
 
 -- Set clipboard in wsl to be able to copy to windows and wsl clipboard
 -- See `:help clipboard`
-if vim.fn.has("wsl") == 1 then
+if vim.fn.has("wsl") then
 	vim.g.clipboard = {
 		name = "WslClipboard",
 		copy = {
