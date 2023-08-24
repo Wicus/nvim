@@ -138,12 +138,12 @@ if is_bootstrap then
 end
 
 -- Automatically source and re-compile packer whenever you save this init.lua
--- local packer_group = vim.api.nvim_create_augroup("Packer", { clear = true })
--- vim.api.nvim_create_autocmd("BufWritePost", {
--- 	command = "source <afile> | PackerCompile",
--- 	group = packer_group,
--- 	pattern = vim.fn.expand("$MYVIMRC"),
--- })
+local packer_group = vim.api.nvim_create_augroup("Packer", { clear = true })
+vim.api.nvim_create_autocmd("BufWritePost", {
+	command = "source <afile> | PackerCompile",
+	group = packer_group,
+	pattern = vim.fn.expand("$MYVIMRC"),
+})
 
 -- [[ Setting options ]]
 -- See `:help vim.opt`
@@ -565,7 +565,6 @@ require("telescope").setup({
 				["<Down>"] = require("telescope.actions").cycle_history_next,
 			},
 		},
-		path_display = { "truncate" },
 		borderchars = { "─", "│", "─", "│", "┌", "┐", "┘", "└" },
 	},
 	pickers = {
@@ -575,14 +574,8 @@ require("telescope").setup({
 			},
 		},
 		lsp_references = {
-			-- layout_strategy = "vertical",
-			-- layout_config = {
-			--   prompt_position = "top",
-			--   mirror=true,
-			-- },
-			-- fname_width = 0.5,
-			-- trim_text = true,
-			show_line = false,
+			-- path_display = { shorten = { len = 3, exclude = { 1, -1 } } },
+            path_display = { "hidden" },
 		},
 	},
 })
