@@ -224,7 +224,7 @@ vim.opt.guifont = "Consolas:h9"
 vim.opt.wrap = false
 
 -- Linux line endings
-vim.opt.fileformats = "unix,dos"
+-- vim.opt.fileformats = "unix,dos"
 
 -- Set clipboard in wsl to be able to copy to windows and wsl clipboard
 -- See `:help clipboard`
@@ -472,9 +472,9 @@ vim.api.nvim_create_autocmd("BufWritePost", {
 		"*.tsx",
 		"*.ts", --[[ "*.jsx", "*.js", ]]
 		"*.lua",
-		"*.cs",
-		"*.cpp",
-		"*.hpp",
+		-- "*.cs",
+		-- "*.cpp",
+		-- "*.hpp",
 		"*.json",
 	},
 })
