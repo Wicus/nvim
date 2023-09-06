@@ -628,7 +628,7 @@ vim.keymap.set("n", "<leader>*", function()
 	require("telescope.builtin").live_grep({
 		default_text = get_work_under_cursor(),
 		glob_pattern = glob_pattern,
-		additional_args = { "--case-sensitive", "--word-regexp" },
+		additional_args = { "--case-sensitive", "--fixed-strings" },
 	})
 end, { desc = "[*]: Search current word in project (Case Sensitive)" })
 
@@ -636,7 +636,7 @@ vim.keymap.set("v", "<leader>*", function()
 	require("telescope.builtin").live_grep({
 		default_text = get_visual_selected(),
 		glob_pattern = glob_pattern,
-		additional_args = { "--case-sensitive" },
+		additional_args = { "--fixed-strings" },
 	})
 end, { desc = "[*]: Search current word in project (Case Sensitive) (Word Boundary)" })
 
