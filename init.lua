@@ -102,6 +102,7 @@ require("packer").startup(function(use)
 	use("Vonr/align.nvim") -- A minimal plugin for aligning lines
 	use("norcalli/nvim-colorizer.lua") -- Highlight color codes in files
 	use("nvim-pack/nvim-spectre") -- A code search and replace tool
+	use("echasnovski/mini.trailspace") -- Work with trailing whitespaces
 	use({
 		"folke/which-key.nvim",
 		config = function()
@@ -280,8 +281,10 @@ require("catppuccin").setup({
 			WhichKeyFloat = { bg = colors.mantle },
 			TreesitterContext = { bg = colors.mantle },
 			TreesitterContextLineNumber = { bg = colors.mantle, fg = colors.red },
+			TreesitterContextBottom = { style = {} },
 			NormalFloat = { bg = colors.none },
 			VertSplit = { fg = colors.mantle, bg = colors.mantle },
+			MiniTrailspace = { bg = colors.red },
 		}
 	end,
 	integrations = {
@@ -575,7 +578,7 @@ require("telescope").setup({
 		},
 		lsp_references = {
 			-- path_display = { shorten = { len = 3, exclude = { 1, -1 } } },
-            path_display = { "hidden" },
+			path_display = { "hidden" },
 		},
 	},
 })
@@ -1102,6 +1105,9 @@ require("harpoon").setup({
 
 -- Flash setup
 require("flash").setup()
+
+-- Mini TrailSpace setup
+require("mini.trailspace").setup()
 
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et
