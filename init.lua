@@ -438,15 +438,20 @@ vim.keymap.set("n", "<leader>zf", function()
 	vim.cmd.normal("va}")
 	vim.cmd.normal("zf")
 end, { desc = "Create bracket {} fold [Z] [F]old" })
+
 -- Align commands
--- Aligns to a string, looking left and with previews
+vim.keymap.set("x", "aa", function()
+	require("align").align_to_char(1, true)
+end) -- Aligns to 1 character, looking left
+vim.keymap.set("x", "as", function()
+	require("align").align_to_char(2, true, true)
+end) -- Aligns to 2 characters, looking left and with previews
 vim.keymap.set("x", "aw", function()
 	require("align").align_to_string(false, true, true)
-end)
--- What does this do? Remove
-vim.keymap.set("n", "<leader>aw", function()
-	require("align").operator(require("align").align_to_string, { is_pattern = false, reverse = true, preview = true })
-end, { desc = "[A]lign [W]ith" })
+end) -- Aligns to a string, looking left and with previews
+vim.keymap.set("x", "ar", function()
+	require("align").align_to_string(true, true, true)
+end) -- Aligns to a Lua pattern, looking left and with previews
 
 vim.api.nvim_create_user_command("Wa", "wa", { desc = "[W]rite [A]ll" })
 vim.keymap.set("n", "<leader>wa", vim.cmd.wa, { desc = "[W]rite [A]ll" })
@@ -605,6 +610,7 @@ local glob_pattern = {
 vim.keymap.set("n", "<leader>/", function()
 	require("telescope.builtin").live_grep({
 		glob_pattern = glob_pattern,
+		additional_args = { "--fixed-strings" },
 	})
 end, { desc = "[/]: Search in project (Smart Case)" })
 
@@ -628,7 +634,7 @@ vim.keymap.set("n", "<leader>*", function()
 	require("telescope.builtin").live_grep({
 		default_text = get_work_under_cursor(),
 		glob_pattern = glob_pattern,
-		additional_args = { "--case-sensitive", "--fixed-strings" },
+		additional_args = { "--case-sensitive", "--fixed-strings", "--word-regexp" },
 	})
 end, { desc = "[*]: Search current word in project (Case Sensitive)" })
 
@@ -636,7 +642,7 @@ vim.keymap.set("v", "<leader>*", function()
 	require("telescope.builtin").live_grep({
 		default_text = get_visual_selected(),
 		glob_pattern = glob_pattern,
-		additional_args = { "--fixed-strings" },
+		additional_args = { "--case-sensitive", "--fixed-strings", "--word-regexp" },
 	})
 end, { desc = "[*]: Search current word in project (Case Sensitive) (Word Boundary)" })
 
