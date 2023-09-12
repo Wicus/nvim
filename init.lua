@@ -7,6 +7,8 @@ if vim.fn.empty(vim.fn.glob(install_path)) > 0 then
 	vim.cmd.packadd("packer.nvim")
 end
 
+local is_windows = string.lower(vim.loop.os_uname().sysname) == "windows_nt"
+
 require("packer").startup(function(use)
 	-- Package manager
 	use("wbthomason/packer.nvim")
@@ -78,14 +80,13 @@ require("packer").startup(function(use)
 	use({ "nvim-telescope/telescope.nvim", branch = "0.1.x" })
 
 	-- Fuzzy Finder Algorithm which requires local dependencies to be built. Only load if `make` is available
-	if vim.fn.has("unix") then
-		use({ "nvim-telescope/telescope-fzf-native.nvim", run = "make", cond = vim.fn.executable("make") == 1 })
-	end
-	if vim.fn.has("win32") then
+	if is_windows then
 		use({
 			"nvim-telescope/telescope-fzf-native.nvim",
 			run = "cmake -S. -Bbuild -DCMAKE_BUILD_TYPE=Release && cmake --build build --config Release && cmake --install build --prefix build",
 		})
+	else
+		use({ "nvim-telescope/telescope-fzf-native.nvim", run = "make", cond = vim.fn.executable("make") == 1 })
 	end
 
 	use("nvim-treesitter/nvim-treesitter-context")
@@ -844,6 +845,20 @@ end
 --
 --  Add any additional override configuration in the following tables. They will be passed to
 --  the `settings` field of the server config. You must look up that documentation yourself.
+
+local get_omnisharp_settings = function()
+	-- enable_roslyn_analyzers = true,
+	local settings = {
+		handlers = { ["textDocument/definition"] = require("omnisharp_extended").handler },
+	}
+	if is_windows then
+		settings = vim.tbl_deep_extend("force", settings, {
+			cmd = { "cmd", "/c", "omnisharp" },
+		})
+	end
+	return settings
+end
+
 local servers = {
 	lua_ls = {
 		settings = {
@@ -861,11 +876,7 @@ local servers = {
 		},
 	},
 	pyright = {},
-	omnisharp = {
-		cmd = { "cmd", "/c", "omnisharp" },
-		handlers = { ["textDocument/definition"] = require("omnisharp_extended").handler },
-		-- enable_roslyn_analyzers = true,
-	},
+	omnisharp = get_omnisharp_settings(),
 	jsonls = {},
 	-- intelephense = {},
 	html = {},
