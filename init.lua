@@ -479,11 +479,13 @@ vim.api.nvim_create_autocmd("BufWritePost", {
 	group = formatting_group,
 	pattern = {
 		"*.tsx",
-		"*.ts", --[[ "*.jsx", "*.js", ]]
+		"*.ts",
+		"*.jsx",
+		"*.js",
 		"*.lua",
-		-- "*.cs",
-		-- "*.cpp",
-		-- "*.hpp",
+		"*.cs",
+		"*.cpp",
+		"*.hpp",
 		"*.json",
 	},
 })
@@ -517,10 +519,10 @@ require("lualine").setup({
 require("Comment").setup()
 
 -- Enable `lukas-reineke/indent-blankline.nvim`
--- See `:help indent_blankline.txt`
-require("indent_blankline").setup({
-	char = "┊",
-	show_trailing_blankline_indent = false,
+-- See `:help ibl.txt`
+require("ibl").setup({
+	indent = { char = "┊" },
+	scope = { enabled = false },
 })
 
 -- Gitsigns
@@ -614,13 +616,6 @@ vim.keymap.set("n", "<leader>/", function()
 		additional_args = { "--fixed-strings" },
 	})
 end, { desc = "[/]: Search in project (Smart Case)" })
-
-vim.keymap.set("n", "<leader>?", function()
-	require("telescope.builtin").live_grep({
-		glob_pattern = glob_pattern,
-		additional_args = { "--case-sensitive" },
-	})
-end, { desc = "[?]: Search in project (Case Sensitive)" })
 
 local function get_visual_selected()
 	vim.cmd('normal "vy')
