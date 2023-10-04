@@ -877,6 +877,7 @@ local servers = {
 	html = {},
 	cssls = {},
 	tailwindcss = {},
+	lemminx = {},
 
 	-- gopls = {},
 	-- rust_analyzer = {},
@@ -1036,6 +1037,7 @@ require("formatter").setup({
 		cs = vim.lsp.buf.format,
 		python = vim.lsp.buf.format,
 		json = { require("formatter.filetypes.json").prettierd },
+		xml = vim.lsp.buf.format,
 	},
 })
 
