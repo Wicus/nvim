@@ -225,8 +225,11 @@ vim.opt.guifont = "Consolas:h9"
 -- Line wrap
 vim.opt.wrap = false
 
--- Linux line endings
--- vim.opt.fileformats = "unix,dos"
+-- Set shell to pwsh
+-- vim.opt.shell = "pwsh"
+-- vim.opt.shellcmdflag = "-NoLogo -NoProfile -ExecutionPolicy RemoteSigned -Command"
+-- vim.opt.shellquote = ""
+-- vim.opt.shellxquote = ""
 
 -- Set clipboard in wsl to be able to copy to windows and wsl clipboard
 -- See `:help clipboard`
@@ -458,6 +461,43 @@ vim.api.nvim_create_user_command("Wa", "wa", { desc = "[W]rite [A]ll" })
 vim.keymap.set("n", "<leader>wa", vim.cmd.wa, { desc = "[W]rite [A]ll" })
 vim.keymap.set("n", "<leader>u", vim.cmd.UndotreeToggle, { desc = "[U]ndo tree" })
 
+vim.keymap.set("n", "<leader>fu", function()
+	vim.opt.fileformat = "unix"
+end, { desc = "[F]ile [U]nix: Set file format to unix" })
+
+-- Tab navigation
+-- vim.keymap.set({ "i", "n", "v", "t" }, "<A-h>", function()
+-- 	vim.cmd.tabnext(1)
+-- end, { desc = "Go to tab 1" })
+-- vim.keymap.set({ "i", "n", "v", "t" }, "<A-j>", function()
+-- 	vim.cmd.tabnext(2)
+-- end, { desc = "Go to tab 2" })
+-- vim.keymap.set({ "i", "n", "v", "t" }, "<A-k>", function()
+-- 	vim.cmd.tabnext(3)
+-- end, { desc = "Go to tab 3" })
+-- vim.keymap.set({ "i", "n", "v", "t" }, "<A-l>", function()
+-- 	vim.cmd.tabnext(4)
+-- end, { desc = "Go to tab 4" })
+-- vim.keymap.set({ "i", "n", "v", "t" }, "<A-;>", function()
+-- 	if vim.fn.mode() == "t" then
+-- 		vim.api.nvim_feedkeys("<C-\\><C-n>", "n", true)
+-- 	end
+-- 	vim.cmd.tabnext(5)
+-- end, { desc = "Go to tab 5" })
+--
+-- vim.keymap.set({ "i", "n", "v", "t" }, "<C-t>", function()
+-- 	if vim.fn.mode() == "t" then
+-- 		vim.api.nvim_feedkeys("<C-\\><C-n>", "n", true)
+-- 	end
+-- 	vim.cmd.tabnew()
+-- end, { desc = "New tab" })
+-- vim.keymap.set({ "i", "n", "v", "t" }, "<C-w>", function()
+-- 	if vim.fn.mode() == "t" then
+-- 		vim.api.nvim_feedkeys("<C-\\><C-n>", "n", true)
+-- 	end
+-- 	vim.cmd.tabclose()
+-- end, { desc = "Close tab" })
+
 -- [[ Autocommands ]]
 -- Highlight on yank
 -- See `:help vim.highlight.on_yank()`
@@ -490,11 +530,14 @@ vim.api.nvim_create_autocmd("BufWritePost", {
 	},
 })
 
+-- [[ User Commands ]]
+-- see `:help vim.api.nvim_create_user_command()`
 vim.api.nvim_create_user_command("Dark", function(_)
 	vim.cmd.highlight("Normal guibg=none")
 	vim.cmd.highlight("NormalFloat guibg=none")
 end, { desc = "Dark background" })
 
+-- [[ Plugins setup ]]
 -- Set lualine as statusline
 -- See `:help lualine.txt`
 require("lualine").setup({
@@ -586,7 +629,8 @@ require("telescope").setup({
 		},
 		lsp_references = {
 			-- path_display = { shorten = { len = 3, exclude = { 1, -1 } } },
-			path_display = { "hidden" },
+			-- path_display = { "hidden" },
+			path_display = { "tail" },
 		},
 	},
 })
@@ -1122,6 +1166,12 @@ require("flash").setup()
 
 -- Mini TrailSpace setup
 require("mini.trailspace").setup()
+
+-- Treesitter Context setup
+require("treesitter-context").setup({
+	enable = true,
+	max_lines = 3, -- How many lines the window should span. Values <= 0 mean no limit.
+})
 
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et
