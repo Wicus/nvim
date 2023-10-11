@@ -225,6 +225,9 @@ vim.opt.guifont = "Consolas:h9"
 -- Line wrap
 vim.opt.wrap = false
 
+-- File Format
+vim.opt.fileformat = "unix"
+
 -- Set shell to pwsh
 -- vim.opt.shell = "pwsh"
 -- vim.opt.shellcmdflag = "-NoLogo -NoProfile -ExecutionPolicy RemoteSigned -Command"
