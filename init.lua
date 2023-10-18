@@ -237,6 +237,8 @@ vim.opt.fileformat = "unix"
 -- Set clipboard in wsl to be able to copy to windows and wsl clipboard
 -- See `:help clipboard`
 if vim.fn.has("wsl") then
+    -- Command to fix interpreter not found (https://github.com/microsoft/WSL/issues/5466):
+    -- `sudo update-binfmts --disable cli`
 	vim.g.clipboard = {
 		name = "WslClipboard",
 		copy = {
