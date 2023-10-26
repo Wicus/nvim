@@ -165,7 +165,7 @@ vim.opt.shiftwidth = 4
 vim.opt.expandtab = true
 
 -- Set highlight on search
-vim.opt.hlsearch = false
+vim.opt.hlsearch = true
 
 -- Make line numbers default
 vim.wo.number = true
@@ -395,9 +395,9 @@ vim.keymap.set("n", "<leader>ti", vim.cmd.IlluminateToggle, { desc = "[T]oggle [
 vim.keymap.set("n", "<leader>ts", function()
 	vim.cmd.set("invspell")
 end, { desc = "[T]oggle [S]pell" })
-vim.keymap.set("n", "<leader>th", function()
+vim.keymap.set("n", "<leader>nh", function()
 	vim.opt.hlsearch = not vim.opt.hlsearch:get()
-end, { desc = "[T]oggle [H]ighlight search" })
+end, { desc = "[N]o [H]ighlight (toggle)" })
 
 -- Search and replace commands
 vim.keymap.set("n", "<leader>sa", "*N", { desc = "[S]earch [A]round word in buffer" })
@@ -413,10 +413,7 @@ vim.keymap.set("n", "<C-n>", "<cmd>cnext<cr>zz")
 vim.keymap.set("v", "<", "<gv")
 vim.keymap.set("v", ">", ">gv")
 
-vim.keymap.set("n", "<leader>zm", vim.cmd.NoNeckPain, { desc = "[Z]en [M]ode Toggle" })
-
-vim.keymap.set("n", "<leader>ff", vim.cmd.FormatWriteLock, { desc = "[F]ormat buffer" })
-vim.keymap.set("v", "<leader>ff", vim.cmd.FormatWriteLock, { desc = "[F]ormat buffer" })
+vim.keymap.set("n", "<leader>zm", vim.cmd.NoNeckPain, { desc = "[Z]en [M]ode toggle (NoNeckPain)" })
 
 -- Resize window
 vim.keymap.set("n", "<C-Up>", function()
@@ -691,11 +688,14 @@ vim.keymap.set("v", "<leader>*", function()
 	})
 end, { desc = "[*]: Search current word in project (Case Sensitive) (Word Boundary)" })
 
-vim.keymap.set("n", "<leader>sf", require("telescope.builtin").find_files, { desc = "[S]earch [F]iles" })
-vim.keymap.set("n", "<leader>sG", require("telescope.builtin").git_files, { desc = "[S]earch [G]it files" })
-vim.keymap.set("n", "<leader>sg", require("telescope.builtin").git_status, { desc = "[S]earch [G]it status" })
+vim.keymap.set("n", "<leader>ff", require("telescope.builtin").find_files, { desc = "[F]ind [F]iles" })
+vim.keymap.set("n", "<leader>fF", require("telescope.builtin").git_files, { desc = "[F]ind [F]iles with git" })
+vim.keymap.set("n", "<leader>fg", require("telescope.builtin").git_status, { desc = "[F]ind [G]it status" })
+vim.keymap.set("n", "<leader>fl", require("telescope.builtin").resume, { desc = "[F]ind [L]ast session (resume)" })
+vim.keymap.set("n", "<leader>fo", vim.cmd.FormatWriteLock, { desc = "[Fo]rmat buffer" })
+vim.keymap.set("v", "<leader>fo", vim.cmd.FormatWriteLock, { desc = "[Fo]rmat buffer" })
+
 vim.keymap.set("n", "<leader><space>", require("telescope.builtin").commands, { desc = "[ ]: Open neovim commands" })
-vim.keymap.set("n", "<leader>sl", require("telescope.builtin").resume, { desc = "Resume [S]earch [L]ist" })
 
 -- Diagnostic keymaps
 vim.keymap.set("n", "<leader>dl", vim.diagnostic.setloclist, { desc = "[D]iagnostic [L]ist" })
@@ -1108,10 +1108,22 @@ require("illuminate").configure({
 require("colorizer").setup()
 
 -- Oil setup
+local oil_keymaps = {
+	["q"] = "actions.close",
+}
+
+if is_windows then
+	oil_keymaps["<leader>-"] = {
+		callback = function()
+			vim.cmd("!explorer " .. require("oil").get_current_dir())
+		end,
+		desc = "Open parent directory in explorer",
+		silent = true,
+	}
+end
+
 require("oil").setup({
-	keymaps = {
-		["q"] = "actions.close",
-	},
+	keymaps = oil_keymaps,
 })
 
 -- No neck pain setup
@@ -1177,6 +1189,10 @@ require("treesitter-context").setup({
 	enable = true,
 	max_lines = 3, -- How many lines the window should span. Values <= 0 mean no limit.
 })
+
+-- Spectre config
+local spectre_sed_args = require("spectre.config").replace_engine.sed.args
+spectre_sed_args[#spectre_sed_args + 1] = "-b"
 
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et
