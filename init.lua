@@ -237,8 +237,8 @@ vim.opt.fileformat = "unix"
 -- Set clipboard in wsl to be able to copy to windows and wsl clipboard
 -- See `:help clipboard`
 if vim.fn.has("wsl") then
-    -- Command to fix interpreter not found (https://github.com/microsoft/WSL/issues/5466):
-    -- `sudo update-binfmts --disable cli`
+	-- Command to fix interpreter not found (https://github.com/microsoft/WSL/issues/5466):
+	-- `sudo update-binfmts --disable cli`
 	vim.g.clipboard = {
 		name = "WslClipboard",
 		copy = {
@@ -337,6 +337,7 @@ vim.keymap.set("x", "p", '"_dP')
 
 -- Copy to system clipboard
 vim.keymap.set("x", "<C-c>", '"+y')
+vim.keymap.set("x", "<leader>y", '"+y', { desc = "[Y]ank: Copy to system clipboard" })
 
 -- Cut to system clipboard
 vim.keymap.set("x", "<C-x>", '"+yD')
@@ -922,7 +923,7 @@ local servers = {
 	pyright = {},
 	omnisharp = get_omnisharp_settings(),
 	jsonls = {},
-	-- intelephense = {},
+	intelephense = {},
 	html = {},
 	cssls = {},
 	tailwindcss = {},
