@@ -113,7 +113,6 @@ require("packer").startup(function(use)
 		end,
 	})
 	use("stevearc/oil.nvim") -- A vim-vinegar like file explorer that lets you edit your filesystem like a normal Neovim buffer.
-	use("folke/flash.nvim") -- Navigate your code with search labels, enhanced character motions, and Treesitter integration.
 
 	-- Add custom plugins to packer from ~/.config/nvim/lua/custom/plugins.lua
 	local has_plugins, plugins = pcall(require, "custom.plugins")
@@ -147,15 +146,16 @@ vim.api.nvim_create_autocmd("BufWritePost", {
 	pattern = vim.fn.expand("$MYVIMRC"),
 })
 
--- [[ Setting options ]]
--- See `:help vim.opt`
-
+-- [[ Setting globals ]]
+-- See `:help vim.g`
 vim.g.copilot_filetypes = { TelescopePrompt = false, text = false }
 vim.g.undotree_WindowLayout = 2
 vim.g.undotree_SplitWidth = 35
 vim.g.undotree_DiffpanelHeight = 15
 vim.g.undotree_SetFocusWhenToggle = 1
 
+-- [[ Setting options ]]
+-- See `:help vim.opt`
 vim.opt.laststatus = 3 -- Always show statusline
 
 -- Sane defaults for tabs and spaces
@@ -228,12 +228,7 @@ vim.opt.wrap = false
 -- File Format
 vim.opt.fileformat = "unix"
 
--- Set shell to pwsh
--- vim.opt.shell = "pwsh"
--- vim.opt.shellcmdflag = "-NoLogo -NoProfile -ExecutionPolicy RemoteSigned -Command"
--- vim.opt.shellquote = ""
--- vim.opt.shellxquote = ""
-
+-- [[ Setting wsl clipboard ]]
 -- Set clipboard in wsl to be able to copy to windows and wsl clipboard
 -- See `:help clipboard`
 if vim.fn.has("wsl") then
@@ -306,7 +301,6 @@ require("catppuccin").setup({
 		harpoon = true,
 		which_key = true,
 		treesitter_context = true,
-		flash = false,
 	},
 })
 
@@ -407,8 +401,8 @@ vim.keymap.set("n", "<leader>sq", ":cdo s//gcI<Left><Left><Left><Left>", { desc 
 vim.keymap.set("n", "<leader>sr", require("spectre").open, { desc = "[S]earch and [R]eplace" })
 
 -- Quickfix
-vim.keymap.set("n", "<C-p>", "<cmd>cprevious<cr>zz")
-vim.keymap.set("n", "<C-n>", "<cmd>cnext<cr>zz")
+-- vim.keymap.set("n", "<C-p>", "<cmd>cprevious<cr>zz")
+-- vim.keymap.set("n", "<C-n>", "<cmd>cnext<cr>zz")
 
 -- Stay in visual mode after indenting
 vim.keymap.set("v", "<", "<gv")
@@ -689,12 +683,10 @@ vim.keymap.set("v", "<leader>*", function()
 	})
 end, { desc = "[*]: Search current word in project (Case Sensitive) (Word Boundary)" })
 
-vim.keymap.set("n", "<leader>ff", require("telescope.builtin").find_files, { desc = "[F]ind [F]iles" })
-vim.keymap.set("n", "<leader>fF", require("telescope.builtin").git_files, { desc = "[F]ind [F]iles with git" })
-vim.keymap.set("n", "<leader>fg", require("telescope.builtin").git_status, { desc = "[F]ind [G]it status" })
-vim.keymap.set("n", "<leader>fl", require("telescope.builtin").resume, { desc = "[F]ind [L]ast session (resume)" })
-vim.keymap.set("n", "<leader>fo", vim.cmd.FormatWriteLock, { desc = "[Fo]rmat buffer" })
-vim.keymap.set("v", "<leader>fo", vim.cmd.FormatWriteLock, { desc = "[Fo]rmat buffer" })
+vim.keymap.set("n", "<C-p>", require("telescope.builtin").find_files, { desc = "<C-p> Find Files" })
+vim.keymap.set("n", "<leader>gg", require("telescope.builtin").git_status, { desc = "[G][G]it files" })
+vim.keymap.set("n", "<leader>sl", require("telescope.builtin").resume, { desc = "[S]ession [L]ast (resume telescope)" })
+vim.keymap.set("n", "<leader>ff", vim.cmd.FormatWriteLock, { desc = "[F]ormat [F]ile" })
 
 vim.keymap.set("n", "<leader><space>", require("telescope.builtin").commands, { desc = "[ ]: Open neovim commands" })
 
@@ -1178,9 +1170,6 @@ require("harpoon").setup({
 		borderchars = { "─", "│", "─", "│", "┌", "┐", "┘", "└" },
 	},
 })
-
--- Flash setup
-require("flash").setup()
 
 -- Mini TrailSpace setup
 require("mini.trailspace").setup()
