@@ -55,9 +55,7 @@ require("packer").startup(function(use)
 	-- Highlight, edit, and navigate code
 	use({
 		"nvim-treesitter/nvim-treesitter",
-		run = function()
-			pcall(require("nvim-treesitter.install").update({ with_sync = true }))
-		end,
+		run = function() pcall(require("nvim-treesitter.install").update({ with_sync = true })) end,
 	})
 	use("RRethy/vim-illuminate")
 
@@ -104,6 +102,7 @@ require("packer").startup(function(use)
 	use("norcalli/nvim-colorizer.lua") -- Highlight color codes in files
 	use("nvim-pack/nvim-spectre") -- A code search and replace tool
 	use("echasnovski/mini.trailspace") -- Work with trailing whitespaces
+	use("echasnovski/mini.bufremove") -- Remove buffers
 	use({
 		"folke/which-key.nvim",
 		config = function()
@@ -331,10 +330,6 @@ vim.keymap.set("x", "p", '"_dP')
 
 -- Copy to system clipboard
 vim.keymap.set("x", "<C-c>", '"+y')
-vim.keymap.set("x", "<leader>y", '"+y', { desc = "[Y]ank: Copy to system clipboard" })
-
--- Cut to system clipboard
-vim.keymap.set("x", "<C-x>", '"+yD')
 
 -- Move lines up and down with J and K
 vim.keymap.set("v", "J", ":m '>+1<CR>gv=gv")
@@ -362,138 +357,96 @@ vim.keymap.set("n", "<C-l>", "<C-w>l")
 vim.keymap.set("n", "-", require("oil").open, { desc = "[-] Open parent directory" })
 
 -- Buffer commands
-vim.keymap.set("n", "<leader>bd", vim.cmd.bdelete, { desc = "[B]uffer [D]elete" })
-vim.keymap.set("n", "[b", vim.cmd.bprevious, { desc = "[B]uffer [P]revious" })
-vim.keymap.set("n", "]b", vim.cmd.bnext, { desc = "[B]uffer [N]ext" })
+vim.keymap.set("n", "<leader>bd", function()
+	local bd = require("mini.bufremove").delete
+	if vim.bo.modified then
+		local choice = vim.fn.confirm(("Save changes to %q?"):format(vim.fn.bufname()), "&Yes\n&No\n&Cancel")
+		if choice == 1 then -- Yes
+			vim.cmd.write()
+			bd(0)
+		elseif choice == 2 then -- No
+			bd(0, true)
+		end
+	else
+		bd(0)
+	end
+end, { desc = "[B]uffer [D]elete" })
 
 -- Harpoon keymaps
 vim.keymap.set("n", "<leader>fa", require("harpoon.mark").add_file, { desc = "[F]ile [A]dd: Harpoon add file" })
 vim.keymap.set("n", "<leader>0", require("harpoon.ui").toggle_quick_menu, { desc = "[0] Harpoon quick menu" })
-vim.keymap.set("n", "<leader>1", function()
-	require("harpoon.ui").nav_file(1)
-end, { desc = "[1] Harpoon goto file 1" })
-vim.keymap.set("n", "<leader>2", function()
-	require("harpoon.ui").nav_file(2)
-end, { desc = "[2] Harpoon goto file 2" })
-vim.keymap.set("n", "<leader>3", function()
-	require("harpoon.ui").nav_file(3)
-end, { desc = "[3] Harpoon goto file 3" })
-vim.keymap.set("n", "<leader>4", function()
-	require("harpoon.ui").nav_file(4)
-end, { desc = "[4] Harpoon goto file 4" })
-vim.keymap.set("n", "<leader>5", function()
-	require("harpoon.ui").nav_file(5)
-end, { desc = "[5] Harpoon goto file 5" })
+vim.keymap.set("n", "<leader>1", function() require("harpoon.ui").nav_file(1) end, { desc = "[1] Harpoon file 1" })
+vim.keymap.set("n", "<leader>2", function() require("harpoon.ui").nav_file(2) end, { desc = "[2] Harpoon file 2" })
+vim.keymap.set("n", "<leader>3", function() require("harpoon.ui").nav_file(3) end, { desc = "[3] Harpoon file 3" })
+vim.keymap.set("n", "<leader>4", function() require("harpoon.ui").nav_file(4) end, { desc = "[4] Harpoon file 4" })
+vim.keymap.set("n", "<leader>5", function() require("harpoon.ui").nav_file(5) end, { desc = "[5] Harpoon file 5" })
 
 -- Toggle commands
-vim.keymap.set("n", "<leader>ti", vim.cmd.IlluminateToggle, { desc = "[T]oggle [I]lluminate" })
-vim.keymap.set("n", "<leader>ts", function()
-	vim.cmd.set("invspell")
-end, { desc = "[T]oggle [S]pell" })
-vim.keymap.set("n", "<leader>nh", function()
-	vim.opt.hlsearch = not vim.opt.hlsearch:get()
-end, { desc = "[N]o [H]ighlight (toggle)" })
+vim.keymap.set("n", "<leader>ts", "<cmd>set invspell<cr>", { desc = "[T]oggle [S]pell" })
 
 -- Search and replace commands
-vim.keymap.set("n", "<leader>sa", "*N", { desc = "[S]earch [A]round word in buffer" })
-vim.keymap.set("n", "<leader>se", ":%s//gcI<Left><Left><Left><Left>", { desc = "[S]earch and [E]dit in buffer" })
+vim.keymap.set("n", "<leader>cgn", "*N", { desc = "[S]earch [A]round word in buffer" })
 vim.keymap.set("n", "<leader>sq", ":cdo s//gcI<Left><Left><Left><Left>", { desc = "[S]earch and edit in [Q]uickfix" })
 vim.keymap.set("n", "<leader>sr", require("spectre").open, { desc = "[S]earch and [R]eplace" })
 
 -- Quickfix
--- vim.keymap.set("n", "<C-p>", "<cmd>cprevious<cr>zz")
--- vim.keymap.set("n", "<C-n>", "<cmd>cnext<cr>zz")
 
 -- Stay in visual mode after indenting
 vim.keymap.set("v", "<", "<gv")
 vim.keymap.set("v", ">", ">gv")
 
-vim.keymap.set("n", "<leader>zm", vim.cmd.NoNeckPain, { desc = "[Z]en [M]ode toggle (NoNeckPain)" })
+vim.keymap.set("n", "<leader>zm", "<cmd>NoNeckPain<cr>", { desc = "[Z]en [M]ode (NoNeckPain)" })
 
 -- Resize window
-vim.keymap.set("n", "<C-Up>", function()
-	vim.cmd.resize("+2")
-end)
-vim.keymap.set("n", "<C-Down>", function()
-	vim.cmd.resize("-2")
-end)
-vim.keymap.set("n", "<C-Left>", function()
-	vim.cmd("vertical resize -2")
-end)
-vim.keymap.set("n", "<C-Right>", function()
-	vim.cmd("vertical resize +2")
-end)
+vim.keymap.set("n", "<C-Up>", "<cmd>resize +2<cr>")
+vim.keymap.set("n", "<C-Down>", "<cmd>resize -2<cr>")
+vim.keymap.set("n", "<C-Left>", "<cmd>vertical resize -2<cr>")
+vim.keymap.set("n", "<C-Right>", "<cmd>vertical resize +2<cr>")
 
-vim.keymap.set("n", "<localleader>q", function()
+local function is_quickfix_open()
 	for _, win in ipairs(vim.fn.getwininfo()) do
 		if win.quickfix == 1 then
-			vim.cmd.cclose()
-			return
+			return true
 		end
 	end
 
-	vim.cmd("botright copen")
+	return false
+end
+
+-- Quickfix
+vim.keymap.set("n", "<localleader>q", function()
+	if is_quickfix_open() then
+		vim.cmd("cclose")
+	else
+		vim.cmd("botright copen")
+	end
 end, { desc = "[Q]uickfix toggle" })
+vim.keymap.set("n", "<C-p>", function()
+	if is_quickfix_open() then
+		vim.cmd("cprevious")
+	else
+		require("telescope.builtin").find_files()
+	end
+end, { desc = "<C-p> Find Files" })
+vim.keymap.set("n", "<C-n>", function()
+	if is_quickfix_open() then
+		vim.cmd("cnext")
+	end
+end)
 
 vim.keymap.set("n", "<leader>zf", function()
 	vim.cmd.normal("va}")
 	vim.cmd.normal("zf")
 end, { desc = "Create bracket {} fold [Z] [F]old" })
 
+-- TODO
 -- Align commands
-vim.keymap.set("x", "aa", function()
-	require("align").align_to_char(1, true)
-end) -- Aligns to 1 character, looking left
-vim.keymap.set("x", "as", function()
-	require("align").align_to_char(2, true, true)
-end) -- Aligns to 2 characters, looking left and with previews
-vim.keymap.set("x", "aw", function()
-	require("align").align_to_string(false, true, true)
-end) -- Aligns to a string, looking left and with previews
-vim.keymap.set("x", "ar", function()
-	require("align").align_to_string(true, true, true)
-end) -- Aligns to a Lua pattern, looking left and with previews
+-- Just create a user command for this
+-- vim.api.nvim_create_user_command("Align", function() require("align").align_to_char({) end, { desc = "[W]rite [A]ll" })
+-- require("align").align_to_char(1, true)
 
 vim.api.nvim_create_user_command("Wa", "wa", { desc = "[W]rite [A]ll" })
-vim.keymap.set("n", "<leader>wa", vim.cmd.wa, { desc = "[W]rite [A]ll" })
 vim.keymap.set("n", "<leader>u", vim.cmd.UndotreeToggle, { desc = "[U]ndo tree" })
-
-vim.keymap.set("n", "<leader>fu", function()
-	vim.opt.fileformat = "unix"
-end, { desc = "[F]ile [U]nix: Set file format to unix" })
-
--- Tab navigation
--- vim.keymap.set({ "i", "n", "v", "t" }, "<A-h>", function()
--- 	vim.cmd.tabnext(1)
--- end, { desc = "Go to tab 1" })
--- vim.keymap.set({ "i", "n", "v", "t" }, "<A-j>", function()
--- 	vim.cmd.tabnext(2)
--- end, { desc = "Go to tab 2" })
--- vim.keymap.set({ "i", "n", "v", "t" }, "<A-k>", function()
--- 	vim.cmd.tabnext(3)
--- end, { desc = "Go to tab 3" })
--- vim.keymap.set({ "i", "n", "v", "t" }, "<A-l>", function()
--- 	vim.cmd.tabnext(4)
--- end, { desc = "Go to tab 4" })
--- vim.keymap.set({ "i", "n", "v", "t" }, "<A-;>", function()
--- 	if vim.fn.mode() == "t" then
--- 		vim.api.nvim_feedkeys("<C-\\><C-n>", "n", true)
--- 	end
--- 	vim.cmd.tabnext(5)
--- end, { desc = "Go to tab 5" })
---
--- vim.keymap.set({ "i", "n", "v", "t" }, "<C-t>", function()
--- 	if vim.fn.mode() == "t" then
--- 		vim.api.nvim_feedkeys("<C-\\><C-n>", "n", true)
--- 	end
--- 	vim.cmd.tabnew()
--- end, { desc = "New tab" })
--- vim.keymap.set({ "i", "n", "v", "t" }, "<C-w>", function()
--- 	if vim.fn.mode() == "t" then
--- 		vim.api.nvim_feedkeys("<C-\\><C-n>", "n", true)
--- 	end
--- 	vim.cmd.tabclose()
--- end, { desc = "Close tab" })
 
 -- [[ Autocommands ]]
 -- Highlight on yank
@@ -583,9 +536,7 @@ require("gitsigns").setup({
 			if vim.wo.diff then
 				return "]g"
 			end
-			vim.schedule(function()
-				gs.next_hunk()
-			end)
+			vim.schedule(function() gs.next_hunk() end)
 			return "<Ignore>"
 		end, { expr = true })
 
@@ -593,9 +544,7 @@ require("gitsigns").setup({
 			if vim.wo.diff then
 				return "[g"
 			end
-			vim.schedule(function()
-				gs.prev_hunk()
-			end)
+			vim.schedule(function() gs.prev_hunk() end)
 			return "<Ignore>"
 		end, { expr = true })
 
@@ -636,9 +585,12 @@ require("telescope").setup({
 pcall(require("telescope").load_extension, "fzf")
 
 -- See `:help telescope.builtin`
-vim.keymap.set("n", "<leader>fr", function()
-	require("telescope.builtin").oldfiles({ cwd_only = true })
-end, { desc = "[F]ile [R]ecent: Find recently opened files" })
+vim.keymap.set(
+	"n",
+	"<leader>fr",
+	function() require("telescope.builtin").oldfiles({ cwd_only = true }) end,
+	{ desc = "[F]ile [R]ecent: Find recently opened files" }
+)
 
 vim.keymap.set("n", "<leader>bb", require("telescope.builtin").buffers, { desc = "[B]uffers [B]uffers: Find existing buffers" })
 vim.keymap.set("n", "<leader>ss", function()
@@ -651,12 +603,17 @@ local glob_pattern = {
 	"!src/shared/canvas-gauges/**",
 }
 
-vim.keymap.set("n", "<leader>/", function()
-	require("telescope.builtin").live_grep({
-		glob_pattern = glob_pattern,
-		additional_args = { "--fixed-strings" },
-	})
-end, { desc = "[/]: Search in project (Smart Case)" })
+vim.keymap.set(
+	"n",
+	"<leader>/",
+	function()
+		require("telescope.builtin").live_grep({
+			glob_pattern = glob_pattern,
+			additional_args = { "--fixed-strings" },
+		})
+	end,
+	{ desc = "[/]: Search in project (Smart Case)" }
+)
 
 local function get_visual_selected()
 	vim.cmd('normal "vy')
@@ -667,46 +624,44 @@ local function get_work_under_cursor()
 	return vim.fn.getreg("v") or ""
 end
 
-vim.keymap.set("n", "<leader>*", function()
-	require("telescope.builtin").live_grep({
-		default_text = get_work_under_cursor(),
-		glob_pattern = glob_pattern,
-		additional_args = { "--case-sensitive", "--fixed-strings", "--word-regexp" },
-	})
-end, { desc = "[*]: Search current word in project (Case Sensitive)" })
+vim.keymap.set(
+	"n",
+	"<leader>*",
+	function()
+		require("telescope.builtin").live_grep({
+			default_text = get_work_under_cursor(),
+			glob_pattern = glob_pattern,
+			additional_args = { "--case-sensitive", "--fixed-strings", "--word-regexp" },
+		})
+	end,
+	{ desc = "[*]: Search current word in project (Case Sensitive)" }
+)
 
-vim.keymap.set("v", "<leader>*", function()
-	require("telescope.builtin").live_grep({
-		default_text = get_visual_selected(),
-		glob_pattern = glob_pattern,
-		additional_args = { "--case-sensitive", "--fixed-strings", "--word-regexp" },
-	})
-end, { desc = "[*]: Search current word in project (Case Sensitive) (Word Boundary)" })
+vim.keymap.set(
+	"v",
+	"<leader>*",
+	function()
+		require("telescope.builtin").live_grep({
+			default_text = get_visual_selected(),
+			glob_pattern = glob_pattern,
+			additional_args = { "--case-sensitive", "--fixed-strings", "--word-regexp" },
+		})
+	end,
+	{ desc = "[*]: Search current word in project (Case Sensitive) (Word Boundary)" }
+)
 
-vim.keymap.set("n", "<C-p>", require("telescope.builtin").find_files, { desc = "<C-p> Find Files" })
 vim.keymap.set("n", "<leader>gg", require("telescope.builtin").git_status, { desc = "[G][G]it files" })
 vim.keymap.set("n", "<leader>sl", require("telescope.builtin").resume, { desc = "[S]ession [L]ast (resume telescope)" })
-vim.keymap.set("n", "<leader>ff", vim.cmd.FormatWriteLock, { desc = "[F]ormat [F]ile" })
-
-vim.keymap.set("n", "<leader><space>", require("telescope.builtin").commands, { desc = "[ ]: Open neovim commands" })
+vim.keymap.set("n", "<leader>ff", "<cmd>FormatWriteLock<cr>", { desc = "[F]ormat [F]ile" })
 
 -- Diagnostic keymaps
-vim.keymap.set("n", "<leader>dl", vim.diagnostic.setloclist, { desc = "[D]iagnostic [L]ist" })
 vim.keymap.set("n", "gh", vim.diagnostic.open_float, { desc = "[G]oto diagnostic [H]elp: List diagnostic under cursor" })
 vim.keymap.set("n", "[d", vim.diagnostic.goto_prev, { desc = "Previous [D]iagnostic" })
 vim.keymap.set("n", "]d", vim.diagnostic.goto_next, { desc = "Next [D]iagnostic" })
-vim.keymap.set("n", "[e", function()
-	vim.diagnostic.goto_prev({ severity = vim.diagnostic.severity["ERROR"] })
-end, { desc = "Previous [E]rror" })
-vim.keymap.set("n", "]e", function()
-	vim.diagnostic.goto_next({ severity = vim.diagnostic.severity["ERROR"] })
-end, { desc = "Next [E]rror" })
-vim.keymap.set("n", "[w", function()
-	vim.diagnostic.goto_prev({ severity = vim.diagnostic.severity["WARN"] })
-end, { desc = "Previous [W]arning" })
-vim.keymap.set("n", "]w", function()
-	vim.diagnostic.goto_next({ severity = vim.diagnostic.severity["WARN"] })
-end, { desc = "Next [W]arning" })
+vim.keymap.set("n", "[e", function() vim.diagnostic.goto_prev({ severity = vim.diagnostic.severity["ERROR"] }) end, { desc = "Previous [E]rror" })
+vim.keymap.set("n", "]e", function() vim.diagnostic.goto_next({ severity = vim.diagnostic.severity["ERROR"] }) end, { desc = "Next [E]rror" })
+vim.keymap.set("n", "[w", function() vim.diagnostic.goto_prev({ severity = vim.diagnostic.severity["WARN"] }) end, { desc = "Previous [W]arning" })
+vim.keymap.set("n", "]w", function() vim.diagnostic.goto_next({ severity = vim.diagnostic.severity["WARN"] }) end, { desc = "Next [W]arning" })
 
 -- [[ Configure Treesitter ]]
 -- See `:help nvim-treesitter`
@@ -849,13 +804,9 @@ local on_attach = function(client, bufnr)
 
 	nmap("<leader>pa", vim.lsp.buf.add_workspace_folder, "[P]roject [A]dd: Workspace add folder")
 	nmap("<leader>pd", vim.lsp.buf.remove_workspace_folder, "[P]roject [x] delete folder: Workspace remove folder")
-	nmap("<leader>pl", function()
-		print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
-	end, "[P]roject [L]ist folders: Workspace list folders")
+	nmap("<leader>pl", function() print(vim.inspect(vim.lsp.buf.list_workspace_folders())) end, "[P]roject [L]ist folders: Workspace list folders")
 
-	vim.api.nvim_buf_create_user_command(bufnr, "Format", function(_)
-		vim.lsp.buf.format()
-	end, { desc = "Format current buffer with LSP" })
+	vim.api.nvim_buf_create_user_command(bufnr, "Format", function(_) vim.lsp.buf.format() end, { desc = "Format current buffer with LSP" })
 
 	-- Omnisharp specific settings
 	if client.name == "omnisharp" then
@@ -863,9 +814,7 @@ local on_attach = function(client, bufnr)
 
 		-- Omnisharp Semantic tokens do not conform to the LSP specification
 		-- For more details: https://github.com/OmniSharp/omnisharp-roslyn/issues/2483#issuecomment-1546721190
-		local function toSnakeCase(str)
-			return string.gsub(str, "%s*[- ]%s*", "_")
-		end
+		local function toSnakeCase(str) return string.gsub(str, "%s*[- ]%s*", "_") end
 		local tokenModifiers = client.server_capabilities.semanticTokensProvider.legend.tokenModifiers
 		for i, v in ipairs(tokenModifiers) do
 			tokenModifiers[i] = toSnakeCase(v)
@@ -992,9 +941,7 @@ local cmp_kinds = {
 
 cmp.setup({
 	snippet = {
-		expand = function(args)
-			luasnip.lsp_expand(args.body)
-		end,
+		expand = function(args) luasnip.lsp_expand(args.body) end,
 	},
 	window = {
 		completion = cmp.config.window.bordered({
@@ -1107,9 +1054,7 @@ local oil_keymaps = {
 
 if is_windows then
 	oil_keymaps["<leader>-"] = {
-		callback = function()
-			vim.cmd("!explorer " .. require("oil").get_current_dir())
-		end,
+		callback = function() vim.cmd("!explorer " .. require("oil").get_current_dir()) end,
 		desc = "Open parent directory in explorer",
 		silent = true,
 	}
