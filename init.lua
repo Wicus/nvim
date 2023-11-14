@@ -386,22 +386,18 @@ vim.keymap.set("n", "<leader>ts", "<cmd>set invspell<cr>", { desc = "[T]oggle [S
 
 -- Search and replace commands
 vim.keymap.set("n", "<leader>cgn", "*N", { desc = "[S]earch [A]round word in buffer" })
-vim.keymap.set("n", "<leader>sq", ":cdo s//gcI<Left><Left><Left><Left>", { desc = "[S]earch and edit in [Q]uickfix" })
+vim.keymap.set("n", "<leader>sq", "<cmd>cdo s//gcI<Left><Left><Left><Left>", { desc = "[S]earch and edit in [Q]uickfix" })
 vim.keymap.set("n", "<leader>sr", require("spectre").open, { desc = "[S]earch and [R]eplace" })
-
--- Quickfix
 
 -- Stay in visual mode after indenting
 vim.keymap.set("v", "<", "<gv")
 vim.keymap.set("v", ">", ">gv")
 
-vim.keymap.set("n", "<leader>zm", "<cmd>NoNeckPain<cr>", { desc = "[Z]en [M]ode (NoNeckPain)" })
-
 -- Resize window
-vim.keymap.set("n", "<C-Up>", "<cmd>resize +2<cr>")
-vim.keymap.set("n", "<C-Down>", "<cmd>resize -2<cr>")
-vim.keymap.set("n", "<C-Left>", "<cmd>vertical resize -2<cr>")
-vim.keymap.set("n", "<C-Right>", "<cmd>vertical resize +2<cr>")
+vim.keymap.set("n", "<C-Up>", "<cmd>resize -2<cr>")
+vim.keymap.set("n", "<C-Down>", "<cmd>resize +2<cr>")
+vim.keymap.set("n", "<C-Right>", "<cmd>vertical resize -2<cr>")
+vim.keymap.set("n", "<C-Left>", "<cmd>vertical resize +2<cr>")
 
 local function is_quickfix_open()
 	for _, win in ipairs(vim.fn.getwininfo()) do
@@ -439,14 +435,7 @@ vim.keymap.set("n", "<leader>zf", function()
 	vim.cmd.normal("zf")
 end, { desc = "Create bracket {} fold [Z] [F]old" })
 
--- TODO
--- Align commands
--- Just create a user command for this
--- vim.api.nvim_create_user_command("Align", function() require("align").align_to_char({) end, { desc = "[W]rite [A]ll" })
--- require("align").align_to_char(1, true)
-
-vim.api.nvim_create_user_command("Wa", "wa", { desc = "[W]rite [A]ll" })
-vim.keymap.set("n", "<leader>u", vim.cmd.UndotreeToggle, { desc = "[U]ndo tree" })
+vim.keymap.set("n", "<leader>u", "<cmd>UndotreeToggle<cr>", { desc = "[U]ndo tree toggle" })
 
 -- [[ Autocommands ]]
 -- Highlight on yank
@@ -482,10 +471,12 @@ vim.api.nvim_create_autocmd("BufWritePost", {
 
 -- [[ User Commands ]]
 -- see `:help vim.api.nvim_create_user_command()`
-vim.api.nvim_create_user_command("Dark", function(_)
-	vim.cmd.highlight("Normal guibg=none")
-	vim.cmd.highlight("NormalFloat guibg=none")
-end, { desc = "Dark background" })
+-- TODO
+-- Align commands
+-- Just create a user command for this
+-- vim.api.nvim_create_user_command("Align", function() require("align").align_to_char({) end, { desc = "[W]rite [A]ll" })
+-- require("align").align_to_char(1, true)
+vim.api.nvim_create_user_command("Wa", "wa", { desc = "[W]rite [A]ll" })
 
 -- [[ Plugins setup ]]
 -- Set lualine as statusline
@@ -496,14 +487,9 @@ require("lualine").setup({
 		theme = "catppuccin",
 		component_separators = "|",
 		section_separators = "",
-		disabled_filetypes = {
-			"neo-tree",
-		},
+		disabled_filetypes = {},
 	},
 	winbar = {
-		lualine_c = { { "filename", path = 1 } },
-	},
-	inactive_winbar = {
 		lualine_c = { { "filename", path = 1 } },
 	},
 })
@@ -514,7 +500,7 @@ require("Comment").setup()
 -- Enable `lukas-reineke/indent-blankline.nvim`
 -- See `:help ibl.txt`
 require("ibl").setup({
-	indent = { char = "┊" },
+	indent = { char = "│" },
 	scope = { enabled = false },
 })
 
@@ -566,17 +552,14 @@ require("telescope").setup({
 			},
 		},
 		borderchars = { "─", "│", "─", "│", "┌", "┐", "┘", "└" },
+		-- path_display = { shorten = { len = 3, exclude = { 1, -1 } } },
+		path_display = { "tail" },
 	},
 	pickers = {
 		live_grep = {
 			mappings = {
 				i = { ["<c-f>"] = require("telescope.actions").to_fuzzy_refine },
 			},
-		},
-		lsp_references = {
-			-- path_display = { shorten = { len = 3, exclude = { 1, -1 } } },
-			-- path_display = { "hidden" },
-			path_display = { "tail" },
 		},
 	},
 })
@@ -593,10 +576,6 @@ vim.keymap.set(
 )
 
 vim.keymap.set("n", "<leader>bb", require("telescope.builtin").buffers, { desc = "[B]uffers [B]uffers: Find existing buffers" })
-vim.keymap.set("n", "<leader>ss", function()
-	vim.cmd("vimgrep /" .. vim.fn.expand("<cword>") .. "/j %")
-	vim.cmd("botright copen")
-end, { desc = "[S]earch [S]earch: Buffer search to quick list" })
 
 local glob_pattern = {
 	"!src/shared/dygraphs/**",
@@ -612,7 +591,7 @@ vim.keymap.set(
 			additional_args = { "--fixed-strings" },
 		})
 	end,
-	{ desc = "[/]: Search in project (Smart Case)" }
+	{ desc = "[/]: Search in project" }
 )
 
 local function get_visual_selected()
@@ -688,7 +667,6 @@ require("nvim-treesitter.configs").setup({
 		"markdown",
 		"markdown_inline",
 	},
-
 	highlight = {
 		enable = true,
 		disable = function(_, buf)
@@ -758,12 +736,6 @@ require("nvim-treesitter.configs").setup({
 -- LSP settings.
 --  This function gets run when an LSP connects to a particular buffer.
 local on_attach = function(client, bufnr)
-	-- NOTE: Remember that lua is a real programming language, and as such it is possible
-	-- to define small helper and utility functions so you don"t have to repeat yourself
-	-- many times.
-	--
-	-- In this case, we create a function that lets us more easily define mappings specific
-	-- for LSP related items. It sets the mode, buffer and description for us each time.
 	local nmap = function(keys, func, desc)
 		if desc then
 			desc = "LSP: " .. desc
@@ -780,31 +752,16 @@ local on_attach = function(client, bufnr)
 		vim.keymap.set("i", keys, func, { buffer = bufnr, desc = desc })
 	end
 
-	nmap("<leader>nr", vim.lsp.buf.rename, "[B]uffer [R]ename")
-
-	nmap("<leader>sj", require("telescope.builtin").lsp_document_symbols, "[S]ymbols [J]ump: Document symbols")
-	nmap("<leader>sw", require("telescope.builtin").lsp_dynamic_workspace_symbols, "[S]ymbols [W]orkspace: Workspace symbols")
-
 	nmap("<leader>ca", vim.lsp.buf.code_action, "[C]ode [A]ctions")
 	nmap("cn", vim.lsp.buf.rename, "[C]hange [N]ame (Rename)")
-
-	-- nmap("gd", vim.lsp.buf.definition, "[G]oto [D]efinition")
 	nmap("gd", require("telescope.builtin").lsp_definitions, "[G]oto [D]efinition")
 	nmap("gr", require("telescope.builtin").lsp_references, "[G]oto [R]eferences")
-	nmap("gI", require("telescope.builtin").lsp_implementations, "[G]oto [I]mplementation")
+	nmap("gi", require("telescope.builtin").lsp_implementations, "[G]oto [I]mplementation")
 	nmap("gt", require("telescope.builtin").lsp_type_definitions, "[G]oto [T]ype definition")
 
 	-- See `:help K` for why this keymap
 	nmap("K", vim.lsp.buf.hover, "Hover Documentation")
-	nmap("gk", vim.lsp.buf.signature_help, "Signature Help")
 	imap("<C-k>", vim.lsp.buf.signature_help, "Signature Help")
-
-	-- Lesser used LSP functionality
-	nmap("gD", vim.lsp.buf.declaration, "[G]oto [D]eclaration")
-
-	nmap("<leader>pa", vim.lsp.buf.add_workspace_folder, "[P]roject [A]dd: Workspace add folder")
-	nmap("<leader>pd", vim.lsp.buf.remove_workspace_folder, "[P]roject [x] delete folder: Workspace remove folder")
-	nmap("<leader>pl", function() print(vim.inspect(vim.lsp.buf.list_workspace_folders())) end, "[P]roject [L]ist folders: Workspace list folders")
 
 	vim.api.nvim_buf_create_user_command(bufnr, "Format", function(_) vim.lsp.buf.format() end, { desc = "Format current buffer with LSP" })
 
@@ -825,12 +782,6 @@ local on_attach = function(client, bufnr)
 		end
 	end
 end
-
--- Enable the following language servers
---  Feel free to add/remove any LSPs that you want here. They will automatically be installed.
---
---  Add any additional override configuration in the following tables. They will be passed to
---  the `settings` field of the server config. You must look up that documentation yourself.
 
 local get_omnisharp_settings = function()
 	-- enable_roslyn_analyzers = true,
@@ -869,9 +820,6 @@ local servers = {
 	cssls = {},
 	tailwindcss = {},
 	lemminx = {},
-
-	-- gopls = {},
-	-- rust_analyzer = {},
 }
 
 -- Setup neovim lua configuration
@@ -1083,7 +1031,7 @@ require("no-neck-pain").setup({
 	},
 	mappings = {
 		enabled = true,
-		toggle = "<leader>np",
+		toggle = "<leader>zm",
 	},
 })
 
