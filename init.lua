@@ -317,6 +317,15 @@ vim.diagnostic.config({ float = { border = "single" } })
 vim.g.mapleader = " "
 vim.g.maplocalleader = "\\"
 
+local function get_visual_selected()
+	vim.cmd('normal "vy')
+	return vim.fn.getreg("v") or ""
+end
+local function get_work_under_cursor()
+	vim.cmd('normal viw"vy')
+	return vim.fn.getreg("v") or ""
+end
+
 -- Keymaps for better default experience
 -- See `:help vim.keymap.set()`
 vim.keymap.set({ "n", "v" }, "<Space>", "<Nop>", { silent = true })
@@ -385,7 +394,7 @@ vim.keymap.set("n", "<leader>5", function() require("harpoon.ui").nav_file(5) en
 vim.keymap.set("n", "<leader>ts", "<cmd>set invspell<cr>", { desc = "[T]oggle [S]pell" })
 
 -- Search and replace commands
-vim.keymap.set("n", "<leader>cgn", "*N", { desc = "[S]earch [A]round word in buffer" })
+vim.keymap.set({ "n", "x" }, "<leader>cn", function() vim.fn.feedkeys("*Ncgn") end, { desc = "[S]earch [A]round word in buffer" })
 vim.keymap.set("n", "<leader>sq", "<cmd>cdo s//gcI<Left><Left><Left><Left>", { desc = "[S]earch and edit in [Q]uickfix" })
 vim.keymap.set("n", "<leader>sr", require("spectre").open, { desc = "[S]earch and [R]eplace" })
 
@@ -594,15 +603,6 @@ vim.keymap.set(
 	{ desc = "[/]: Search in project" }
 )
 
-local function get_visual_selected()
-	vim.cmd('normal "vy')
-	return vim.fn.getreg("v") or ""
-end
-local function get_work_under_cursor()
-	vim.cmd('normal viw"vy')
-	return vim.fn.getreg("v") or ""
-end
-
 vim.keymap.set(
 	"n",
 	"<leader>*",
@@ -752,6 +752,7 @@ local on_attach = function(client, bufnr)
 		vim.keymap.set("i", keys, func, { buffer = bufnr, desc = desc })
 	end
 
+	-- Has a AutoHotKey script to change this to <C-.> for windows
 	nmap("<leader>ca", vim.lsp.buf.code_action, "[C]ode [A]ctions")
 	nmap("cn", vim.lsp.buf.rename, "[C]hange [N]ame (Rename)")
 	nmap("gd", require("telescope.builtin").lsp_definitions, "[G]oto [D]efinition")
@@ -913,6 +914,7 @@ cmp.setup({
 	mapping = cmp.mapping.preset.insert({
 		["<C-d>"] = cmp.mapping.scroll_docs(-4),
 		["<C-u>"] = cmp.mapping.scroll_docs(4),
+		-- Has a AutoHotKey script to change this to <C-Space>
 		["<C-l>"] = cmp.mapping.complete({}),
 		["<C-y>"] = cmp.mapping.confirm({
 			behavior = cmp.ConfirmBehavior.Replace,
