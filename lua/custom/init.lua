@@ -500,11 +500,15 @@ require("lualine").setup({
 		section_separators = "",
 		disabled_filetypes = {},
 	},
+	sections = {
+		lualine_b = { "branch", "diff" },
+		lualine_c = { "diagnostics" },
+	},
 	winbar = {
-		lualine_c = { { "filename", path = 1 } },
+		lualine_a = { { "filename", path = 1 } },
 	},
 	inactive_winbar = {
-		lualine_c = { { "filename", path = 1 } },
+		lualine_a = { { "filename", path = 1 } },
 	},
 })
 
@@ -1066,6 +1070,7 @@ require("dressing").setup({
 require("harpoon").setup({
 	menu = {
 		borderchars = { "─", "│", "─", "│", "┌", "┐", "┘", "└" },
+		width = vim.api.nvim_win_get_width(0) - 140,
 	},
 })
 
