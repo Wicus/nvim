@@ -148,9 +148,7 @@ vim.api.nvim_create_autocmd("BufWritePost", {
 -- [[ Setting globals ]]
 -- See `:help vim.g`
 vim.g.copilot_filetypes = { TelescopePrompt = false, text = false }
-vim.g.undotree_WindowLayout = 2
-vim.g.undotree_SplitWidth = 35
-vim.g.undotree_DiffpanelHeight = 15
+vim.g.undotree_SplitWidth = 42
 vim.g.undotree_SetFocusWhenToggle = 1
 
 -- [[ Setting options ]]
@@ -444,7 +442,11 @@ vim.keymap.set("n", "<leader>zf", function()
 	vim.cmd.normal("zf")
 end, { desc = "Create bracket {} fold [Z] [F]old" })
 
-vim.keymap.set("n", "<leader>u", "<cmd>UndotreeToggle<cr>", { desc = "[U]ndo tree toggle" })
+vim.keymap.set("n", "<leader>u", function()
+	vim.cmd("NoNeckPain")
+	vim.cmd("UndotreeToggle")
+	vim.cmd("NoNeckPain")
+end, { desc = "[U]ndo tree toggle" })
 
 -- [[ Autocommands ]]
 -- Highlight on yank
@@ -1001,20 +1003,18 @@ require("illuminate").configure({
 require("colorizer").setup()
 
 -- Oil setup
-local oil_keymaps = {
-	["q"] = "actions.close",
-}
-
-if is_windows then
-	oil_keymaps["<leader>-"] = {
-		callback = function() vim.cmd("!explorer " .. require("oil").get_current_dir()) end,
-		desc = "Open parent directory in explorer",
-		silent = true,
-	}
-end
-
 require("oil").setup({
-	keymaps = oil_keymaps,
+	keymaps = {
+		["q"] = "actions.close",
+		["g-"] = function()
+			if is_windows then
+				require("oil.actions").tcd.callback()
+				vim.cmd("silent !explorer .")
+			end
+		end,
+		["<C-p>"] = false,
+	},
+	columns = {},
 })
 
 -- No neck pain setup
