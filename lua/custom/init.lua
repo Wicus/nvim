@@ -108,10 +108,15 @@ require("packer").startup(function(use)
 		config = function()
 			vim.opt.timeout = true
 			vim.opt.timeoutlen = 300
-			require("which-key").setup({})
+			require("which-key").setup({
+				plugins = {
+					registers = false,
+				},
+			})
 		end,
 	})
 	use("stevearc/oil.nvim") -- A vim-vinegar like file explorer that lets you edit your filesystem like a normal Neovim buffer.
+	use("folke/flash.nvim") -- flash.nvim lets you navigate your code with search labels, enhanced character motions, and Treesitter integration.
 
 	-- Add custom plugins to packer from ~/.config/nvim/lua/custom/plugins.lua
 	local has_plugins, plugins = pcall(require, "custom.plugins")
@@ -161,8 +166,8 @@ vim.opt.softtabstop = 4
 vim.opt.shiftwidth = 4
 vim.opt.expandtab = true
 
--- Set highlight on search
-vim.opt.hlsearch = true
+-- Set highlight on search to false
+vim.opt.hlsearch = false
 
 -- Make line numbers default
 vim.wo.number = true
@@ -286,6 +291,11 @@ require("catppuccin").setup({
 			NormalFloat = { bg = colors.none },
 			VertSplit = { fg = colors.mantle, bg = colors.mantle },
 			MiniTrailspace = { bg = colors.red },
+
+			FlashCurrent = { bg = colors.peach, fg = colors.base },
+			FlashLabel = { bg = colors.red, bold = true, fg = colors.base },
+			FlashMatch = { bg = colors.blue, fg = colors.base },
+			FlashCursor = { reverse = true },
 		}
 	end,
 	integrations = {
@@ -298,6 +308,7 @@ require("catppuccin").setup({
 		harpoon = true,
 		which_key = true,
 		treesitter_context = true,
+		flash = true,
 	},
 })
 
@@ -392,8 +403,7 @@ vim.keymap.set("n", "<leader>5", function() require("harpoon.ui").nav_file(5) en
 vim.keymap.set("n", "<leader>ts", "<cmd>set invspell<cr>", { desc = "[T]oggle [S]pell" })
 
 -- Search and replace commands
-vim.keymap.set({ "n", "x" }, "<leader>cn", function() vim.fn.feedkeys("*Ncgn") end, { desc = "[S]earch [A]round word in buffer" })
-vim.keymap.set("n", "<leader>sq", "<cmd>cdo s//gcI<Left><Left><Left><Left>", { desc = "[S]earch and edit in [Q]uickfix" })
+vim.keymap.set({ "n", "x" }, "<leader>cgn", function() vim.fn.feedkeys("*Ncgn") end, { desc = "Search current word / selection and change it (cgn)" })
 vim.keymap.set("n", "<leader>sr", require("spectre").open, { desc = "[S]earch and [R]eplace" })
 
 -- Stay in visual mode after indenting
@@ -489,26 +499,37 @@ vim.api.nvim_create_autocmd("BufWritePost", {
 -- require("align").align_to_char(1, true)
 vim.api.nvim_create_user_command("Wa", "wa", { desc = "[W]rite [A]ll" })
 
+local catppuccin_colors = require("catppuccin.palettes").get_palette("mocha")
+local getCustomCatppuccinTheme = function()
+	local catppuccin_theme = require("lualine.themes.catppuccin")
+	catppuccin_theme.normal.b.bg = catppuccin_colors.mantle
+	catppuccin_theme.insert.b.bg = catppuccin_colors.mantle
+	catppuccin_theme.visual.b.bg = catppuccin_colors.mantle
+	catppuccin_theme.command.b.bg = catppuccin_colors.mantle
+	catppuccin_theme.replace.b.bg = catppuccin_colors.mantle
+
+	return catppuccin_theme
+end
+
 -- [[ Plugins setup ]]
 -- Set lualine as statusline
 -- See `:help lualine.txt`
 require("lualine").setup({
 	options = {
 		icons_enabled = false,
-		theme = "catppuccin",
+		theme = getCustomCatppuccinTheme(),
 		component_separators = "|",
 		section_separators = "",
 		disabled_filetypes = {},
 	},
 	sections = {
-		lualine_b = { "branch", "diff" },
-		lualine_c = { "diagnostics" },
+		lualine_c = {},
 	},
 	winbar = {
-		lualine_a = { { "filename", path = 1 } },
+		lualine_b = { { "filename", path = 1, color = { fg = catppuccin_colors.lavender } } },
 	},
 	inactive_winbar = {
-		lualine_a = { { "filename", path = 1 } },
+		lualine_b = { { "filename", path = 1 } },
 	},
 })
 
@@ -571,7 +592,7 @@ require("telescope").setup({
 		},
 		borderchars = { "─", "│", "─", "│", "┌", "┐", "┘", "└" },
 		-- path_display = { shorten = { len = 3, exclude = { 1, -1 } } },
-		path_display = { "tail" },
+		-- path_display = { "tail" },
 	},
 	pickers = {
 		live_grep = {
@@ -1086,6 +1107,12 @@ require("treesitter-context").setup({
 -- Spectre config
 local spectre_sed_args = require("spectre.config").replace_engine.sed.args
 spectre_sed_args[#spectre_sed_args + 1] = "-b"
+
+-- Flash config
+require("flash").setup()
+
+vim.keymap.set({ "n", "x", "o" }, "s", function() require("flash").jump() end)
+vim.keymap.set({ "c" }, "<c-s>", function() require("flash").toggle() end)
 
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et
