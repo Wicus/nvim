@@ -591,8 +591,11 @@ require("telescope").setup({
 			},
 		},
 		borderchars = { "─", "│", "─", "│", "┌", "┐", "┘", "└" },
-		-- path_display = { shorten = { len = 3, exclude = { 1, -1 } } },
-		-- path_display = { "tail" },
+		path_display = function(opts, path)
+			local tail = require("telescope.utils").path_tail(path)
+			local relative_path = vim.fn.fnamemodify(path, ":.:h")
+			return string.format("%s (%s)", tail, relative_path)
+		end,
 	},
 	pickers = {
 		live_grep = {
@@ -1091,7 +1094,7 @@ require("dressing").setup({
 require("harpoon").setup({
 	menu = {
 		borderchars = { "─", "│", "─", "│", "┌", "┐", "┘", "└" },
-		width = vim.api.nvim_win_get_width(0) - 140,
+		-- width = vim.api.nvim_win_get_width(0) - 140,
 	},
 })
 
@@ -1111,7 +1114,7 @@ spectre_sed_args[#spectre_sed_args + 1] = "-b"
 -- Flash config
 require("flash").setup()
 
-vim.keymap.set({ "n", "x", "o" }, "s", function() require("flash").jump() end)
+vim.keymap.set({ "n", "x", "o" }, "r", function() require("flash").jump() end)
 vim.keymap.set({ "c" }, "<c-s>", function() require("flash").toggle() end)
 
 -- The line beneath this is called `modeline`. See `:help modeline`
