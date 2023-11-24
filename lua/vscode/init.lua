@@ -123,10 +123,10 @@ vim.keymap.set({ "x", "n" }, "<leader>*", function() vscode.action("workbench.ac
 
 -- Copilot keymaps
 -- vim.keymap.set("n", "<leader>cc", function() vscode.action("workbench.action.toggleAuxiliaryBar") end)
-vim.keymap.set("n", "<leader>cc", function() vscode.action("workbench.action.chat.openInEditor") end)
-vim.keymap.set("n", "<leader>ch", function() vscode.action("workbench.panel.chat.view.copilot.focus") end)
-vim.keymap.set("n", "<leader>ci", function() vscode.action("workbench.action.quickchat.toggle") end)
-vim.keymap.set("n", "<leader>cl", function() vscode.action("inlineChat.start") end)
+vim.keymap.set({ "n", "x" }, "<leader>cc", function() vscode.action("workbench.action.chat.openInEditor") end)
+vim.keymap.set({ "n", "x" }, "<leader>ch", function() vscode.action("workbench.panel.chat.view.copilot.focus") end)
+vim.keymap.set({ "n", "x" }, "<leader>ci", function() vscode.action("workbench.action.quickchat.toggle") end)
+vim.keymap.set({ "n", "x" }, "<leader>cl", function() vscode.action("inlineChat.start") end)
 
 -- Buffers
 vim.keymap.set("n", "<leader>bb", function() vscode.action("workbench.action.showAllEditors") end)
