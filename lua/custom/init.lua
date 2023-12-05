@@ -171,7 +171,7 @@ vim.opt.hlsearch = false
 
 -- Make line numbers default
 vim.wo.number = true
-vim.opt.relativenumber = true
+-- vim.opt.relativenumber = true
 
 -- Enable break indent
 vim.opt.breakindent = true
@@ -516,7 +516,7 @@ end
 -- See `:help lualine.txt`
 require("lualine").setup({
 	options = {
-		icons_enabled = false,
+		icons_enabled = true,
 		theme = getCustomCatppuccinTheme(),
 		component_separators = "|",
 		section_separators = "",
@@ -627,25 +627,14 @@ local glob_pattern = {
 vim.keymap.set(
 	"n",
 	"<leader>/",
-	function()
-		require("telescope.builtin").live_grep({
-			glob_pattern = glob_pattern,
-			additional_args = { "--fixed-strings" },
-		})
-	end,
+	function() require("telescope.builtin").live_grep({ glob_pattern = glob_pattern, additional_args = { "--fixed-strings" } }) end,
 	{ desc = "[/]: Search in project" }
 )
 
 vim.keymap.set(
 	"n",
 	"<leader>*",
-	function()
-		require("telescope.builtin").live_grep({
-			default_text = get_work_under_cursor(),
-			glob_pattern = glob_pattern,
-			additional_args = { "--case-sensitive", "--fixed-strings", "--word-regexp" },
-		})
-	end,
+	function() require("telescope.builtin").grep_string({ glob_pattern = glob_pattern, word_match = "-w" }) end,
 	{ desc = "[*]: Search current word in project (Case Sensitive)" }
 )
 
@@ -664,6 +653,8 @@ vim.keymap.set(
 
 vim.keymap.set("n", "<leader>gg", require("telescope.builtin").git_status, { desc = "[G][G]it files" })
 vim.keymap.set("n", "<leader>sl", require("telescope.builtin").resume, { desc = "[S]ession [L]ast (resume telescope)" })
+vim.keymap.set("n", "<leader>sj", require("telescope.builtin").lsp_document_symbols, { desc = "[S]earch [J]ump: Jump to symbol" })
+
 vim.keymap.set("n", "<leader>ff", "<cmd>FormatWriteLock<cr>", { desc = "[F]ormat [F]ile" })
 
 -- Diagnostic keymaps
@@ -702,13 +693,6 @@ require("nvim-treesitter.configs").setup({
 	},
 	highlight = {
 		enable = true,
-		disable = function(_, buf)
-			local max_filesize = 100 * 1024 -- 100 KB
-			local ok, stats = pcall(vim.loop.fs_stat, vim.api.nvim_buf_get_name(buf))
-			if ok and stats and stats.size > max_filesize then
-				return true
-			end
-		end,
 	},
 	indent = { enable = true, disable = { "python" } },
 	incremental_selection = {
@@ -787,6 +771,7 @@ local on_attach = function(client, bufnr)
 
 	-- Has a AutoHotKey script to change this to <C-.> for windows
 	nmap("<leader>ca", vim.lsp.buf.code_action, "[C]ode [A]ctions")
+	nmap("<C-.>", vim.lsp.buf.code_action, "[C]ode [A]ctions")
 	nmap("cn", vim.lsp.buf.rename, "[C]hange [N]ame (Rename)")
 	nmap("gd", require("telescope.builtin").lsp_definitions, "[G]oto [D]efinition")
 	nmap("gr", require("telescope.builtin").lsp_references, "[G]oto [R]eferences")
@@ -949,6 +934,7 @@ cmp.setup({
 		["<C-u>"] = cmp.mapping.scroll_docs(4),
 		-- Has a AutoHotKey script to change this to <C-Space>
 		["<C-l>"] = cmp.mapping.complete({}),
+		["<C-Space>"] = cmp.mapping.complete({}),
 		["<C-y>"] = cmp.mapping.confirm({
 			behavior = cmp.ConfirmBehavior.Replace,
 			select = true,
@@ -1114,8 +1100,8 @@ spectre_sed_args[#spectre_sed_args + 1] = "-b"
 -- Flash config
 require("flash").setup()
 
-vim.keymap.set({ "n", "x", "o" }, "r", function() require("flash").jump() end)
-vim.keymap.set({ "c" }, "<c-s>", function() require("flash").toggle() end)
+vim.keymap.set({ "n", "x", "o" }, "s", function() require("flash").jump() end)
+vim.keymap.set("n", "<leader>uf", function() require("flash").toggle() end)
 
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et
