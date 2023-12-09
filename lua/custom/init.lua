@@ -152,7 +152,7 @@ vim.api.nvim_create_autocmd("BufWritePost", {
 
 -- [[ Setting globals ]]
 -- See `:help vim.g`
-vim.g.copilot_filetypes = { TelescopePrompt = false, text = false }
+vim.g.copilot_filetypes = { TelescopePrompt = false, text = false, markdown = true }
 vim.g.undotree_SplitWidth = 42
 vim.g.undotree_SetFocusWhenToggle = 1
 
@@ -167,7 +167,7 @@ vim.opt.shiftwidth = 4
 vim.opt.expandtab = true
 
 -- Set highlight on search to false
-vim.opt.hlsearch = false
+vim.opt.hlsearch = true
 
 -- Make line numbers default
 vim.wo.number = true
@@ -199,7 +199,7 @@ vim.opt.termguicolors = true
 vim.opt.completeopt = "menuone,noselect"
 
 -- Highlight current linenumber
-vim.opt.cursorline = true
+-- vim.opt.cursorline = true
 
 -- Color column
 vim.opt.colorcolumn = "120"
@@ -340,8 +340,8 @@ end
 vim.keymap.set({ "n", "v" }, "<Space>", "<Nop>", { silent = true })
 
 -- Remap for dealing with word wrap
-vim.keymap.set("n", "k", 'v:count == 0 ? "gk" : "k"', { expr = true, silent = true })
-vim.keymap.set("n", "j", 'v:count == 0 ? "gj" : "j"', { expr = true, silent = true })
+-- vim.keymap.set("n", "k", 'v:count == 0 ? "gk" : "k"', { expr = true, silent = true })
+-- vim.keymap.set("n", "j", 'v:count == 0 ? "gj" : "j"', { expr = true, silent = true })
 
 -- Pasting will not replace the current register with what is selected
 vim.keymap.set("x", "p", '"_dP')
