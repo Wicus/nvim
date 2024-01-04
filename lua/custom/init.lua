@@ -30,7 +30,13 @@ require("lazy").setup({
 	"tpope/vim-sleuth", -- Detect tabstop and shiftwidth automatically
 	"tpope/vim-surround", -- Surround text objects with quotes, brackets, etc
 
-	{ "github/copilot.vim", config = function() vim.g.copilot_filetypes = { TelescopePrompt = false, text = false, markdown = true } end },
+	{
+		"github/copilot.vim",
+		config = function()
+			vim.g.copilot_filetypes = { TelescopePrompt = false, text = false, markdown = true }
+			vim.g.copilot_assume_mapped = true
+		end,
+	},
 
 	{
 		"RRethy/vim-illuminate",
@@ -765,8 +771,8 @@ require("lazy").setup({
 					}),
 
 					["<Tab>"] = cmp.mapping(function(fallback)
-						if luasnip.expand_or_locally_jumpable() then
-							luasnip.expand_or_jump()
+						if luasnip.locally_jumpable() then
+							luasnip.jump(1)
 						else
 							fallback()
 						end
