@@ -97,7 +97,10 @@ require("packer").startup(function(use)
 	use("mhartington/formatter.nvim") -- Formatting
 	use("tpope/vim-surround") -- Surround text objects with quotes, brackets, etc
 	use("ThePrimeagen/harpoon") -- Manage multiple buffers and jump between them easily
-	use("shortcuts/no-neck-pain.nvim") -- Dead simple plugin to center the currently focused buffer to the middle of the screen.
+	use({
+		"shortcuts/no-neck-pain.nvim",
+		tag = "v1.6.3",
+	}) -- Dead simple plugin to center the currently focused buffer to the middle of the screen.
 	use("Vonr/align.nvim") -- A minimal plugin for aligning lines
 	use("norcalli/nvim-colorizer.lua") -- Highlight color codes in files
 	use("nvim-pack/nvim-spectre") -- A code search and replace tool
