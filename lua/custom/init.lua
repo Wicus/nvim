@@ -18,7 +18,6 @@ vim.g.mapleader = " "
 vim.g.maplocalleader = "\\"
 
 require("lazy").setup({
-	-- TODO: Add to git
 	-- TODO: Reorganize and cleanup
 	-- TODO: Check for plugins that take long and lazy load only those
 	-- TODO: Check these keys and opts that we are passing, maybe just make it simpler.
