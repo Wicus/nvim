@@ -157,4 +157,4 @@ vim.keymap.set("v", "gc", function() vscode.action("editor.action.commentLine") 
 -- Source this file
 vim.keymap.set("n", "<leader>so", "<cmd>source ~/AppData/Local/nvim/lua/vscode/init.lua<cr>")
 
-print("nvim-vscode successfully loaded")
+print("nvim successfully loaded")
