@@ -15,7 +15,7 @@ vim.opt.hlsearch = true
 
 -- Make line numbers default
 vim.wo.number = true
-vim.opt.relativenumber = true
+-- vim.opt.relativenumber = true
 
 -- Enable break indent
 vim.opt.breakindent = true
@@ -157,4 +157,4 @@ vim.keymap.set("v", "gc", function() vscode.action("editor.action.commentLine") 
 -- Source this file
 vim.keymap.set("n", "<leader>so", "<cmd>source ~/AppData/Local/nvim/lua/vscode/init.lua<cr>")
 
-print("Neovim successfully loaded!")
+print("nvim-vscode successfully loaded")
