@@ -523,7 +523,7 @@ require("lazy").setup({
 
 	{
 		"stevearc/oil.nvim",
-		keys = { { "-", function() require("oil.actions").open_cwd.callback() end, desc = "Open oil in current working directory" } },
+		keys = { { "-", function() require("oil.actions").parent.callback() end, desc = "Open oil in current working directory" } },
 		opts = {
 			keymaps = {
 				["q"] = "actions.close",
@@ -615,7 +615,7 @@ require("lazy").setup({
 					"eslint",
 					"clangd",
 					"pyright",
-					"omnisharp",
+					"omnisharp@v1.39.8",
 					"jsonls",
 					"intelephense",
 					"html",
@@ -966,6 +966,13 @@ vim.keymap.set("n", "[e", function() vim.diagnostic.goto_prev({ severity = vim.d
 vim.keymap.set("n", "]e", function() vim.diagnostic.goto_next({ severity = vim.diagnostic.severity["ERROR"] }) end, { desc = "Next [E]rror" })
 vim.keymap.set("n", "[w", function() vim.diagnostic.goto_prev({ severity = vim.diagnostic.severity["WARN"] }) end, { desc = "Previous [W]arning" })
 vim.keymap.set("n", "]w", function() vim.diagnostic.goto_next({ severity = vim.diagnostic.severity["WARN"] }) end, { desc = "Next [W]arning" })
+vim.keymap.set("n", "<leader>td", function()
+	if vim.diagnostic.is_disabled() then
+		vim.diagnostic.enable()
+	else
+		vim.diagnostic.disable()
+	end
+end, { desc = "Toggle diagnostics" })
 
 local function is_quickfix_open()
 	for _, win in ipairs(vim.fn.getwininfo()) do
