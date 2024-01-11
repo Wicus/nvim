@@ -20,60 +20,62 @@ vim.keymap.set("v", "K", ":m '<-2<CR>gv=gv")
 vim.keymap.set("n", "J", "mzJ`z")
 
 -- [[ VSCode Keymaps ]]
--- Global
-vim.keymap.set("n", "-", function() vscode.action("workbench.files.action.focusFilesExplorer") end)
+local keymaps = require("config.keymap-set").keymaps
+local vim_keymap_set = require("config.keymap-set").vim_keymap_set
 
-vim.keymap.set("n", "<localleader>q", function() vscode.action("workbench.action.togglePanel") end)
-vim.keymap.set({ "x", "n" }, "<C-v>", function() vscode.action("editor.action.clipboardPasteAction") end)
+-- Global
+vim_keymap_set(keymaps.paste, function() vscode.action("editor.action.clipboardPasteAction") end)
+vim_keymap_set(keymaps.explorer, function() vscode.action("workbench.files.action.focusFilesExplorer") end)
+vim_keymap_set(keymaps.qflist_toggle, function() vscode.action("workbench.action.togglePanel") end)
 
 -- Diagnostics
-vim.keymap.set("n", "[d", function() vscode.action("editor.action.marker.next") end)
-vim.keymap.set("n", "]d", function() vscode.action("editor.action.marker.prev") end)
-vim.keymap.set("n", "[e", function() vscode.action("editor.action.marker.next") end)
-vim.keymap.set("n", "]e", function() vscode.action("editor.action.marker.prev") end)
+vim_keymap_set(keymaps.diagnostics_help, function() vscode.action("editor.action.showHover") end)
+vim_keymap_set(keymaps.diagnostics_next, function() vscode.action("editor.action.marker.next") end)
+vim_keymap_set(keymaps.diagnostics_prev, function() vscode.action("editor.action.marker.prev") end)
+vim_keymap_set(keymaps.error_next, function() vscode.action("editor.action.marker.next") end)
+vim_keymap_set(keymaps.error_prev, function() vscode.action("editor.action.marker.prev") end)
 
 -- Formatting
-vim.keymap.set("x", "=", function() vscode.action("editor.action.formatSelection") end)
-vim.keymap.set("n", "==", function() vscode.action("editor.action.formatSelection") end)
+vim_keymap_set(keymaps.format_selection_n, function() vscode.action("editor.action.formatSelection") end)
+vim_keymap_set(keymaps.format_selection_v, function() vscode.action("editor.action.formatSelection") end)
 
 -- Find in files
-vim.keymap.set("n", "<leader>/", function() vscode.action("workbench.action.findInFiles") end)
-vim.keymap.set({ "x", "n" }, "<leader>*", function() vscode.action("workbench.action.findInFiles") end)
+vim_keymap_set(keymaps.live_grep_n, function() vscode.action("workbench.action.findInFiles") end)
+vim_keymap_set(keymaps.live_grep_v, function() vscode.action("workbench.action.findInFiles") end)
+vim_keymap_set(keymaps.live_grep_selection, function() vscode.action("workbench.action.findInFiles") end)
 
 -- Copilot keymaps
--- vim.keymap.set("n", "<leader>cc", function() vscode.action("workbench.action.toggleAuxiliaryBar") end)
-vim.keymap.set({ "n", "x" }, "<leader>cc", function() vscode.action("workbench.action.chat.openInEditor") end)
-vim.keymap.set({ "n", "x" }, "<leader>ch", function() vscode.action("workbench.panel.chat.view.copilot.focus") end)
-vim.keymap.set({ "n", "x" }, "<leader>ci", function() vscode.action("workbench.action.quickchat.toggle") end)
-vim.keymap.set({ "n", "x" }, "<leader>cl", function() vscode.action("inlineChat.start") end)
+vim_keymap_set(keymaps.chat, function() vscode.action("workbench.action.chat.openInEditor") end)
+vim_keymap_set(keymaps.chat_vsplit, function() vscode.action("workbench.panel.chat.view.copilot.focus") end)
+vim_keymap_set(keymaps.chat_quick, function() vscode.action("workbench.action.quickchat.toggle") end)
+vim_keymap_set(keymaps.chat_inline, function() vscode.action("inlineChat.start") end)
 
 -- Buffers
-vim.keymap.set("n", "<leader>bb", function() vscode.action("workbench.action.showAllEditors") end)
+vim_keymap_set(keymaps.buffers, function() vscode.action("workbench.action.showAllEditors") end)
 
 -- LSP keymaps
-vim.keymap.set("n", "cn", function() vscode.action("editor.action.rename") end)
-vim.keymap.set("n", "gd", function() vscode.action("editor.action.referenceSearch.trigger") end)
-vim.keymap.set("n", "gr", function() vscode.action("editor.action.revealDefinition") end)
-vim.keymap.set("n", "gi", function() vscode.action("editor.action.goToImplementation") end)
-vim.keymap.set("n", "gt", function() vscode.action("editor.action.goToTypeDefinition") end)
-
-vim.keymap.set("n", "K", function() vscode.action("editor.action.showHover") end)
-vim.keymap.set("n", "gh", function() vscode.action("editor.action.showHover") end)
+vim_keymap_set(keymaps.rename, function() vscode.action("editor.action.rename") end)
+vim_keymap_set(keymaps.lsp_go_to_definition, function() vscode.action("editor.action.referenceSearch.trigger") end)
+vim_keymap_set(keymaps.lsp_go_to_references, function() vscode.action("editor.action.revealDefinition") end)
+vim_keymap_set(keymaps.lsp_go_to_implementation, function() vscode.action("editor.action.goToImplementation") end)
+vim_keymap_set(keymaps.lsp_go_to_type_definition, function() vscode.action("editor.action.goToTypeDefinition") end)
+vim_keymap_set(keymaps.lsp_hover, function() vscode.action("editor.action.showHover") end)
+vim_keymap_set(keymaps.lsp_signature_help_n, function() vscode.action("editor.action.showHover") end)
 
 -- Git keymaps
-vim.keymap.set("n", "<leader>gg", function() vscode.action("workbench.view.scm") end)
-vim.keymap.set("n", "]g", function() vscode.action("workbench.action.editor.nextChange") end)
-vim.keymap.set("n", "[g", function() vscode.action("workbench.action.editor.previousChange") end)
-vim.keymap.set("n", "<leader>gr", function() vscode.action("git.revertSelectedRanges") end)
-vim.keymap.set("n", "<leader>gR", function() vscode.action("git.clean") end)
-vim.keymap.set("n", "<leader>gs", function() vscode.action("git.openChange") end)
-vim.keymap.set("n", "<leader>gp", function() vscode.action("git.openChange") end)
+vim_keymap_set(keymaps.git_status, function() vscode.action("workbench.view.scm") end)
+vim_keymap_set(keymaps.git_next_hunk, function() vscode.action("workbench.action.editor.nextChange") end)
+vim_keymap_set(keymaps.git_prev_hunk, function() vscode.action("workbench.action.editor.previousChange") end)
+vim_keymap_set(keymaps.git_reset_hunk, function() vscode.action("git.revertSelectedRanges") end)
+vim_keymap_set(keymaps.git_reset_buffer, function() vscode.action("git.clean") end)
+vim_keymap_set(keymaps.git_diffthis, function() vscode.action("git.openChange") end)
+vim_keymap_set(keymaps.git_preview_hunk, function() vscode.action("git.openChange") end)
 
 -- Commenting
-vim.keymap.set("n", "gcc", function() vscode.action("editor.action.commentLine") end)
-vim.keymap.set("v", "gc", function() vscode.action("editor.action.commentLine") end)
+vim_keymap_set(keymaps.comment_line_n, function() vscode.action("editor.action.commentLine") end)
+vim_keymap_set(keymaps.comment_line_v, function() vscode.action("editor.action.commentLine") end)
 
 -- Source this file
-vim.keymap.set("n", "<leader>so", "<cmd>source ~/AppData/Local/nvim/lua/vscode/init.lua<cr>")
+vim_keymap_set(keymaps.source_config, function() vim.cmd("source ~/AppData/Local/nvim/lua/vscode/init.lua") end)
 
 print("vscode-neovim successfully loaded")
