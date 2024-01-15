@@ -1,10 +1,10 @@
 return {
 	"folke/flash.nvim",
-	event = { "BufReadPre", "BufNewFile" },
+	-- event = { "BufReadPre", "BufNewFile" },
 	config = function()
 		local flash = require("flash")
 
 		vim.keymap.set({ "n", "x", "o" }, "s", flash.jump, { desc = "Flash jump" })
-		vim.keymap.set("n", "<leader>tf", flash.toggle, { desc = "Toggle flash" })
+		vim.keymap.set("n", "<leader>uf", flash.toggle, { desc = "Flash" })
 	end,
 }

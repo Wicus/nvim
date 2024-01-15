@@ -4,9 +4,15 @@ return {
 		vim.opt.timeout = true
 		vim.opt.timeoutlen = 300
 
-		require("which-key").setup({
+		local which_key = require("which-key")
+		which_key.setup({
 			plugins = {
 				registers = false,
+			},
+		})
+		which_key.register({
+			["<leader>u"] = {
+				name = "Toggle",
 			},
 		})
 	end,

@@ -30,7 +30,7 @@ vim.keymap.set("n", "<C-k>", "<C-w>k")
 vim.keymap.set("n", "<C-l>", "<C-w>l")
 
 -- Toggle commands
-vim.keymap.set("n", "<leader>ts", "<cmd>set invspell<cr>", { desc = "[T]oggle [S]pell" })
+vim.keymap.set("n", "<leader>us", "<cmd>set invspell<cr>", { desc = "Toggle Spellcheck" })
 
 -- Search and replace commands
 vim.keymap.set({ "n", "x" }, "<leader>cgn", function() vim.fn.feedkeys("*Ncgn") end, { desc = "Search and change work under cursor (cgn)" })
@@ -53,7 +53,7 @@ vim.keymap.set("n", "[e", function() vim.diagnostic.goto_prev({ severity = vim.d
 vim.keymap.set("n", "]e", function() vim.diagnostic.goto_next({ severity = vim.diagnostic.severity["ERROR"] }) end, { desc = "Next [E]rror" })
 vim.keymap.set("n", "[w", function() vim.diagnostic.goto_prev({ severity = vim.diagnostic.severity["WARN"] }) end, { desc = "Previous [W]arning" })
 vim.keymap.set("n", "]w", function() vim.diagnostic.goto_next({ severity = vim.diagnostic.severity["WARN"] }) end, { desc = "Next [W]arning" })
-vim.keymap.set("n", "<leader>td", function()
+vim.keymap.set("n", "<leader>ud", function()
 	if vim.diagnostic.is_disabled() then
 		vim.diagnostic.enable()
 	else
