@@ -1,27 +1,10 @@
+if not vim.g.vscode then
+	return
+end
+
 local vscode = require("vscode-neovim")
-
-vim.keymap.set({ "n", "v" }, "<Space>", "<Nop>", { silent = true })
-
--- Remap for dealing with word wrap
-vim.keymap.set("n", "k", 'v:count == 0 ? "gk" : "k"', { expr = true, silent = true })
-vim.keymap.set("n", "j", 'v:count == 0 ? "gj" : "j"', { expr = true, silent = true })
-
--- Pasting will not replace the current register with what is selected
-vim.keymap.set("x", "p", '"_dP')
-
--- Copy to system clipboard
-vim.keymap.set("x", "<C-c>", '"+y')
-
--- Move lines up and down with J and K
-vim.keymap.set("v", "J", ":m '>+1<CR>gv=gv")
-vim.keymap.set("v", "K", ":m '<-2<CR>gv=gv")
-
--- Keeps cursor on the same spot on K
-vim.keymap.set("n", "J", "mzJ`z")
-
--- [[ VSCode Keymaps ]]
-local keymaps = require("config.keymap-set").keymaps
-local vim_keymap_set = require("config.keymap-set").vim_keymap_set
+local keymaps = require("keymaps.core").keymaps
+local vim_keymap_set = require("keymaps.core").vim_keymap_set
 
 -- Global
 vim_keymap_set(keymaps.paste, function() vscode.action("editor.action.clipboardPasteAction") end)
@@ -76,6 +59,6 @@ vim_keymap_set(keymaps.comment_line_n, function() vscode.action("editor.action.c
 vim_keymap_set(keymaps.comment_line_v, function() vscode.action("editor.action.commentLine") end)
 
 -- Source this file
-vim_keymap_set(keymaps.source_config, function() vim.cmd("source ~/AppData/Local/nvim/lua/vscode/init.lua") end)
+vim_keymap_set(keymaps.source_config, function() vim.cmd("source ~/AppData/Local/nvim/init.lua") end)
 
-print("vscode-neovim successfully loaded")
+print("vscode-neovim vscode-keymaps.lua successfully loaded")
