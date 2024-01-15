@@ -88,5 +88,3 @@ vim.opt.wrap = false
 
 -- File Format
 vim.opt.fileformat = "unix"
-
-print("Options loaded")

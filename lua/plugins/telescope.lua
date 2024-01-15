@@ -79,4 +79,5 @@ return {
 			{ desc = "[*]: Search current word in project (Case Sensitive) (Word Boundary)" }
 		)
 	end,
+	cond = function() return not vim.g.vscode end,
 }

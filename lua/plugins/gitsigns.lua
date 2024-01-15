@@ -33,4 +33,5 @@ return {
 			vim.keymap.set("n", "<leader>gs", gs.diffthis)
 		end,
 	},
+	cond = function() return not vim.g.vscode end,
 }

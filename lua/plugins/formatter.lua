@@ -44,4 +44,5 @@ return {
 
 		vim.keymap.set({ "n", "v" }, "<leader>cf", "<cmd>FormatWriteLock<cr>", { desc = "Format current file" })
 	end,
+	cond = function() return not vim.g.vscode end,
 }

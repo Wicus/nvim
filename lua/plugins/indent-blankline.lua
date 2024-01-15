@@ -6,4 +6,5 @@ return {
 		indent = { char = "│" },
 		scope = { enabled = false },
 	},
+	cond = function() return not vim.g.vscode end,
 }

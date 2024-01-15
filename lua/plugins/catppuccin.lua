@@ -67,4 +67,5 @@ return {
 
 		vim.cmd.colorscheme("catppuccin")
 	end,
+	cond = function() return not vim.g.vscode end,
 }

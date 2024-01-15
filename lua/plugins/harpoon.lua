@@ -15,4 +15,5 @@ return {
 		{ "<leader>4", function() require("harpoon.ui").nav_file(4) end, { desc = "Harpoon file 4" } },
 		{ "<leader>5", function() require("harpoon.ui").nav_file(5) end, { desc = "Harpoon file 5" } },
 	},
+	cond = function() return not vim.g.vscode end,
 }

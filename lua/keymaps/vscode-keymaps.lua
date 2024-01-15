@@ -54,11 +54,5 @@ vim_keymap_set(keymaps.git_reset_buffer, function() vscode.action("git.clean") e
 vim_keymap_set(keymaps.git_diffthis, function() vscode.action("git.openChange") end)
 vim_keymap_set(keymaps.git_preview_hunk, function() vscode.action("git.openChange") end)
 
--- Commenting
-vim_keymap_set(keymaps.comment_line_n, function() vscode.action("editor.action.commentLine") end)
-vim_keymap_set(keymaps.comment_line_v, function() vscode.action("editor.action.commentLine") end)
-
--- Source this file
+-- Source init.lua
 vim_keymap_set(keymaps.source_config, function() vim.cmd("source ~/AppData/Local/nvim/init.lua") end)
-
-print("vscode-neovim vscode-keymaps.lua successfully loaded")

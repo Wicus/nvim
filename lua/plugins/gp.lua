@@ -10,4 +10,5 @@ return {
 
 		vim.keymap.set("n", "<leader>ch", "<cmd>GpChatToggle<cr>", { desc = "Toggle chat" })
 	end,
+	cond = function() return not vim.g.vscode end,
 }

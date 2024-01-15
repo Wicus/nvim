@@ -7,4 +7,5 @@ return {
 		local spectre_sed_args = require("spectre.config").replace_engine.sed.args
 		spectre_sed_args[#spectre_sed_args + 1] = "-b"
 	end,
+	cond = function() return not vim.g.vscode end,
 }

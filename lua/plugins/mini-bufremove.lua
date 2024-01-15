@@ -20,4 +20,5 @@ return {
 			{ desc = "Buffer delete" },
 		},
 	},
+	cond = function() return not vim.g.vscode end,
 }

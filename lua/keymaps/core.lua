@@ -90,10 +90,6 @@ local keymaps = {
 	git_diffthis = { mode = "n", keymap = "<leader>gs", desc = "Diff this" },
 	git_preview_hunk = { mode = "n", keymap = "<leader>gp", desc = "Preview hunk" },
 
-	-- Commenting
-	comment_line_n = { mode = "n", keymap = "gcc", desc = "Comment line" },
-	comment_line_v = { mode = "n", keymap = "gc", desc = "Comment line" },
-
 	-- TODO
 	find_files = { mode = "n", keymap = "<leader>ff", desc = "Find files" },
 	find_recent_files = { mode = "n", keymap = "<leader>fr", desc = "Find recent files" },
