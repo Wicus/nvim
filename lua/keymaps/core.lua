@@ -33,6 +33,16 @@ vim.keymap.set("n", "<C-j>", "<C-w>j")
 vim.keymap.set("n", "<C-k>", "<C-w>k")
 vim.keymap.set("n", "<C-l>", "<C-w>l")
 
+-- Stay in visual mode after indenting
+vim.keymap.set("v", "<", "<gv")
+vim.keymap.set("v", ">", ">gv")
+
+-- Resize window
+vim.keymap.set("n", "<C-Up>", "<cmd>resize -2<cr>")
+vim.keymap.set("n", "<C-Down>", "<cmd>resize +2<cr>")
+vim.keymap.set("n", "<C-Right>", "<cmd>vertical resize -2<cr>")
+vim.keymap.set("n", "<C-Left>", "<cmd>vertical resize +2<cr>")
+
 -- All keymaps are defined here
 local keymaps = {
 	-- Global
@@ -89,6 +99,12 @@ local keymaps = {
 	git_reset_buffer = { mode = "n", keymap = "<leader>gR", desc = "Reset buffer" },
 	git_diffthis = { mode = "n", keymap = "<leader>gs", desc = "Diff this" },
 	git_preview_hunk = { mode = "n", keymap = "<leader>gp", desc = "Preview hunk" },
+
+	-- Toggle
+	toggle_spellcheck = { mode = "n", keymap = "<leader>us", desc = "Toggle spellcheck" },
+
+	-- Search and replace
+	search_change_goto_next = { mode = { "n", "x" }, keymap = "<leader>cgn", desc = "Search, change and goto next" },
 
 	-- TODO
 	find_files = { mode = "n", keymap = "<leader>ff", desc = "Find files" },

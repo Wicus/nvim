@@ -2,21 +2,13 @@ if vim.g.vscode then
 	return
 end
 
--- Toggle commands
-vim.keymap.set("n", "<leader>us", "<cmd>set invspell<cr>", { desc = "Toggle Spellcheck" })
+local keymaps = require("keymaps.core").keymaps
+local vim_keymap_set = require("keymaps.core").vim_keymap_set
+
+vim_keymap_set(keymaps.toggle_spellcheck, "<cmd>set invspell<cr>")
 
 -- Search and replace commands
-vim.keymap.set({ "n", "x" }, "<leader>cgn", function() vim.fn.feedkeys("*Ncgn") end, { desc = "Search and change work under cursor (cgn)" })
-
--- Stay in visual mode after indenting
-vim.keymap.set("v", "<", "<gv")
-vim.keymap.set("v", ">", ">gv")
-
--- Resize window
-vim.keymap.set("n", "<C-Up>", "<cmd>resize -2<cr>")
-vim.keymap.set("n", "<C-Down>", "<cmd>resize +2<cr>")
-vim.keymap.set("n", "<C-Right>", "<cmd>vertical resize -2<cr>")
-vim.keymap.set("n", "<C-Left>", "<cmd>vertical resize +2<cr>")
+vim_keymap_set(keymaps.search_change_goto_next, function() vim.fn.feedkeys("*Ncgn") end)
 
 -- Diagnostic keymaps
 vim.keymap.set("n", "gh", vim.diagnostic.open_float, { desc = "[G]oto diagnostic [H]elp: List diagnostic under cursor" })
