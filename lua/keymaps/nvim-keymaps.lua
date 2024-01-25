@@ -11,20 +11,20 @@ vim_keymap_set(keymaps.toggle_spellcheck, "<cmd>set invspell<cr>")
 vim_keymap_set(keymaps.search_change_goto_next, function() vim.fn.feedkeys("*Ncgn") end)
 
 -- Diagnostic keymaps
-vim.keymap.set("n", "gh", vim.diagnostic.open_float, { desc = "[G]oto diagnostic [H]elp: List diagnostic under cursor" })
-vim.keymap.set("n", "[d", vim.diagnostic.goto_prev, { desc = "Previous [D]iagnostic" })
-vim.keymap.set("n", "]d", vim.diagnostic.goto_next, { desc = "Next [D]iagnostic" })
-vim.keymap.set("n", "[e", function() vim.diagnostic.goto_prev({ severity = vim.diagnostic.severity["ERROR"] }) end, { desc = "Previous [E]rror" })
-vim.keymap.set("n", "]e", function() vim.diagnostic.goto_next({ severity = vim.diagnostic.severity["ERROR"] }) end, { desc = "Next [E]rror" })
-vim.keymap.set("n", "[w", function() vim.diagnostic.goto_prev({ severity = vim.diagnostic.severity["WARN"] }) end, { desc = "Previous [W]arning" })
-vim.keymap.set("n", "]w", function() vim.diagnostic.goto_next({ severity = vim.diagnostic.severity["WARN"] }) end, { desc = "Next [W]arning" })
-vim.keymap.set("n", "<leader>ud", function()
+vim_keymap_set(keymaps.diagnostics_help, vim.diagnostic.open_float)
+vim_keymap_set(keymaps.diagnostics_next, vim.diagnostic.goto_next)
+vim_keymap_set(keymaps.diagnostics_prev, vim.diagnostic.goto_prev)
+vim_keymap_set(keymaps.error_next, function() vim.diagnostic.goto_next({ severity = vim.diagnostic.severity["ERROR"] }) end)
+vim_keymap_set(keymaps.error_prev, function() vim.diagnostic.goto_prev({ severity = vim.diagnostic.severity["ERROR"] }) end)
+vim_keymap_set(keymaps.warning_next, function() vim.diagnostic.goto_next({ severity = vim.diagnostic.severity["WARN"] }) end)
+vim_keymap_set(keymaps.warning_prev, function() vim.diagnostic.goto_prev({ severity = vim.diagnostic.severity["WARN"] }) end)
+vim_keymap_set(keymaps.toggle_diagnostics, function()
 	if vim.diagnostic.is_disabled() then
 		vim.diagnostic.enable()
 	else
 		vim.diagnostic.disable()
 	end
-end, { desc = "Toggle diagnostics" })
+end)
 
 local function is_quickfix_open()
 	for _, win in ipairs(vim.fn.getwininfo()) do

@@ -102,6 +102,7 @@ local keymaps = {
 
 	-- Toggle
 	toggle_spellcheck = { mode = "n", keymap = "<leader>us", desc = "Toggle spellcheck" },
+	toggle_diagnostics = { mode = "n", keymap = "<leader>ud", desc = "Toggle diagnostics" },
 
 	-- Search and replace
 	search_change_goto_next = { mode = { "n", "x" }, keymap = "<leader>cgn", desc = "Search, change and goto next" },
