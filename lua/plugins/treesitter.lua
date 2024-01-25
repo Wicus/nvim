@@ -31,6 +31,7 @@ return {
 				"typescript",
 				"vim",
 				"vimdoc",
+				"astro",
 			},
 			highlight = {
 				enable = true,
