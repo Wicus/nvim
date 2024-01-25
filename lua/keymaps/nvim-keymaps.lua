@@ -61,3 +61,5 @@ vim.keymap.set("n", "<leader>zf", function()
 	vim.cmd.normal("va}")
 	vim.cmd.normal("zf")
 end, { desc = "Create bracket {} fold [Z] [F]old" })
+
+vim.keymap.set("n", "<leader>tn", vim.cmd.tabNext, { desc = "Next tab" })
