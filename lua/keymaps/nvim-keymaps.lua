@@ -2,10 +2,22 @@ if vim.g.vscode then
 	return
 end
 
+local utils = require("keymaps.utils")
 local keymaps = require("keymaps.core").keymaps
 local vim_keymap_set = require("keymaps.core").vim_keymap_set
 
 vim_keymap_set(keymaps.toggle_spellcheck, "<cmd>set invspell<cr>")
+vim_keymap_set(keymaps.toggle_wrap, "<cmd>set wrap!<cr>")
+vim_keymap_set(keymaps.toggle_highlight, "<cmd>nohlsearch<cr>")
+vim_keymap_set(keymaps.toggle_copilot, function()
+	if vim.fn["copilot#Enabled"]() == 1 then
+		vim.cmd("Copilot disable")
+		print(vim.cmd("Copilot status"))
+	else
+		vim.cmd("Copilot enable")
+		print(vim.cmd("Copilot status"))
+	end
+end)
 
 -- Search and replace commands
 vim_keymap_set(keymaps.search_change_goto_next, function() vim.fn.feedkeys("*Ncgn") end)
@@ -26,40 +38,38 @@ vim_keymap_set(keymaps.toggle_diagnostics, function()
 	end
 end)
 
-local function is_quickfix_open()
-	for _, win in ipairs(vim.fn.getwininfo()) do
-		if win.quickfix == 1 then
-			return true
-		end
-	end
-
-	return false
-end
-
--- Quickfix
-vim.keymap.set("n", "<localleader>q", function()
-	if is_quickfix_open() then
+vim_keymap_set(keymaps.toggle_quickfix, function()
+	if utils.is_quickfix_open() then
 		vim.cmd("cclose")
 	else
 		vim.cmd("botright copen")
 	end
-end, { desc = "[Q]uickfix toggle" })
-vim.keymap.set("n", "<C-p>", function()
-	if is_quickfix_open() then
+end)
+
+vim_keymap_set(keymaps.find_files_1, function()
+	if not utils.is_quickfix_open() then
+		require("telescope.builtin").find_files()
+	end
+end)
+vim_keymap_set(keymaps.find_files_2, require("telescope.builtin").find_files)
+
+vim_keymap_set(keymaps.previous_entry, function()
+	if utils.is_quickfix_open() then
 		vim.cmd("cprevious")
 	else
 		require("telescope.builtin").find_files()
 	end
-end, { desc = "<C-p> Find Files" })
-vim.keymap.set("n", "<C-n>", function()
-	if is_quickfix_open() then
+end)
+
+vim_keymap_set(keymaps.next_entry, function()
+	if utils.is_quickfix_open() then
 		vim.cmd("cnext")
 	end
 end)
 
-vim.keymap.set("n", "<leader>zf", function()
-	vim.cmd.normal("va}")
-	vim.cmd.normal("zf")
-end, { desc = "Create bracket {} fold [Z] [F]old" })
+vim_keymap_set(keymaps.fold_bracket, function()
+	vim.cmd("normal va}")
+	vim.cmd("normal zf")
+end)
 
-vim.keymap.set("n", "<leader>tn", vim.cmd.tabNext, { desc = "Next tab" })
+vim_keymap_set(keymaps.tab_next, vim.cmd.tabNext)

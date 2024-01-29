@@ -103,12 +103,24 @@ local keymaps = {
 	-- Toggle
 	toggle_spellcheck = { mode = "n", keymap = "<leader>us", desc = "Toggle spellcheck" },
 	toggle_diagnostics = { mode = "n", keymap = "<leader>ud", desc = "Toggle diagnostics" },
+	toggle_highlight = { mode = "n", keymap = "<leader>uh", desc = "Toggle highlight" },
+	toggle_copilot = { mode = "n", keymap = "<leader>uc", desc = "Toggle copilot" },
+	toggle_wrap = { mode = "n", keymap = "<leader>uw", desc = "Toggle wrap" },
+	toggle_quickfix = { mode = "n", keymap = "<localleader>q", desc = "Toggle quickfix" },
 
 	-- Search and replace
 	search_change_goto_next = { mode = { "n", "x" }, keymap = "<leader>cgn", desc = "Search, change and goto next" },
 
-	-- TODO
-	find_files = { mode = "n", keymap = "<leader>ff", desc = "Find files" },
+	find_files_1 = { mode = "n", keymap = "<C-p>", desc = "Find files" },
+	find_files_2 = { mode = "n", keymap = "<leader>ff", desc = "Find files" },
+
+	previous_entry = { mode = "n", keymap = "<C-p>", desc = "Previous entry" },
+	next_entry = { mode = "n", keymap = "<C-n>", desc = "Next entry" },
+
+	fold_bracket = { mode = "n", keymap = "<leader>zf", desc = "Create bracket {} fold" },
+	tab_next = { mode = "n", keymap = "<leader>tn", desc = "Next tab" },
+	tab_prev = { mode = "n", keymap = "<leader>tp", desc = "Prev tab" },
+
 	find_recent_files = { mode = "n", keymap = "<leader>fr", desc = "Find recent files" },
 	search_resume = { mode = "n", keymap = "<leader>sl", desc = "Search resume" },
 	search_jump = { mode = "n", keymap = "<leader>sj", desc = "Search jump to symbol" },
