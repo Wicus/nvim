@@ -43,6 +43,9 @@ vim.keymap.set("n", "<C-Down>", "<cmd>resize +2<cr>")
 vim.keymap.set("n", "<C-Right>", "<cmd>vertical resize -2<cr>")
 vim.keymap.set("n", "<C-Left>", "<cmd>vertical resize +2<cr>")
 
+-- Remove highligh on Escape
+vim.keymap.set("n", "<Esc>", "<cmd>noh<cr>")
+
 -- All keymaps are defined here
 local keymaps = {
 	-- Global
@@ -69,11 +72,18 @@ local keymaps = {
 	live_grep_v = { mode = "v", keymap = "<leader>*", desc = "Live grep current word" },
 	live_grep_selection = { mode = "v", keymap = "<leader>*", desc = "Live grep selection" },
 
-	-- Copilot chat
-	chat = { mode = { "n", "v" }, keymap = "<leader>cc", desc = "Open chat in buffer" },
-	chat_vsplit = { mode = { "n", "v" }, keymap = "<leader>ch", desc = "Open chat in vertical split" },
-	chat_quick = { mode = { "n", "v" }, keymap = "<leader>ci", desc = "Quick chat" },
-	chat_inline = { mode = { "n", "v" }, keymap = "<leader>cl", desc = "Inline chat" },
+	-- Copilot / GPT chat
+	chat = { mode = { "n", "x" }, keymap = "<leader>ch", desc = "Open chat" },
+	chat_inline = { mode = { "n", "x" }, keymap = "<leader>ci", desc = "Quick chat" },
+	chat_list = { mode = { "n", "x" }, keymap = "<leader>cl", desc = "Inline chat" },
+	copilot_chat_buffer = { mode = "n", keymap = "<leader>ccb", desc = "Chat with current buffer" },
+	copilot_chat_explain = { mode = "n", keymap = "<leader>cce", desc = "Explain code" },
+	copilot_chat_tests = { mode = "n", keymap = "<leader>cct", desc = "Generate tests" },
+	copilot_chat_vsplit_toggle = { mode = "n", keymap = "<leader>ccT", desc = "Toggle vertical split" },
+	copilot_chat_visual = { mode = "x", keymap = "<leader>ccv", desc = "Open in vertical split" },
+	copilot_chat_in_place = { mode = "x", keymap = "<leader>ccx", desc = "Run in-place code" },
+	copilot_chat_fix_diagnostic = { mode = "n", keymap = "<leader>ccf", desc = "Fix diagnostic" },
+	copilot_chat_reset = { mode = "n", keymap = "<leader>ccr", desc = "Reset chat history and clear buffer" },
 
 	-- Buffers
 	buffers = { mode = "n", keymap = "<leader>bb", desc = "Open buffers" },
@@ -119,7 +129,6 @@ local keymaps = {
 
 	fold_bracket = { mode = "n", keymap = "<leader>zf", desc = "Create bracket {} fold" },
 	tab_next = { mode = "n", keymap = "<leader>tn", desc = "Next tab" },
-	tab_prev = { mode = "n", keymap = "<leader>tp", desc = "Prev tab" },
 
 	find_recent_files = { mode = "n", keymap = "<leader>fr", desc = "Find recent files" },
 	search_resume = { mode = "n", keymap = "<leader>sl", desc = "Search resume" },

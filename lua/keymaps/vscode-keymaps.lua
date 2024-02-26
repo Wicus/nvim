@@ -28,9 +28,7 @@ vim_keymap_set(keymaps.live_grep_v, function() vscode.action("workbench.action.f
 vim_keymap_set(keymaps.live_grep_selection, function() vscode.action("workbench.action.findInFiles") end)
 
 -- Copilot keymaps
-vim_keymap_set(keymaps.chat, function() vscode.action("workbench.action.chat.openInEditor") end)
-vim_keymap_set(keymaps.chat_vsplit, function() vscode.action("workbench.panel.chat.view.copilot.focus") end)
-vim_keymap_set(keymaps.chat_quick, function() vscode.action("workbench.action.quickchat.toggle") end)
+vim_keymap_set(keymaps.chat, function() vscode.action("workbench.panel.chat.view.copilot.focus") end)
 vim_keymap_set(keymaps.chat_inline, function() vscode.action("inlineChat.start") end)
 
 -- Buffers
