@@ -7,5 +7,6 @@ return {
 	"tpope/vim-surround", -- Surround text objects with quotes, brackets, etc
 	{ "norcalli/nvim-colorizer.lua", config = true },
 	{ "echasnovski/mini.trailspace", config = true },
+	{ "echasnovski/mini.align", config = true },
 	{ "numToStr/Comment.nvim", event = { "BufReadPre", "BufNewFile" }, config = true },
 }
