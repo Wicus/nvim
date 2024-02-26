@@ -30,7 +30,7 @@ return {
 				"cssls",
 				"tailwindcss",
 				"lemminx",
-				"astro",
+				"astro"
 			},
 		})
 		require("mason-tool-installer").setup({

@@ -62,6 +62,7 @@ return {
 		})
 
 		vim.keymap.set({ "n", "v" }, "<leader>cf", "<cmd>FormatWriteLock<cr>", { desc = "Format current file" })
+		vim.keymap.set({ "n", "v" }, "<leader>u=", "<cmd>autocmd! format<cr>", { desc = "Toggle format on save" })
 	end,
 	cond = function() return not vim.g.vscode end,
 }

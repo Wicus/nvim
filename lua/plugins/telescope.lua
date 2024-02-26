@@ -40,8 +40,8 @@ return {
 
 		local builtin = require("telescope.builtin")
 		local glob_pattern = {
-			"!src/shared/dygraphs/**",
-			"!src/shared/canvas-gauges/**",
+			-- "!src/shared/dygraphs/**",
+			-- "!src/shared/canvas-gauges/**",
 		}
 
 		vim.keymap.set("n", "<leader>fr", function() builtin.oldfiles({ only_cwd = true }) end, { desc = "[F]ile [R]ecent: Find recently opened files" })

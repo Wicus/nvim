@@ -44,8 +44,10 @@ return {
 	config = function(_, opts)
 		require("gp").setup(opts)
 
-		vim.keymap.set("n", "<leader>ch", "<cmd>GpChatToggle<cr>", { desc = "Toggle chat" })
-		vim.keymap.set({ "n", "v" }, "<leader>cc", "<cmd>GpChatNew<cr>", { desc = "New chat" })
+		local keymaps = require("keymaps.core").keymaps
+		local vim_keymap_set = require("keymaps.core").vim_keymap_set
+		vim_keymap_set(keymaps.chat, "<cmd>GpChatNew<cr>")
+		vim_keymap_set(keymaps.chat_list, "<cmd>GpChatFinder<cr>")
 	end,
 	cond = function() return not vim.g.vscode end,
 }
