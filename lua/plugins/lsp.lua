@@ -30,7 +30,7 @@ return {
 				"cssls",
 				"tailwindcss",
 				"lemminx",
-				"astro"
+				"astro",
 			},
 		})
 		require("mason-tool-installer").setup({
@@ -51,7 +51,7 @@ return {
 				vim.keymap.set("n", "cn", vim.lsp.buf.rename, { desc = "[C]hange [N]ame (Rename)" })
 				vim.keymap.set("n", "gd", require("telescope.builtin").lsp_definitions, { desc = "[G]oto [D]efinition" })
 				vim.keymap.set("n", "gr", require("telescope.builtin").lsp_references, { desc = "[G]oto [R]eferences" })
-				vim.keymap.set("n", "gy", require("telescope.builtin").lsp_implementations, { desc = "Goto to type implementations" })
+				vim.keymap.set("n", "gi", require("telescope.builtin").lsp_implementations, { desc = "Goto to type implementations" })
 				vim.keymap.set("n", "gt", require("telescope.builtin").lsp_type_definitions, { desc = "[G]oto [T]ype definition" })
 				vim.keymap.set("n", "K", vim.lsp.buf.hover, { desc = "Hover Documentation" })
 				vim.keymap.set("i", "<C-k>", vim.lsp.buf.signature_help, { desc = "Signature Help" })
