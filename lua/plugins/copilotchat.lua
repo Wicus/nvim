@@ -26,23 +26,23 @@ return {
 	},
 	opts = {
 		prompts = prompts,
-		debug = true,
 		auto_follow_cursor = false, -- Don't follow the cursor after getting response
-		mappings = {
-			close = "q", -- Close chat
-			reset = "<C-l>", -- Clear the chat buffer
-			complete = "<Tab>", -- Change to insert mode and press tab to get the completion
-			submit_prompt = "<CR>", -- Submit question to Copilot Chat
-			accept_diff = "<C-a>", -- Accept the diff
-			show_diff = "<C-s>", -- Show the diff
-		},
 	},
-
 	config = function(_, opts)
 		local chat = require("CopilotChat")
 		local select = require("CopilotChat.select")
 		-- Use unnamed register for the selection
 		opts.selection = select.unnamed
+
+		-- Override the git prompts message
+		opts.prompts.Commit = {
+			prompt = "Write commit message for the change with commitizen convention",
+			selection = select.gitdiff,
+		}
+		opts.prompts.CommitStaged = {
+			prompt = "Write commit message for the change with commitizen convention",
+			selection = function(source) return select.gitdiff(source, true) end,
+		}
 
 		chat.setup(opts)
 
@@ -82,18 +82,24 @@ return {
 		-- Show help actions with telescope
 		{
 			"<leader>cch",
-			function() require("CopilotChat.code_actions").show_help_actions() end,
+			function()
+				local actions = require("CopilotChat.actions")
+				require("CopilotChat.integrations.telescope").pick(actions.help_actions())
+			end,
 			desc = "CopilotChat - Help actions",
 		},
 		-- Show prompts actions with telescope
 		{
 			"<leader>ccp",
-			function() require("CopilotChat.code_actions").show_prompt_actions() end,
+			function()
+				local actions = require("CopilotChat.actions")
+				require("CopilotChat.integrations.telescope").pick(actions.prompt_actions())
+			end,
 			desc = "CopilotChat - Prompt actions",
 		},
 		{
 			"<leader>ccp",
-			":lua require('CopilotChat.code_actions').show_prompt_actions({ selection = require('CopilotChat.select').visual })<CR>",
+			":lua require('CopilotChat.integrations.telescope').pick(require('CopilotChat.actions').prompt_actions())<CR>",
 			mode = "x",
 			desc = "CopilotChat - Prompt actions",
 		},
@@ -144,7 +150,7 @@ return {
 			function()
 				local input = vim.fn.input("Quick Chat: ")
 				if input ~= "" then
-					vim.cmd("CopilotChatBuffer " .. input)
+					require("CopilotChat").ask(input, { selection = require("CopilotChat.select").buffer })
 				end
 			end,
 			desc = "CopilotChat - Quick chat",
