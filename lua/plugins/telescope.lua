@@ -42,7 +42,7 @@ return {
 						i = {
 							["<C-k>"] = live_grep_actions.quote_prompt(),
 							["<C-i>"] = live_grep_actions.quote_prompt({ postfix = " --no-ignore" }),
-							["<C-t>"] = live_grep_actions.quote_prompt({ postfix = " -t" }),
+							["<C-w>"] = live_grep_actions.quote_prompt({ postfix = " -w" }),
 							["<C-g>"] = live_grep_actions.quote_prompt({ postfix = " --iglob" }),
 						},
 					},
