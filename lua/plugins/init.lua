@@ -5,7 +5,7 @@ return {
 	"nvim-tree/nvim-web-devicons",
 	"tpope/vim-sleuth", -- Detect tabstop and shiftwidth automatically
 	"tpope/vim-surround", -- Surround text objects with quotes, brackets, etc
-	{ "norcalli/nvim-colorizer.lua", config = true },
+	{ "brenoprata10/nvim-highlight-colors", config = true },
 	{ "echasnovski/mini.trailspace", config = true },
 	{ "echasnovski/mini.align", config = true },
 	{ "numToStr/Comment.nvim", event = { "BufReadPre", "BufNewFile" }, config = true },

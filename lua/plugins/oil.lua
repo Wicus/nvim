@@ -12,7 +12,25 @@ return {
 					vim.cmd("silent !explorer .")
 				end
 			end,
+			["?"] = "actions.show_help",
+			["gy"] = "actions.copy_entry_path",
+
+			-- Overwrite the defaults
+			["<CR>"] = "actions.select",
+			["<C-s>"] = false,
+			["<C-h>"] = false,
+			["<C-t>"] = false,
 			["<C-p>"] = false,
+			["<C-c>"] = false,
+			["<C-l>"] = false,
+			["-"] = "actions.parent",
+			["_"] = "actions.open_cwd",
+			["`"] = "actions.cd",
+			["~"] = "actions.tcd",
+			["gs"] = false,
+			["gx"] = false,
+			["g."] = "actions.toggle_hidden",
+			["g\\"] = false,
 		},
 		columns = {},
 	},

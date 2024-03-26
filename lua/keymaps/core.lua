@@ -44,7 +44,7 @@ vim.keymap.set("n", "<C-Right>", "<cmd>vertical resize -2<cr>")
 vim.keymap.set("n", "<C-Left>", "<cmd>vertical resize +2<cr>")
 
 -- Remove highligh on Escape
-vim.keymap.set("n", "<Esc>", "<cmd>noh<cr>")
+vim.keymap.set("n", "<Esc>", "<cmd>nohlsearch<cr>")
 
 -- All keymaps are defined here
 local keymaps = {

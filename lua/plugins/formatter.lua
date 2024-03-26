@@ -1,22 +1,3 @@
-local patch_clangformat_bug = function(f)
-	local o = f()
-	if o.args and type(o.args) == "table" then
-		local new_args = {}
-		local skip = false
-		for i, v in ipairs(o.args) do
-			if skip then
-				skip = false
-			elseif v == "-assume-filename" and (o.args[i + 1] == "''" or o.args[i + 1] == '""') then
-				skip = true
-			elseif type(v) ~= "string" or not v:find("^-style=") then
-				table.insert(new_args, v)
-			end
-		end
-		o.args = new_args
-	end
-	return o
-end
-
 return {
 	"mhartington/formatter.nvim",
 	event = { "BufReadPre", "BufNewFile" },
@@ -32,10 +13,10 @@ return {
 				javascriptreact = { require("formatter.filetypes.javascriptreact").prettierd },
 				typescript = { require("formatter.filetypes.typescript").prettierd },
 				typescriptreact = { require("formatter.filetypes.typescriptreact").prettierd },
-				h = { patch_clangformat_bug(require("formatter.defaults").clangformat) },
-				c = { patch_clangformat_bug(require("formatter.defaults").clangformat) },
-				cpp = { patch_clangformat_bug(require("formatter.defaults").clangformat) },
-				hpp = { patch_clangformat_bug(require("formatter.defaults").clangformat) },
+				h = { require("formatter.defaults").clangformat },
+				c = { require("formatter.defaults").clangformat },
+				cpp = { require("formatter.defaults").clangformat },
+				hpp = { require("formatter.defaults").clangformat },
 				cs = vim.lsp.buf.format,
 				python = vim.lsp.buf.format,
 				json = { require("formatter.filetypes.json").prettierd },
@@ -57,11 +38,12 @@ return {
 				-- "*.cs",
 				-- "*.cpp",
 				-- "*.hpp",
-				-- "*.json",
+				"*.json",
 			},
 		})
 
-		vim.keymap.set({ "n", "v" }, "<leader>cf", "<cmd>FormatWriteLock<cr>", { desc = "Format current file" })
+		vim.keymap.set({ "v" }, "<leader>=", ":Format<cr>", { desc = "Format" })
+		vim.keymap.set({ "n" }, "<leader>f=", "<cmd>FormatWriteLock<cr>", { desc = "Format" })
 		vim.keymap.set({ "n", "v" }, "<leader>u=", "<cmd>autocmd! format<cr>", { desc = "Toggle format on save" })
 	end,
 	cond = function() return not vim.g.vscode end,
