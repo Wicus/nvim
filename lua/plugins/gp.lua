@@ -42,12 +42,12 @@ return {
 		},
 	},
 	config = function(_, opts)
-		require("gp").setup(opts)
-
-		local keymaps = require("keymaps.core").keymaps
-		local vim_keymap_set = require("keymaps.core").vim_keymap_set
-		vim_keymap_set(keymaps.chat, "<cmd>GpChatNew<cr>")
-		vim_keymap_set(keymaps.chat_list, "<cmd>GpChatFinder<cr>")
+		-- require("gp").setup(opts)
+		--
+		-- local keymaps = require("keymaps.core").keymaps
+		-- local vim_keymap_set = require("keymaps.core").vim_keymap_set
+		-- vim_keymap_set(keymaps.chat, "<cmd>GpChatNew<cr>")
+		-- vim_keymap_set(keymaps.chat_list, "<cmd>GpChatFinder<cr>")
 	end,
 	cond = function() return not vim.g.vscode end,
 }
