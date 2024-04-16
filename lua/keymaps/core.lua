@@ -121,8 +121,7 @@ local keymaps = {
 	-- Search and replace
 	search_change_goto_next = { mode = { "n", "x" }, keymap = "<leader>cgn", desc = "Search, change and goto next" },
 
-	find_files_1 = { mode = "n", keymap = "<C-p>", desc = "Find files" },
-	find_files_2 = { mode = "n", keymap = "<leader>ff", desc = "Find files" },
+	find_files = { mode = "n", keymap = "<leader>ff", desc = "Find files" },
 
 	previous_entry = { mode = "n", keymap = "<C-p>", desc = "Previous entry" },
 	next_entry = { mode = "n", keymap = "<C-n>", desc = "Next entry" },
