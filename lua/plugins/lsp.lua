@@ -48,6 +48,7 @@ return {
 			ensure_installed = {
 				"stylua",
 				"prettierd",
+				"prettier",
 				"clang-format",
 			},
 		})
@@ -83,6 +84,8 @@ return {
 		lspconfig.html.setup(config)
 		lspconfig.cssls.setup(config)
 		lspconfig.lemminx.setup(config)
+		lspconfig.astro.setup(config)
+		lspconfig.tailwindcss.setup(config)
 		lspconfig.lua_ls.setup(config_with_opts({
 			settings = {
 				Lua = {

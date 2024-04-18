@@ -45,7 +45,7 @@ vim.opt.termguicolors = true
 vim.opt.colorcolumn = "120"
 
 -- Spelling
-vim.opt.spell = false
+vim.opt.spell = true
 vim.opt.spelllang = "en_us"
 
 -- Clipboard

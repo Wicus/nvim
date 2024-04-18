@@ -12,7 +12,8 @@ return {
 				javascript = { require("formatter.filetypes.javascript").prettierd },
 				javascriptreact = { require("formatter.filetypes.javascriptreact").prettierd },
 				typescript = { require("formatter.filetypes.typescript").prettierd },
-				typescriptreact = { require("formatter.filetypes.typescriptreact").prettierd },
+				typescriptreact = { require("formatter.filetypes.typescriptreact").prettier },
+				astro = { require("formatter.filetypes.html").prettier },
 				h = { require("formatter.defaults").clangformat },
 				c = { require("formatter.defaults").clangformat },
 				cpp = { require("formatter.defaults").clangformat },
@@ -39,6 +40,7 @@ return {
 				-- "*.cpp",
 				-- "*.hpp",
 				"*.json",
+				"*.astro",
 			},
 		})
 
