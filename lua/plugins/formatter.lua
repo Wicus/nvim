@@ -19,7 +19,7 @@ return {
 				cpp = { require("formatter.defaults").clangformat },
 				hpp = { require("formatter.defaults").clangformat },
 				cs = vim.lsp.buf.format,
-				python = vim.lsp.buf.format,
+				python = { require("formatter.filetypes.python").black },
 				json = { require("formatter.filetypes.json").prettierd },
 				xml = vim.lsp.buf.format,
 			},
@@ -41,6 +41,7 @@ return {
 				-- "*.hpp",
 				"*.json",
 				"*.astro",
+				"*.py",
 			},
 		})
 

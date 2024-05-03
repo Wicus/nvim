@@ -84,6 +84,7 @@ return {
 				["<CR>"] = cmp.mapping.confirm({
 					select = true,
 				}),
+				["<M-/>"] = cmp.mapping(function() luasnip.expand() end, { "i", "s" }),
 
 				-- Think of <c-l> as moving to the right of your snippet expansion.
 				--  So if you have a snippet that's like:

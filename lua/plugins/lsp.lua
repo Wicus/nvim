@@ -50,6 +50,7 @@ return {
 				"prettierd",
 				"prettier",
 				"clang-format",
+				"black",
 			},
 		})
 
@@ -70,7 +71,7 @@ return {
 
 				-- Omnisharp overrides
 				if client.name == "omnisharp" then
-					vim.keymap.set("n", "gd", require("omnisharp_extended").telescope_lsp_definitions, { desc = "[G]oto [D]efinition" })
+					vim.keymap.set("n", "gd", require("omnisharp_extended").lsp_definitions, { desc = "[G]oto [D]efinition" })
 				end
 			end,
 		}
