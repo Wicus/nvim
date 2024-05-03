@@ -5,7 +5,6 @@ return {
 		"williamboman/mason-lspconfig.nvim",
 		"WhoIsSethDaniel/mason-tool-installer.nvim",
 		"hrsh7th/cmp-nvim-lsp",
-		"Hoffs/omnisharp-extended-lsp.nvim",
 		{ "folke/neodev.nvim", config = true },
 		{ "j-hui/fidget.nvim", config = true },
 	},
@@ -68,11 +67,6 @@ return {
 				vim.keymap.set("n", "gt", require("telescope.builtin").lsp_type_definitions, { desc = "[G]oto [T]ype definition" })
 				vim.keymap.set("n", "K", vim.lsp.buf.hover, { desc = "Hover Documentation" })
 				vim.keymap.set("i", "<C-k>", vim.lsp.buf.signature_help, { desc = "Signature Help" })
-
-				-- Omnisharp overrides
-				if client.name == "omnisharp" then
-					vim.keymap.set("n", "gd", require("omnisharp_extended").lsp_definitions, { desc = "[G]oto [D]efinition" })
-				end
 			end,
 		}
 		local config_with_opts = function(settings) return vim.tbl_deep_extend("force", config, settings) end
@@ -87,6 +81,7 @@ return {
 		lspconfig.lemminx.setup(config)
 		lspconfig.astro.setup(config)
 		lspconfig.tailwindcss.setup(config)
+		lspconfig.omnisharp.setup(config)
 		lspconfig.lua_ls.setup(config_with_opts({
 			settings = {
 				Lua = {
@@ -97,10 +92,6 @@ return {
 					telemetry = { enable = false },
 				},
 			},
-		}))
-		lspconfig.omnisharp.setup(config_with_opts({
-			cmd = { "cmd", "/c", "omnisharp" },
-			handlers = { ["textDocument/definition"] = require("omnisharp_extended").handler },
 		}))
 	end,
 	cond = function() return not vim.g.vscode end,
