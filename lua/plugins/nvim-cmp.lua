@@ -43,6 +43,7 @@ return {
 			Event = "  ",
 			Operator = "  ",
 			TypeParameter = "  ",
+			Copilot = "  ",
 		}
 
 		require("luasnip.loaders.from_vscode").lazy_load()
@@ -75,8 +76,11 @@ return {
 				["<C-d>"] = cmp.mapping.scroll_docs(-4),
 				["<C-u>"] = cmp.mapping.scroll_docs(4),
 
-				["<M-q>"] = cmp.mapping.complete({}), -- Has a AutoHotKey script to change this to <C-Space>
-				["<C-Space>"] = cmp.mapping.complete({}), -- This is for other terminal emulators
+				-- <M-q> is remapped to <C-Space> in AutoHotKey
+				["<M-q>"] = cmp.mapping.complete({}),
+
+				-- This is for other terminal emulators
+				-- ["<C-Space>"] = cmp.mapping.complete({}),
 
 				["<C-y>"] = cmp.mapping.confirm({
 					select = true,
@@ -85,15 +89,6 @@ return {
 					select = true,
 				}),
 				["<M-/>"] = cmp.mapping(function() luasnip.expand() end, { "i", "s" }),
-
-				-- Think of <c-l> as moving to the right of your snippet expansion.
-				--  So if you have a snippet that's like:
-				--  function $name($args)
-				--    $body
-				--  end
-				--
-				-- <c-l> will move you to the right of each of the expansion locations.
-				-- <c-h> is similar, except moving you backwards.
 				["<C-l>"] = cmp.mapping(function()
 					if luasnip.expand_or_locally_jumpable() then
 						luasnip.expand_or_jump()
@@ -106,6 +101,7 @@ return {
 				end, { "i", "s" }),
 			}),
 			sources = {
+				{ name = "copilot" },
 				{ name = "luasnip" },
 				{ name = "nvim_lsp" },
 				{ name = "path" },
