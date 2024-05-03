@@ -75,7 +75,7 @@ return {
 				["<C-d>"] = cmp.mapping.scroll_docs(-4),
 				["<C-u>"] = cmp.mapping.scroll_docs(4),
 
-				["<C-l>"] = cmp.mapping.complete({}), -- Has a AutoHotKey script to change this to <C-Space>
+				["<M-q>"] = cmp.mapping.complete({}), -- Has a AutoHotKey script to change this to <C-Space>
 				["<C-Space>"] = cmp.mapping.complete({}), -- This is for other terminal emulators
 
 				["<C-y>"] = cmp.mapping.confirm({
@@ -94,16 +94,16 @@ return {
 				--
 				-- <c-l> will move you to the right of each of the expansion locations.
 				-- <c-h> is similar, except moving you backwards.
-				-- ["<C-l>"] = cmp.mapping(function()
-				-- 	if luasnip.expand_or_locally_jumpable() then
-				-- 		luasnip.expand_or_jump()
-				-- 	end
-				-- end, { "i", "s" }),
-				-- ["<C-h>"] = cmp.mapping(function()
-				-- 	if luasnip.locally_jumpable(-1) then
-				-- 		luasnip.jump(-1)
-				-- 	end
-				-- end, { "i", "s" }),
+				["<C-l>"] = cmp.mapping(function()
+					if luasnip.expand_or_locally_jumpable() then
+						luasnip.expand_or_jump()
+					end
+				end, { "i", "s" }),
+				["<C-h>"] = cmp.mapping(function()
+					if luasnip.locally_jumpable(-1) then
+						luasnip.jump(-1)
+					end
+				end, { "i", "s" }),
 			}),
 			sources = {
 				{ name = "luasnip" },
