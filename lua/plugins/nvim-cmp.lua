@@ -1,3 +1,7 @@
+local ELLIPSIS_CHAR = "…"
+local MAX_LABEL_WIDTH = 30
+local MIN_LABEL_WIDTH = 30
+
 return {
 	"hrsh7th/nvim-cmp",
 	event = { "InsertEnter" },
@@ -66,6 +70,14 @@ return {
 			},
 			formatting = {
 				format = function(_, vim_item)
+					local label = vim_item.abbr
+					local truncated_label = vim.fn.strcharpart(label, 0, MAX_LABEL_WIDTH)
+					if truncated_label ~= label then
+						vim_item.abbr = truncated_label .. ELLIPSIS_CHAR
+					elseif string.len(label) < MIN_LABEL_WIDTH then
+						local padding = string.rep(" ", MIN_LABEL_WIDTH - string.len(label))
+						vim_item.abbr = label .. padding
+					end
 					vim_item.kind = (cmp_kinds[vim_item.kind] or "") .. vim_item.kind
 					return vim_item
 				end,
@@ -101,11 +113,11 @@ return {
 				end, { "i", "s" }),
 			}),
 			sources = {
-				{ name = "copilot" },
-				{ name = "luasnip" },
-				{ name = "nvim_lsp" },
-				{ name = "path" },
-				{ name = "spell" },
+				{ name = "copilot", group_index = 2 },
+				{ name = "luasnip", group_index = 2 },
+				{ name = "nvim_lsp", group_index = 2 },
+				{ name = "path", group_index = 2 },
+				{ name = "spell", group_index = 2 },
 			},
 		})
 	end,
