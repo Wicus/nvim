@@ -9,15 +9,6 @@ local vim_keymap_set = require("keymaps.core").vim_keymap_set
 vim_keymap_set(keymaps.toggle_spellcheck, "<cmd>set invspell<cr>")
 vim_keymap_set(keymaps.toggle_wrap, "<cmd>set wrap!<cr>")
 vim_keymap_set(keymaps.toggle_highlight, "<cmd>nohlsearch<cr>")
-vim_keymap_set(keymaps.toggle_copilot, function()
-	if vim.fn["copilot#Enabled"]() == 1 then
-		vim.cmd("Copilot disable")
-		print(vim.cmd("Copilot status"))
-	else
-		vim.cmd("Copilot enable")
-		print(vim.cmd("Copilot status"))
-	end
-end)
 
 -- Search and replace commands
 vim_keymap_set(keymaps.search_change_goto_next, function() vim.fn.feedkeys("*Ncgn") end)
