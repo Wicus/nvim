@@ -12,7 +12,7 @@ return {
 				enabled = true,
 				auto_trigger = false,
 				keymap = {
-					accept = "<Tab>",
+					accept = false,
 				},
 			},
 			filetypes = {
@@ -44,6 +44,17 @@ return {
 					copilot_suggestion.next()
 				end
 			end)
+
+			-- Set <Tab> to accept suggestion if it is visible else use default behavior
+			vim.keymap.set("i", "<Tab>", function()
+				if copilot_suggestion.is_visible() then
+					copilot_suggestion.accept()
+				else
+					vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("<Tab>", true, false, true), "n", false)
+				end
+			end, {
+				silent = true,
+			})
 		end,
 		cond = function() return not vim.g.vscode end,
 	},
