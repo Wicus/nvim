@@ -46,6 +46,12 @@ return {
 			Copilot = "  ",
 		}
 
+		-- Disable copilot suggestions when the completion menu is open
+		-- ---@diagnostic disable-next-line: inject-field
+		-- cmp.event:on("menu_opened", function() vim.b.copilot_suggestion_hidden = true end)
+		-- ---@diagnostic disable-next-line: inject-field
+		-- cmp.event:on("menu_closed", function() vim.b.copilot_suggestion_hidden = false end)
+
 		require("luasnip.loaders.from_vscode").lazy_load()
 		luasnip.config.setup({})
 
@@ -63,12 +69,6 @@ return {
 				documentation = cmp.config.window.bordered({
 					border = "single",
 				}),
-			},
-			formatting = {
-				format = function(_, vim_item)
-					vim_item.kind = (cmp_kinds[vim_item.kind] or "") .. vim_item.kind
-					return vim_item
-				end,
 			},
 			mapping = cmp.mapping.preset.insert({
 				["<C-n>"] = cmp.mapping.select_next_item(),
@@ -105,7 +105,7 @@ return {
 				{ name = "luasnip" },
 				{ name = "nvim_lsp" },
 				{ name = "path" },
-				{ name = "spell" },
+				{ name = "spell", keyword_length = 5 },
 			},
 		})
 	end,
