@@ -56,6 +56,8 @@ return {
 		luasnip.config.setup({})
 
 		cmp.setup({
+			---@diagnostic disable-next-line: missing-fields
+			view = { entries = { follow_cursor = false } },
 			snippet = {
 				expand = function(args) luasnip.lsp_expand(args.body) end,
 			},
@@ -101,11 +103,11 @@ return {
 				end, { "i", "s" }),
 			}),
 			sources = {
-				{ name = "copilot" },
-				{ name = "luasnip" },
-				{ name = "nvim_lsp" },
-				{ name = "path" },
-				{ name = "spell", keyword_length = 5 },
+				{ name = "nvim_lsp", group_index = 1 },
+				{ name = "luasnip", group_index = 1 },
+				{ name = "copilot", group_index = 2 },
+				{ name = "path", group_index = 2 },
+				{ name = "spell", keyword_length = 5, group_index = 2 },
 			},
 		})
 	end,
