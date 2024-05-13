@@ -1,3 +1,6 @@
+local keymaps = require("keymaps.core").keymaps
+local vim_keymap_set = require("keymaps.core").vim_keymap_set
+
 return {
 	"hrsh7th/nvim-cmp",
 	event = { "InsertEnter" },
@@ -8,8 +11,11 @@ return {
 
 		-- Adds LSP completion capabilities
 		"hrsh7th/cmp-nvim-lsp",
+
+		-- Adds other sources for nvim-cmp
 		"hrsh7th/cmp-path",
-		"f3fora/cmp-spell",
+		"hrsh7th/cmp-buffer",
+		-- "f3fora/cmp-spell", -- This is really annoying as it pops up the whole time while I'm writing
 
 		-- Adds a number of user-friendly snippets
 		"rafamadriz/friendly-snippets",
@@ -75,40 +81,38 @@ return {
 			mapping = cmp.mapping.preset.insert({
 				["<C-n>"] = cmp.mapping.select_next_item(),
 				["<C-p>"] = cmp.mapping.select_prev_item(),
-				["<C-d>"] = cmp.mapping.scroll_docs(-4),
-				["<C-u>"] = cmp.mapping.scroll_docs(4),
+				["<C-d>"] = cmp.mapping.scroll_docs(4),
+				["<C-u>"] = cmp.mapping.scroll_docs(-4),
+				-- ["<C-Space>"] = cmp.mapping.complete({}), -- This is for other terminal emulators
+				["<M-q>"] = cmp.mapping.complete({}), -- <M-q> is remapped to <C-Space> in AutoHotKey
+				["<C-l>"] = cmp.mapping.confirm({ select = true }),
+				["<CR>"] = cmp.mapping.confirm({ select = true }),
 
-				-- <M-q> is remapped to <C-Space> in AutoHotKey
-				["<M-q>"] = cmp.mapping.complete({}),
-
-				-- This is for other terminal emulators
-				-- ["<C-Space>"] = cmp.mapping.complete({}),
-
-				["<C-y>"] = cmp.mapping.confirm({
-					select = true,
-				}),
-				["<CR>"] = cmp.mapping.confirm({
-					select = true,
-				}),
 				["<M-/>"] = cmp.mapping(function() luasnip.expand() end, { "i", "s" }),
-				["<C-l>"] = cmp.mapping(function()
+				["<C-k>"] = cmp.mapping(function()
 					if luasnip.expand_or_locally_jumpable() then
 						luasnip.expand_or_jump()
 					end
 				end, { "i", "s" }),
-				["<C-h>"] = cmp.mapping(function()
+				["<C-j>"] = cmp.mapping(function()
 					if luasnip.locally_jumpable(-1) then
 						luasnip.jump(-1)
 					end
 				end, { "i", "s" }),
+
+				-- Show copilot suggestions
+				["<M-;>"] = cmp.mapping.complete({ config = { sources = cmp.config.sources({ { name = "copilot" } }) } }),
 			}),
-			sources = {
-				{ name = "nvim_lsp", group_index = 1 },
-				{ name = "luasnip", group_index = 1 },
-				{ name = "copilot", group_index = 2 },
-				{ name = "path", group_index = 2 },
-				{ name = "spell", keyword_length = 5, group_index = 2 },
-			},
+
+			sources = cmp.config.sources({
+				{ name = "nvim_lsp" },
+				{ name = "luasnip" },
+			}, {
+				{ name = "path" },
+				{ name = "buffer" },
+			}, {
+				{ name = "copilot", entry_filter = function() return false end }, -- This is so that Copilot loads in the background
+			}),
 		})
 	end,
 	cond = function() return not vim.g.vscode end,

@@ -85,6 +85,9 @@ local keymaps = {
 	copilot_chat_fix_diagnostic = { mode = "n", keymap = "<leader>ccf", desc = "Fix diagnostic" },
 	copilot_chat_reset = { mode = "n", keymap = "<leader>ccr", desc = "Reset chat history and clear buffer" },
 
+	-- Github Copilot
+	show_suggestions = { mode = "i", keymap = "<M-;>", desc = "Show suggestions" },
+
 	-- Buffers
 	buffers = { mode = "n", keymap = "<leader>bb", desc = "Open buffers" },
 
