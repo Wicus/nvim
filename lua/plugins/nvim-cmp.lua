@@ -1,6 +1,3 @@
-local keymaps = require("keymaps.core").keymaps
-local vim_keymap_set = require("keymaps.core").vim_keymap_set
-
 return {
 	"hrsh7th/nvim-cmp",
 	event = { "InsertEnter" },
@@ -15,10 +12,11 @@ return {
 		-- Adds other sources for nvim-cmp
 		"hrsh7th/cmp-path",
 		"hrsh7th/cmp-buffer",
-		-- "f3fora/cmp-spell", -- This is really annoying as it pops up the whole time while I'm writing
+		"f3fora/cmp-spell", -- This is really annoying as it pops up the whole time while I'm writing
 
 		-- Adds a number of user-friendly snippets
 		"rafamadriz/friendly-snippets",
+		"zbirenbaum/copilot.lua",
 	},
 	config = function()
 		local cmp = require("cmp")
@@ -60,6 +58,8 @@ return {
 
 		require("luasnip.loaders.from_vscode").lazy_load()
 		luasnip.config.setup({})
+		local copilot = require("copilot")
+		local copilot_suggestion = require("copilot.suggestion")
 
 		cmp.setup({
 			---@diagnostic disable-next-line: missing-fields
@@ -83,25 +83,42 @@ return {
 				["<C-p>"] = cmp.mapping.select_prev_item(),
 				["<C-d>"] = cmp.mapping.scroll_docs(4),
 				["<C-u>"] = cmp.mapping.scroll_docs(-4),
-				-- ["<C-Space>"] = cmp.mapping.complete({}), -- This is for other terminal emulators
-				["<M-q>"] = cmp.mapping.complete({}), -- <M-q> is remapped to <C-Space> in AutoHotKey
-				["<C-l>"] = cmp.mapping.confirm({ select = true }),
-				["<CR>"] = cmp.mapping.confirm({ select = true }),
-
 				["<M-/>"] = cmp.mapping(function() luasnip.expand() end, { "i", "s" }),
-				["<C-k>"] = cmp.mapping(function()
+				["<C-o>"] = cmp.mapping(function()
 					if luasnip.expand_or_locally_jumpable() then
 						luasnip.expand_or_jump()
 					end
 				end, { "i", "s" }),
-				["<C-j>"] = cmp.mapping(function()
+				-- This doesn't work sometimes, i need a way to disable to builtin <C-i>
+				["<C-i>"] = cmp.mapping(function()
 					if luasnip.locally_jumpable(-1) then
 						luasnip.jump(-1)
 					end
 				end, { "i", "s" }),
+				["<C-h>"] = cmp.mapping.complete(),
+				["<C-k>"] = cmp.mapping(function(fallback)
+					if copilot_suggestion.is_visible() then
+						copilot_suggestion.dismiss()
+					elseif cmp.visible() then
+						cmp.close()
+					else
+						fallback()
+					end
+				end, { "i", "s" }),
+				["<C-l>"] = cmp.mapping(function(fallback)
+					if copilot_suggestion.is_visible() then
+						copilot_suggestion.accept()
+					elseif cmp.visible() then
+						cmp.confirm({ select = true })
+					else
+						fallback()
+					end
+				end, { "i", "s" }),
 
-				-- Show copilot suggestions
-				["<C-h>"] = cmp.mapping.complete({ config = { sources = cmp.config.sources({ { name = "copilot" } }) } }),
+				-- Mapping that I'm used to... to be removed later
+				-- ["<C-Space>"] = cmp.mapping.complete({}), -- This is for other terminal emulators
+				["<M-q>"] = cmp.mapping.complete({}), -- <M-q> is remapped to <C-Space> in AutoHotKey
+				["<CR>"] = cmp.mapping.confirm({ select = true }),
 			}),
 
 			sources = cmp.config.sources({
@@ -109,9 +126,9 @@ return {
 				{ name = "luasnip" },
 			}, {
 				{ name = "path" },
-				{ name = "buffer" },
+				{ name = "buffer", keyword_length = 5 },
 			}, {
-				{ name = "copilot", entry_filter = function() return false end }, -- This is so that Copilot loads in the background
+				{ name = "spell", keyword_length = 5 },
 			}),
 		})
 	end,
