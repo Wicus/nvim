@@ -33,7 +33,6 @@ return {
 			},
 		},
 	},
-	event = "VeryLazy",
 	keys = {
 		-- Show help actions with telescope
 		{
@@ -53,16 +52,17 @@ return {
 			end,
 			desc = "CopilotChat - Prompt actions",
 		},
-		-- Custom input for CopilotChat
 		{
-			"<leader>cci",
+			"<leader>ch",
 			function()
-				local input = vim.fn.input("Quick chat with selection: ")
-				if input ~= "" then
-					require("CopilotChat").ask(input, { selection = require("CopilotChat.select").unnamed })
-				end
+				local chat = require("CopilotChat")
+				local select = require("CopilotChat.select")
+				chat.toggle({
+					selection = select.visual,
+				})
 			end,
-			desc = "CopilotChat - Quick chat with selection",
+			mode = "v",
+			desc = "CopilotChat - Chat with selection",
 		},
 		-- Quick chat with Copilot
 		{

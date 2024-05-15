@@ -101,7 +101,7 @@ return {
 				end, { "i", "s" }),
 
 				-- Show copilot suggestions
-				["<M-;>"] = cmp.mapping.complete({ config = { sources = cmp.config.sources({ { name = "copilot" } }) } }),
+				["<C-h>"] = cmp.mapping.complete({ config = { sources = cmp.config.sources({ { name = "copilot" } }) } }),
 			}),
 
 			sources = cmp.config.sources({

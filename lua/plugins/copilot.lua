@@ -33,19 +33,19 @@ return {
 
 			copilot.setup(opts)
 
-			-- vim_keymap_set(keymaps.toggle_copilot, require("copilot.suggestion").toggle_auto_trigger)
-			-- vim.keymap.set("i", "<M-;>", function() copilot_suggestion.next() end)
+			vim_keymap_set(keymaps.toggle_copilot, require("copilot.suggestion").toggle_auto_trigger)
+			vim.keymap.set("i", "<M-;>", function() copilot_suggestion.next() end)
 
 			-- Set <Tab> to accept suggestion if it is visible else use default behavior
-			-- vim.keymap.set("i", "<Tab>", function()
-			-- 	if copilot_suggestion.is_visible() then
-			-- 		copilot_suggestion.accept()
-			-- 	else
-			-- 		vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("<Tab>", true, false, true), "n", false)
-			-- 	end
-			-- end, {
-			-- 	silent = true,
-			-- })
+			vim.keymap.set("i", "<Tab>", function()
+				if copilot_suggestion.is_visible() then
+					copilot_suggestion.accept()
+				else
+					vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("<Tab>", true, false, true), "n", false)
+				end
+			end, {
+				silent = true,
+			})
 		end,
 		cond = function() return not vim.g.vscode end,
 	},
