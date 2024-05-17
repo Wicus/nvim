@@ -13,6 +13,7 @@ return {
 		},
 	},
 	config = function()
+		---@diagnostic disable-next-line: missing-fields
 		require("nvim-treesitter.configs").setup({
 			ensure_installed = {
 				"c",
@@ -68,7 +69,7 @@ return {
 						["]]"] = "@class.outer",
 					},
 					goto_next_end = {
-						["]M"] = "@function.outer",
+						["]f"] = "@function.outer",
 						["]["] = "@class.outer",
 					},
 					goto_previous_start = {
@@ -76,7 +77,7 @@ return {
 						["[["] = "@class.outer",
 					},
 					goto_previous_end = {
-						["[M"] = "@function.outer",
+						["[f"] = "@function.outer",
 						["[]"] = "@class.outer",
 					},
 				},

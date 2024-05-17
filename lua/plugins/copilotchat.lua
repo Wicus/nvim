@@ -22,9 +22,9 @@ return {
 			zindex = 1, -- determines if window is on top or below other floating windows
 		},
 		mappings = {
-			-- Use tab for completion
-			complete = {
-				insert = "<C-l><C-l>",
+			submit_prompt = {
+				normal = "<CR>",
+				insert = "<C-l>",
 			},
 			-- Reset the chat buffer
 			reset = {
