@@ -83,22 +83,24 @@ return {
 				["<C-p>"] = cmp.mapping.select_prev_item(),
 				["<C-d>"] = cmp.mapping.scroll_docs(4),
 				["<C-u>"] = cmp.mapping.scroll_docs(-4),
+
 				["<M-/>"] = cmp.mapping(function() luasnip.expand() end, { "i", "s" }),
-				["<C-o>"] = cmp.mapping(function()
-					if luasnip.expand_or_locally_jumpable() then
-						luasnip.expand_or_jump()
+				["<M-.>"] = cmp.mapping(function()
+					if luasnip.locally_jumpable() then
+						luasnip.jump(1)
 					end
 				end, { "i", "s" }),
-				-- This doesn't work sometimes, i need a way to disable to builtin <C-i>
-				["<C-i>"] = cmp.mapping(function()
+				["<M-,>"] = cmp.mapping(function()
 					if luasnip.locally_jumpable(-1) then
 						luasnip.jump(-1)
 					end
 				end, { "i", "s" }),
+
 				["<C-h>"] = cmp.mapping.complete(),
 				["<C-k>"] = cmp.mapping(function(fallback)
 					if copilot_suggestion.is_visible() then
 						copilot_suggestion.dismiss()
+						vim.b.copilot_suggestion_hidden = true
 					elseif cmp.visible() then
 						cmp.close()
 					else
@@ -108,6 +110,7 @@ return {
 				["<C-l>"] = cmp.mapping(function(fallback)
 					if copilot_suggestion.is_visible() then
 						copilot_suggestion.accept()
+						vim.b.copilot_suggestion_hidden = true
 					elseif cmp.visible() then
 						cmp.confirm({ select = true })
 					else
@@ -116,9 +119,19 @@ return {
 				end, { "i", "s" }),
 
 				-- Mapping that I'm used to... to be removed later
+				["<CR>"] = cmp.mapping(function(fallback)
+					if copilot_suggestion.is_visible() then
+						copilot_suggestion.accept()
+						vim.b.copilot_suggestion_hidden = true
+					elseif cmp.visible() then
+						cmp.confirm({ select = true })
+					else
+						fallback()
+					end
+				end, { "i", "s" }),
+				-- Mapping that I'm used to... to be removed later
 				-- ["<C-Space>"] = cmp.mapping.complete({}), -- This is for other terminal emulators
 				["<M-q>"] = cmp.mapping.complete({}), -- <M-q> is remapped to <C-Space> in AutoHotKey
-				["<CR>"] = cmp.mapping.confirm({ select = true }),
 			}),
 
 			sources = cmp.config.sources({
