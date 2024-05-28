@@ -64,12 +64,8 @@ return {
 				vim.keymap.set("n", "gt", require("telescope.builtin").lsp_type_definitions, { desc = "[G]oto [T]ype definition" })
 				vim.keymap.set("n", "K", vim.lsp.buf.hover, { desc = "Hover Documentation" })
 				vim.keymap.set("i", "<C-k>", vim.lsp.buf.signature_help, { desc = "Signature Help" })
-
-				-- <M-w> is remapped to <C-.> in AutoHotKey
-				vim.keymap.set("n", "<M-w>", vim.lsp.buf.code_action, { desc = "[C]ode [A]ctions" })
-
-				-- This is for other terminal emulators
-				-- vim.keymap.set("n", "<C-.>", vim.lsp.buf.code_action, { desc = "[C]ode [A]ctions" })
+				vim.keymap.set("n", "<M-w>", vim.lsp.buf.code_action, { desc = "[C]ode [A]ctions" }) -- <M-w> is remapped to <C-.> in AutoHotKey
+				vim.keymap.set("n", "<C-.>", vim.lsp.buf.code_action, { desc = "[C]ode [A]ctions" }) -- This is for other terminal emulators
 			end,
 		}
 		local config_with_opts = function(settings) return vim.tbl_deep_extend("force", config, settings) end

@@ -11,7 +11,8 @@ vim.opt.hlsearch = true
 
 -- Make line numbers default
 vim.wo.number = true
--- vim.opt.relativenumber = true
+vim.opt.relativenumber = true
+vim.opt.cursorline = true -- Highlight current line
 
 -- Enable break indent
 vim.opt.breakindent = true
@@ -38,14 +39,11 @@ vim.opt.termguicolors = true
 -- Set completeopt to have a better completion experience
 -- vim.opt.completeopt = "menuone,noselect"
 
--- Highlight current linenumber
--- vim.opt.cursorline = true
-
 -- Color column
 vim.opt.colorcolumn = "120"
 
 -- Spelling
-vim.opt.spell = true
+vim.opt.spell = false
 vim.opt.spelllang = "en_us"
 
 -- Clipboard

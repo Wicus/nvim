@@ -36,6 +36,7 @@ return {
 			},
 			highlight = {
 				enable = true,
+				disable = function(lang, bufnr) return lang == "cpp" and vim.api.nvim_buf_line_count(bufnr) > 20000 end,
 			},
 			indent = { enable = true },
 			incremental_selection = {

@@ -131,10 +131,10 @@ vim.keymap.set("v", "<", "<gv")
 vim.keymap.set("v", ">", ">gv")
 
 -- Resize window
-vim.keymap.set("n", "<C-Up>", "<cmd>resize -2<cr>")
-vim.keymap.set("n", "<C-Down>", "<cmd>resize +2<cr>")
-vim.keymap.set("n", "<C-Right>", "<cmd>vertical resize -2<cr>")
-vim.keymap.set("n", "<C-Left>", "<cmd>vertical resize +2<cr>")
+vim.keymap.set("n", "<C-Left>", "<c-w>5<")
+vim.keymap.set("n", "<C-Right>", "<c-w>5>")
+vim.keymap.set("n", "<C-Up>", "<C-W>+")
+vim.keymap.set("n", "<C-Down>", "<C-W>-")
 
 -- Remove highligh on Escape
 vim.keymap.set("n", "<Esc>", "<cmd>nohlsearch<cr>")

@@ -130,7 +130,7 @@ return {
 					end
 				end, { "i", "s" }),
 				-- Mapping that I'm used to... to be removed later
-				-- ["<C-Space>"] = cmp.mapping.complete({}), -- This is for other terminal emulators
+				["<C-Space>"] = cmp.mapping.complete({}), -- This is for other terminal emulators
 				["<M-q>"] = cmp.mapping.complete({}), -- <M-q> is remapped to <C-Space> in AutoHotKey
 			}),
 
