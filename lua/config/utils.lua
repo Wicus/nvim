@@ -44,18 +44,6 @@ end
 
 M.search_git_status = function(opts)
 	local opts = opts or {}
-	opts.path_display = function(opts, path)
-		local tail = path
-		for i = #path, 1, -1 do
-			print(path:sub(i, i))
-			if path:sub(i, i) == "/" then
-				tail = path:sub(i + 1, -1)
-				break
-			end
-		end
-		local relative_path = vim.fn.fnamemodify(path, ":.:h")
-		return string.format("%s (%s)", tail, relative_path)
-	end
 	local lines_with_numbers = {}
 	local cur_file = nil
 	local cur_line = nil

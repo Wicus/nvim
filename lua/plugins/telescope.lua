@@ -30,7 +30,14 @@ return {
 				},
 				borderchars = { "─", "│", "─", "│", "┌", "┐", "┘", "└" },
 				path_display = function(opts, path)
-					local tail = require("telescope.utils").path_tail(path)
+					local tail = path
+					for i = #path, 1, -1 do
+						local char = path:sub(i, i)
+						if char == "/" or char == "\\" then
+							tail = path:sub(i + 1, -1)
+							break
+						end
+					end
 					local relative_path = vim.fn.fnamemodify(path, ":.:h")
 					return string.format("%s (%s)", tail, relative_path)
 				end,
@@ -49,7 +56,6 @@ return {
 				},
 			},
 		})
-
 		telescope.load_extension("fzf")
 		telescope.load_extension("live_grep_args")
 
@@ -57,7 +63,7 @@ return {
 		vim.keymap.set("n", "<leader>fr", function() builtin.oldfiles({ only_cwd = true }) end, { desc = "[F]ile [R]ecent: Find recently opened files" })
 		vim.keymap.set("n", "<leader>ff", builtin.find_files, { desc = "Find files" })
 		vim.keymap.set("n", "<leader>bb", builtin.buffers, { desc = "[B]uffers [B]uffers: Find existing buffers" })
-		vim.keymap.set("n", "<leader>gg", builtin.git_status, { desc = "Git status" })
+		vim.keymap.set("n", "<leader>gg", function() builtin.git_status({ use_git_root = false }) end, { desc = "Git status" })
 		vim.keymap.set("n", "<leader>sl", builtin.resume, { desc = "[S]ession [L]ast (resume telescope)" })
 		vim.keymap.set("n", "<leader>sj", builtin.lsp_document_symbols, { desc = "[S]earch [J]ump: Jump to symbol" })
 		vim.keymap.set("n", "<leader>ss", builtin.current_buffer_fuzzy_find, { desc = "[S]earch [S]tring: Search in current buffer" })
