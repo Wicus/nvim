@@ -11,3 +11,9 @@ enums
 endianness
 togglePeakDisplay
 channelId/!
+Resizable
+resize
+Dygraphs
+Float64Array
+tacho
+resizing

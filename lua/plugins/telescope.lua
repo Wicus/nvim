@@ -63,7 +63,7 @@ return {
 		vim.keymap.set("n", "<leader>fr", function() builtin.oldfiles({ only_cwd = true }) end, { desc = "[F]ile [R]ecent: Find recently opened files" })
 		vim.keymap.set("n", "<leader>ff", builtin.find_files, { desc = "Find files" })
 		vim.keymap.set("n", "<leader>bb", builtin.buffers, { desc = "[B]uffers [B]uffers: Find existing buffers" })
-		vim.keymap.set("n", "<leader>gg", function() builtin.git_status({ use_git_root = false }) end, { desc = "Git status" })
+		vim.keymap.set("n", "<leader>gg", function() builtin.git_status({ use_git_root = true }) end, { desc = "Git status" })
 		vim.keymap.set("n", "<leader>sl", builtin.resume, { desc = "[S]ession [L]ast (resume telescope)" })
 		vim.keymap.set("n", "<leader>sj", builtin.lsp_document_symbols, { desc = "[S]earch [J]ump: Jump to symbol" })
 		vim.keymap.set("n", "<leader>ss", builtin.current_buffer_fuzzy_find, { desc = "[S]earch [S]tring: Search in current buffer" })
@@ -73,8 +73,9 @@ return {
 		vim.keymap.set("n", "<leader>*", live_grep_args_shortcuts.grep_word_under_cursor, { desc = "[*]: Search current word in project" })
 		vim.keymap.set("v", "<leader>*", live_grep_args_shortcuts.grep_visual_selection, { desc = "[*]: Search selection in project" })
 
-		local utils = require("config.utils")
-		vim.keymap.set("n", "<leader>g/", utils.search_git_status, { desc = "Search git status" })
+		local custom = require("custom.telescope")
+		-- vim.keymap.set("n", "<leader>gg", custom.status, { desc = "Git status" })
+		vim.keymap.set("n", "<leader>g/", custom.search_status, { desc = "Search git status" })
 	end,
 	cond = function() return not vim.g.vscode end,
 }
