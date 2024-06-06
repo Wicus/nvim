@@ -1,6 +1,7 @@
 return {
 	"nvim-telescope/telescope.nvim",
 	branch = "0.1.x",
+	commit = "d90956833d7c27e73c621a61f20b29fdb7122709",
 	dependencies = {
 		"nvim-lua/plenary.nvim",
 		{
@@ -63,7 +64,7 @@ return {
 		vim.keymap.set("n", "<leader>fr", function() builtin.oldfiles({ only_cwd = true }) end, { desc = "[F]ile [R]ecent: Find recently opened files" })
 		vim.keymap.set("n", "<leader>ff", builtin.find_files, { desc = "Find files" })
 		vim.keymap.set("n", "<leader>bb", builtin.buffers, { desc = "[B]uffers [B]uffers: Find existing buffers" })
-		vim.keymap.set("n", "<leader>gg", function() builtin.git_status({ use_git_root = true }) end, { desc = "Git status" })
+		vim.keymap.set("n", "<leader>gg", builtin.git_status, { desc = "Git status" })
 		vim.keymap.set("n", "<leader>sl", builtin.resume, { desc = "[S]ession [L]ast (resume telescope)" })
 		vim.keymap.set("n", "<leader>sj", builtin.lsp_document_symbols, { desc = "[S]earch [J]ump: Jump to symbol" })
 		vim.keymap.set("n", "<leader>ss", builtin.current_buffer_fuzzy_find, { desc = "[S]earch [S]tring: Search in current buffer" })
