@@ -73,9 +73,9 @@ return {
 		vim.keymap.set("n", "<leader>*", live_grep_args_shortcuts.grep_word_under_cursor, { desc = "[*]: Search current word in project" })
 		vim.keymap.set("v", "<leader>*", live_grep_args_shortcuts.grep_visual_selection, { desc = "[*]: Search selection in project" })
 
-		local custom = require("custom.telescope")
+		local search_git_status = require("custom.telescope_search_git_status")
 		-- vim.keymap.set("n", "<leader>gg", custom.status, { desc = "Git status" })
-		vim.keymap.set("n", "<leader>g/", custom.search_status, { desc = "Search git status" })
+		vim.keymap.set("n", "<leader>g/", search_git_status.search_git_status, { desc = "Search git status" })
 	end,
 	cond = function() return not vim.g.vscode end,
 }
