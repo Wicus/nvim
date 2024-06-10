@@ -41,6 +41,7 @@ return {
 					local relative_path = vim.fn.fnamemodify(path, ":.:h")
 					return string.format("%s (%s)", tail, relative_path)
 				end,
+				tiebreak = function(current_entry, existing_entry, prompt) return existing_entry.index < current_entry.index end,
 			},
 			extensions = {
 				live_grep_args = {

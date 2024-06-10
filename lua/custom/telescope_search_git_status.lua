@@ -9,16 +9,36 @@ local utils = require("telescope.utils")
 
 M.search_git_status = function(opts)
 	opts = opts or {}
+
 	local results = {}
 	local output = utils.get_os_command_output({ "git", "diff-index", "-U0", "HEAD" }, opts.cwd)
 	local path = ""
-	local filename = ""
 	local line_num = 0
+
 	for _, v in ipairs(output) do
 		local fields = vim.split(v, "%s+")
 		if fields[1] == "+++" then
-			filename = string.sub(fields[2], 3, -1)
-			path = vim.fn.getcwd() .. "\\" .. filename
+			path = string.sub(fields[2], 3, -1)
+			local cwd = vim.fn.getcwd()
+			local cwd_parts = vim.split(cwd, "\\")
+			local path_parts = vim.split(path, "/")
+
+			while true do
+				local found = false
+				for i = #cwd_parts, 1, -1 do
+					if cwd_parts[i] == path_parts[1] then
+						table.remove(path_parts, 1)
+						found = true
+						break
+					end
+				end
+				if not found then
+					-- TODO: Handle case when git root should be done
+					break
+				end
+			end
+
+			path = table.concat(path_parts, "\\")
 		end
 		if fields[1] == "@@" then
 			local match = string.match(fields[3], "%d+")
@@ -26,19 +46,22 @@ M.search_git_status = function(opts)
 		end
 		if fields[1] == "+" then
 			local diff = v:gsub("%+", "")
-			table.insert(results, { filename, path, line_num, diff })
+			table.insert(results, { path, path, line_num, diff })
 		end
 	end
+
 	pickers
 		.new(opts, {
 			prompt_title = "Search Git Status",
 			finder = finders.new_table({
 				results = results,
 				entry_maker = function(entry)
+					local display = entry[1] .. " L:" .. entry[3] .. ":" .. entry[4]
+					local ordinal = entry[1] .. entry[4]
 					return {
 						value = entry,
-						display = entry[1] .. " " .. entry[3] .. " " .. entry[4],
-						ordinal = entry[1],
+						display = display,
+						ordinal = ordinal,
 						path = entry[2],
 						lnum = entry[3],
 					}
