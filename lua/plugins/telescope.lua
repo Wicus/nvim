@@ -14,6 +14,9 @@ return {
 			-- For major updates, this must be adjusted manually.
 			version = "^1.0.0",
 		},
+		{
+			"jemag/telescope-diff.nvim",
+		},
 	},
 	config = function()
 		local telescope = require("telescope")
@@ -59,6 +62,7 @@ return {
 		})
 		telescope.load_extension("fzf")
 		telescope.load_extension("live_grep_args")
+		telescope.load_extension("diff")
 
 		local builtin = require("telescope.builtin")
 		vim.keymap.set("n", "<leader>fr", function() builtin.oldfiles({ only_cwd = true }) end, { desc = "[F]ile [R]ecent: Find recently opened files" })
@@ -77,6 +81,9 @@ return {
 		local search_git_status = require("custom.telescope_search_git_status")
 		-- vim.keymap.set("n", "<leader>gg", custom.status, { desc = "Git status" })
 		vim.keymap.set("n", "<leader>g/", search_git_status.search_git_status, { desc = "Search git status" })
+
+		vim.keymap.set("n", "<leader>sD", function() telescope.extensions.diff.diff_files({ hidden = true }) end, { desc = "Diff 2 files" })
+		vim.keymap.set("n", "<leader>sd", function() telescope.extensions.diff.diff_current({ hidden = true }) end, { desc = "Diff file with current" })
 	end,
 	cond = function() return not vim.g.vscode end,
 }

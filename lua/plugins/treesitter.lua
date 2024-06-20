@@ -8,7 +8,7 @@ return {
 			"nvim-treesitter/nvim-treesitter-context",
 			opts = {
 				enable = true,
-				max_lines = 3, -- How many lines the window should span. Values <= 0 mean no limit.
+				max_lines = 0, -- How many lines the window should span. Values <= 0 mean no limit.
 			},
 		},
 	},
