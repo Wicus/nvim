@@ -59,7 +59,8 @@ return {
 			capabilities = require("cmp_nvim_lsp").default_capabilities(vim.lsp.protocol.make_client_capabilities()),
 			on_attach = function(client, bufnr)
 				vim.keymap.set("n", "cn", vim.lsp.buf.rename, { desc = "[C]hange [N]ame (Rename)" })
-				vim.keymap.set("n", "gd", telescope_builtin.lsp_definitions, { desc = "[G]oto [D]efinition" })
+				-- vim.keymap.set("n", "gd", telescope_builtin.lsp_definitions, { desc = "[G]oto [D]efinition" })
+				vim.keymap.set("n", "gd", vim.lsp.buf.definition, { desc = "[G]oto [D]efinition" })
 				vim.keymap.set("n", "gr", telescope_builtin.lsp_references, { desc = "[G]oto [R]eferences" })
 				vim.keymap.set("n", "gi", telescope_builtin.lsp_implementations, { desc = "Goto to type implementations" })
 				vim.keymap.set("n", "gt", telescope_builtin.lsp_type_definitions, { desc = "[G]oto [T]ype definition" })
