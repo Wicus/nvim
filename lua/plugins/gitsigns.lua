@@ -32,6 +32,7 @@ return {
 			vim.keymap.set("n", "<leader>gh", gs.stage_hunk)
 			vim.keymap.set("n", "<leader>gu", gs.undo_stage_hunk)
 			vim.keymap.set("n", "<leader>gR", gs.reset_buffer)
+			vim.keymap.set("n", "<leader>gb", gs.blame_line)
 		end,
 	},
 	cond = function() return not vim.g.vscode end,
