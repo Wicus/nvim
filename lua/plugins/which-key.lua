@@ -6,13 +6,13 @@ return {
 
 		local which_key = require("which-key")
 		which_key.setup({
+			preset = "classic",
 			plugins = {
 				registers = false,
 			},
-		})
-		which_key.register({
-			["<leader>u"] = {
-				name = "Toggle",
+			notify = false,
+			icons = {
+				mappings = false,
 			},
 		})
 	end,

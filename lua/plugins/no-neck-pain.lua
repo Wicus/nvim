@@ -17,6 +17,9 @@ return {
 				enabled = false,
 			},
 		},
+		mappings = {
+			enabled = true,
+		},
 	},
 	cond = function() return not vim.g.vscode end,
 }
