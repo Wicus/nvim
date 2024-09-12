@@ -140,9 +140,8 @@ return {
 			}, {
 				{ name = "path" },
 				{ name = "buffer", keyword_length = 5 },
-			}, {
 				{ name = "spell", keyword_length = 5 },
-			}),
+			}, {}),
 		})
 	end,
 	cond = function() return not vim.g.vscode end,

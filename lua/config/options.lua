@@ -86,3 +86,6 @@ vim.opt.wrap = false
 
 -- File Format
 vim.opt.fileformat = "unix"
+
+--  Set unknown filetypes
+vim.filetype.add({ extension = { axaml = "xml" } })
