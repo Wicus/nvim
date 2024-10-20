@@ -5,7 +5,7 @@ return {
 		"williamboman/mason-lspconfig.nvim",
 		"WhoIsSethDaniel/mason-tool-installer.nvim",
 		"hrsh7th/cmp-nvim-lsp",
-		"Hoffs/omnisharp-extended-lsp.nvim",
+		"Decodetalkers/csharpls-extended-lsp.nvim",
 		{ "folke/neodev.nvim", config = true },
 		{ "j-hui/fidget.nvim", config = true },
 	},
@@ -34,7 +34,7 @@ return {
 				"eslint",
 				"clangd",
 				"pyright",
-				"omnisharp",
+				"csharp_ls",
 				"jsonls",
 				"intelephense",
 				"html",
@@ -93,13 +93,14 @@ return {
 				},
 			},
 		}))
-		lspconfig.omnisharp.setup(config_with_opts({
+		lspconfig.csharp_ls.setup(config_with_opts({
+			handlers = {
+				["textDocument/definition"] = require("csharpls_extended").handler,
+				["textDocument/typeDefinition"] = require("csharpls_extended").handler,
+			},
 			on_attach = function(client, bufnr)
 				config.on_attach(client, bufnr)
-				vim.keymap.set("n", "gd", require("omnisharp_extended").telescope_lsp_definition, { desc = "[G]oto [D]efinition" })
-				vim.keymap.set("n", "gr", require("omnisharp_extended").telescope_lsp_references, { desc = "[G]oto [R]eferences" })
-				vim.keymap.set("n", "gi", require("omnisharp_extended").telescope_lsp_implementation, { desc = "Goto to type implementations" })
-				vim.keymap.set("n", "gt", require("omnisharp_extended").telescope_lsp_type_definition, { desc = "[G]oto [T]ype definition" })
+				vim.keymap.set("n", "gD", vim.lsp.buf.definition, { desc = "[G]oto [D]efinition (native)" })
 			end,
 		}))
 	end,

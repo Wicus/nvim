@@ -63,6 +63,7 @@ return {
 		telescope.load_extension("fzf")
 		telescope.load_extension("live_grep_args")
 		telescope.load_extension("diff")
+		telescope.load_extension("csharpls_definition")
 
 		local builtin = require("telescope.builtin")
 		vim.keymap.set("n", "<leader>fr", function() builtin.oldfiles({ only_cwd = true }) end, { desc = "[F]ile [R]ecent: Find recently opened files" })

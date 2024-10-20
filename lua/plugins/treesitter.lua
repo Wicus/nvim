@@ -33,6 +33,7 @@ return {
 				"vim",
 				"vimdoc",
 				"astro",
+				"sql",
 			},
 			highlight = {
 				enable = true,
