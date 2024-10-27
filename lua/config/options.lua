@@ -40,7 +40,7 @@ vim.opt.termguicolors = true
 -- vim.opt.completeopt = "menuone,noselect"
 
 -- Color column
-vim.opt.colorcolumn = "120"
+vim.opt.colorcolumn = "140"
 
 -- Spelling
 vim.opt.spell = false
