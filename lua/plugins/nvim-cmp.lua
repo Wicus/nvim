@@ -57,7 +57,9 @@ return {
 		-- cmp.event:on("menu_closed", function() vim.b.copilot_suggestion_hidden = false end)
 
 		require("luasnip.loaders.from_vscode").lazy_load()
+		luasnip.filetype_extend("cs", { "csharpdoc" })
 		luasnip.config.setup({})
+
 		local copilot = require("copilot")
 		local copilot_suggestion = require("copilot.suggestion")
 
