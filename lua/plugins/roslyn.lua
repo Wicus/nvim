@@ -10,7 +10,7 @@ return {
 		vim.keymap.set("n", "<leader>dw", telescope_builtin.diagnostics, { desc = "Diagnostics in telescope" })
 		vim.keymap.set("n", "<leader>uh", function() vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled()) end, { desc = "Toggle inlay hints" })
 
-		local utils = require("config.utils")
+		local utils = require("utils")
 		utils.lsp_config_on_attach()
 	end,
 }

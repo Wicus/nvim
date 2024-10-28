@@ -1,6 +1,6 @@
 local M = {}
 
-local utils = require("config.utils")
+local utils = require("utils")
 
 local function find_csproj_for_cs_file(cs_file_path, maxdepth)
 	local curr_depth = 0
