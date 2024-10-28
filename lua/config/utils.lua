@@ -13,4 +13,15 @@ M.lsp_config_on_attach = function(client, bufnr)
 	vim.keymap.set("n", "<C-.>", vim.lsp.buf.code_action, { desc = "[C]ode [A]ctions" }) -- This is for other terminal emulators
 end
 
+M.is_buffer_empty = function(buf)
+	local lines = vim.api.nvim_buf_get_lines(buf, 0, -1, false)
+
+	for _, line in ipairs(lines) do
+		if line ~= "" then
+			return false
+		end
+	end
+	return true
+end
+
 return M
