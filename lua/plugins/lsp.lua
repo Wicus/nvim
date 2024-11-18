@@ -25,11 +25,16 @@ return {
 			},
 		})
 
-		require("mason").setup()
+		require("mason").setup({
+			registries = {
+				"github:mason-org/mason-registry",
+				"github:crashdummyy/mason-registry",
+			},
+		})
 		require("mason-lspconfig").setup({
 			ensure_installed = {
 				"lua_ls",
-				"tsserver",
+				"ts_ls",
 				"eslint",
 				"clangd",
 				"pyright",
@@ -50,6 +55,7 @@ return {
 				"clang-format",
 				"black",
 				"csharpier",
+				"roslyn",
 			},
 		})
 
@@ -60,7 +66,7 @@ return {
 			on_attach = utils.lsp_config_on_attach,
 		}
 		local config_with_opts = function(settings) return vim.tbl_deep_extend("force", config, settings) end
-		lspconfig.tsserver.setup(config)
+		lspconfig.ts_ls.setup(config)
 		lspconfig.eslint.setup(config)
 		lspconfig.clangd.setup(config)
 		lspconfig.pyright.setup(config)

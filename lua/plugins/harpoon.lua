@@ -3,7 +3,7 @@ return {
 	opts = {
 		menu = {
 			borderchars = { "─", "│", "─", "│", "┌", "┐", "┘", "└" },
-			-- width = vim.api.nvim_win_get_width(0) - 140,
+			width = vim.api.nvim_win_get_width(0) - 140,
 		},
 	},
 	keys = {

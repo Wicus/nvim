@@ -20,3 +20,22 @@ vim.api.nvim_create_autocmd({ "BufReadPost" }, {
 	group = csharp_auto_bootstrap_empty_file_group,
 	pattern = "*.cs",
 })
+
+-- Auto refresh C# code lens
+local csharp_codelens_refresh_group = vim.api.nvim_create_augroup("CSharpCodeLensRefresh", { clear = true })
+vim.api.nvim_create_autocmd({ "BufWritePost", "InsertEnter" }, {
+	callback = function()
+		local bufnr = vim.api.nvim_get_current_buf()
+		vim.lsp.codelens.refresh({ bufnr = bufnr })
+	end,
+	group = csharp_codelens_refresh_group,
+	pattern = "*.cs",
+})
+
+vim.api.nvim_create_autocmd({ "LspAttach" }, {
+	callback = function()
+		vim.defer_fn(function() vim.lsp.codelens.refresh({ bufnr = 0 }) end, 5000) -- delay in milliseconds
+	end,
+	group = csharp_codelens_refresh_group,
+	pattern = "*.cs",
+})
