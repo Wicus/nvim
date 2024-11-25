@@ -8,5 +8,6 @@ return {
 	{ "brenoprata10/nvim-highlight-colors", config = true },
 	{ "echasnovski/mini.trailspace", config = false },
 	{ "echasnovski/mini.align", config = true },
+	{ "echasnovski/mini.pairs", version = "*", config = true },
 	{ "numToStr/Comment.nvim", event = { "BufReadPre", "BufNewFile" }, config = true },
 }
