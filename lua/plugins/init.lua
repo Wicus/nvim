@@ -9,5 +9,6 @@ return {
 	{ "echasnovski/mini.trailspace", config = false },
 	{ "echasnovski/mini.align", config = true },
 	{ "echasnovski/mini.pairs", version = "*", config = true },
+	{ "echasnovski/mini.ai", version = "*", config = true },
 	{ "numToStr/Comment.nvim", event = { "BufReadPre", "BufNewFile" }, config = true },
 }

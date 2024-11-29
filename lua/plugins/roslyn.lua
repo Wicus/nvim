@@ -1,7 +1,9 @@
 return {
 	"seblj/roslyn.nvim",
 	ft = "cs",
-	opts = {},
+	opts = {
+		lock_target = true,
+	},
 	config = function(_, opts)
 		require("roslyn").setup(opts)
 		require("cmp_nvim_lsp").default_capabilities(vim.lsp.protocol.make_client_capabilities())
