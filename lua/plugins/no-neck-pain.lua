@@ -1,6 +1,6 @@
 return {
 	"shortcuts/no-neck-pain.nvim",
-	version = "1.6.3",
+	version = "*",
 	opts = {
 		width = 180,
 		autocmds = {
@@ -11,7 +11,7 @@ return {
 				enabled = false,
 			},
 			colors = {
-				blend = -0.2,
+				background = "#181825",
 			},
 			scratchPad = {
 				enabled = false,
