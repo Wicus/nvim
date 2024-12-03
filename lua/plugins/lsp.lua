@@ -5,6 +5,7 @@ return {
 		"williamboman/mason-lspconfig.nvim",
 		"WhoIsSethDaniel/mason-tool-installer.nvim",
 		"hrsh7th/cmp-nvim-lsp",
+		"Hoffs/omnisharp-extended-lsp.nvim",
 		{ "folke/neodev.nvim", config = true },
 		{ "j-hui/fidget.nvim", config = true },
 	},
@@ -38,6 +39,7 @@ return {
 				"eslint",
 				"clangd",
 				"pyright",
+				"omnisharp",
 				"jsonls",
 				"intelephense",
 				"html",
@@ -77,6 +79,15 @@ return {
 		lspconfig.lemminx.setup(config)
 		lspconfig.astro.setup(config)
 		lspconfig.tailwindcss.setup(config)
+		lspconfig.omnisharp.setup(config_with_opts({
+			on_attach = function(client, bufnr)
+				config.on_attach(client, bufnr)
+				vim.keymap.set("n", "gd", require("omnisharp_extended").telescope_lsp_definition, { desc = "[G]oto [D]efinition" })
+				vim.keymap.set("n", "gr", require("omnisharp_extended").telescope_lsp_references, { desc = "[G]oto [R]eferences" })
+				vim.keymap.set("n", "gi", require("omnisharp_extended").telescope_lsp_implementation, { desc = "Goto to type implementations" })
+				vim.keymap.set("n", "gt", require("omnisharp_extended").telescope_lsp_type_definition, { desc = "[G]oto [T]ype definition" })
+			end,
+		}))
 		lspconfig.lua_ls.setup(config_with_opts({
 			settings = {
 				Lua = {
