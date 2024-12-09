@@ -4,11 +4,11 @@ return {
 	"nvim-lua/plenary.nvim",
 	"nvim-tree/nvim-web-devicons",
 	"tpope/vim-sleuth", -- Detect tabstop and shiftwidth automatically
-	"tpope/vim-surround", -- Surround text objects with quotes, brackets, etc
 	{ "brenoprata10/nvim-highlight-colors", config = true },
-	{ "echasnovski/mini.trailspace", config = false },
+	{ "echasnovski/mini.ai", version = "*", config = true },
 	{ "echasnovski/mini.align", config = true },
 	{ "echasnovski/mini.pairs", version = "*", config = true },
-	{ "echasnovski/mini.ai", version = "*", config = true },
+	{ "echasnovski/mini.surround", config = true },
+	{ "echasnovski/mini.trailspace", config = false },
 	{ "numToStr/Comment.nvim", event = { "BufReadPre", "BufNewFile" }, config = true },
 }
