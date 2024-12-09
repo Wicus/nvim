@@ -6,6 +6,7 @@ return {
 		"WhoIsSethDaniel/mason-tool-installer.nvim",
 		"hrsh7th/cmp-nvim-lsp",
 		"Hoffs/omnisharp-extended-lsp.nvim",
+		"Issafalcon/lsp-overloads.nvim",
 		{ "folke/neodev.nvim", config = true },
 		{ "j-hui/fidget.nvim", config = true },
 	},
@@ -86,6 +87,19 @@ return {
 				vim.keymap.set("n", "gr", require("omnisharp_extended").telescope_lsp_references, { desc = "[G]oto [R]eferences" })
 				vim.keymap.set("n", "gi", require("omnisharp_extended").telescope_lsp_implementation, { desc = "Goto to type implementations" })
 				vim.keymap.set("n", "gt", require("omnisharp_extended").telescope_lsp_type_definition, { desc = "[G]oto [T]ype definition" })
+
+				-- lsp-overloads
+				if client.server_capabilities.signatureHelpProvider then
+					require("lsp-overloads").setup(client, {
+						keymaps = {
+							next_signature = "<C-d>",
+							previous_signature = "<C-u>",
+							next_parameter = nil,
+							previous_parameter = nil,
+							close_signature = nil,
+						},
+					})
+				end
 			end,
 		}))
 		lspconfig.lua_ls.setup(config_with_opts({
