@@ -15,4 +15,5 @@ return {
 		local utils = require("utils")
 		utils.lsp_config_on_attach()
 	end,
+	enabled = false,
 }
