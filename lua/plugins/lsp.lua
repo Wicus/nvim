@@ -84,16 +84,16 @@ return {
 			on_attach = function(client, bufnr)
 				config.on_attach(client, bufnr)
 				vim.keymap.set("n", "gd", require("omnisharp_extended").telescope_lsp_definition, { desc = "[G]oto [D]efinition" })
-				vim.keymap.set("n", "gr", require("omnisharp_extended").telescope_lsp_references, { desc = "[G]oto [R]eferences" })
-				vim.keymap.set("n", "gi", require("omnisharp_extended").telescope_lsp_implementation, { desc = "Goto to type implementations" })
-				vim.keymap.set("n", "gt", require("omnisharp_extended").telescope_lsp_type_definition, { desc = "[G]oto [T]ype definition" })
+				vim.keymap.set("n", "grr", require("omnisharp_extended").telescope_lsp_references, { desc = "[G]oto [R]eferences" })
+				vim.keymap.set("n", "gri", require("omnisharp_extended").telescope_lsp_implementation, { desc = "Goto to type implementations" })
+				vim.keymap.set("n", "grt", require("omnisharp_extended").telescope_lsp_type_definition, { desc = "[G]oto [T]ype definition" })
 
 				-- lsp-overloads
 				if client.server_capabilities.signatureHelpProvider then
 					require("lsp-overloads").setup(client, {
 						keymaps = {
-							next_signature = "<C-d>",
-							previous_signature = "<C-u>",
+							next_signature = "<C-f>",
+							previous_signature = "<C-b>",
 							next_parameter = nil,
 							previous_parameter = nil,
 							close_signature = nil,

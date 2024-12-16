@@ -29,6 +29,8 @@ return {
 					i = {
 						["<Up>"] = actions.cycle_history_prev,
 						["<Down>"] = actions.cycle_history_next,
+						["<C-f>"] = actions.preview_scrolling_down,
+						["<C-b>"] = actions.preview_scrolling_up,
 					},
 				},
 				borderchars = { "─", "│", "─", "│", "┌", "┐", "┘", "└" },
