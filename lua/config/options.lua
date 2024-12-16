@@ -37,7 +37,7 @@ vim.opt.background = "dark"
 vim.opt.termguicolors = true
 
 -- Set completeopt to have a better completion experience
--- vim.opt.completeopt = "menuone,noselect"
+vim.opt.completeopt = "menu,menuone,noselect"
 
 -- Color column
 vim.opt.colorcolumn = "140"
