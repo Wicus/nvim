@@ -3,6 +3,7 @@ return {
 	version = "*",
 	opts = {
 		width = 180,
+		minSideBufferWidth = 41,
 		autocmds = {
 			enableOnVimEnter = true,
 		},
@@ -14,7 +15,7 @@ return {
 				background = "#181825",
 			},
 			scratchPad = {
-				enabled = false,
+				enabled = true,
 			},
 		},
 		mappings = {

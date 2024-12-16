@@ -47,6 +47,7 @@ return {
 				FlashLabel = { bg = colors.red, bold = true, fg = colors.base },
 				FlashMatch = { bg = colors.blue, fg = colors.base },
 				FlashCursor = { reverse = true },
+				NeoTreeWinSeparator = { fg = colors.mantle, bg = colors.mantle },
 			}
 		end,
 		integrations = {
@@ -60,6 +61,7 @@ return {
 			which_key = true,
 			treesitter_context = true,
 			flash = true,
+			neotree = true,
 		},
 	},
 	config = function(_, opts)

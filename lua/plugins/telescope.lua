@@ -72,6 +72,7 @@ return {
 		vim.keymap.set("n", "<leader>sl", builtin.resume, { desc = "[S]ession [L]ast (resume telescope)" })
 		vim.keymap.set("n", "<leader>sj", builtin.lsp_document_symbols, { desc = "[S]earch [J]ump: Jump to symbol" })
 		vim.keymap.set("n", "<leader>ss", builtin.current_buffer_fuzzy_find, { desc = "[S]earch [S]tring: Search in current buffer" })
+		-- vim.keymap.set("n", "<leader>fc", function() builtin.find_files({ cwd = vim.uv.cwd() }) end, { desc = "[S]earch [C]onfig: Search configs files" })
 
 		local live_grep_args_shortcuts = require("telescope-live-grep-args.shortcuts")
 		vim.keymap.set("n", "<leader>/", telescope.extensions.live_grep_args.live_grep_args, { desc = "[/]: Search in project" })
