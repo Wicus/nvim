@@ -39,22 +39,25 @@ end)
 
 vim_keymap_set(keymaps.find_files, require("telescope.builtin").find_files)
 
-vim_keymap_set(keymaps.previous_entry, function()
-	if utils.is_quickfix_open() then
-		vim.cmd("cprevious")
-	end
-end)
-
-vim_keymap_set(keymaps.next_entry, function()
-	if utils.is_quickfix_open() then
-		vim.cmd("cnext")
-	end
-end)
+-- vim_keymap_set(keymaps.previous_entry, function()
+-- 	if utils.is_quickfix_open() then
+-- 		vim.cmd("cprevious")
+-- 	end
+-- end)
+--
+-- vim_keymap_set(keymaps.next_entry, function()
+-- 	if utils.is_quickfix_open() then
+-- 		vim.cmd("cnext")
+-- 	end
+-- end)
 
 vim_keymap_set(keymaps.fold_bracket, function()
 	vim.cmd("normal va}")
 	vim.cmd("normal zf")
 end)
 
-vim.keymap.set("n", "[t", "<cmd>tabprevious<cr>", { desc = "Previous tab" })
+vim.keymap.set("n", "]]", "<cmd>cnext<cr>", { desc = "Next quickfix item" })
+vim.keymap.set("n", "[[", "<cmd>cprev<cr>", { desc = "Previous quickfix item" })
+
 vim.keymap.set("n", "]t", "<cmd>tabnext<cr>", { desc = "Next tab" })
+vim.keymap.set("n", "[t", "<cmd>tabprevious<cr>", { desc = "Previous tab" })
