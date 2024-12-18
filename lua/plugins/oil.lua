@@ -32,7 +32,7 @@ return {
 			["g."] = "actions.toggle_hidden",
 			["g\\"] = false,
 		},
-		columns = {},
+		-- columns = {},
 	},
 	cond = function() return not vim.g.vscode end,
 }

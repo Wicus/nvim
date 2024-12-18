@@ -17,6 +17,9 @@ return {
 			scratchPad = {
 				enabled = true,
 			},
+			bo = {
+				filetype = "md",
+			},
 		},
 		mappings = {
 			enabled = true,
