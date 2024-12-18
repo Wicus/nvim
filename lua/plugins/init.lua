@@ -2,7 +2,6 @@ return {
 	-- TODO: Check for plugins that take long and lazy load only those
 	-- TODO: Check these keys and opts that we are passing, maybe just make it simpler.
 	"nvim-lua/plenary.nvim",
-	"nvim-tree/nvim-web-devicons",
 	"tpope/vim-sleuth", -- Detect tabstop and shiftwidth automatically
 	{ "brenoprata10/nvim-highlight-colors", config = true },
 	{ "echasnovski/mini.ai", version = "*", config = true },
