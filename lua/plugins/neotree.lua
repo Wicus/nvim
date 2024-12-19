@@ -1,3 +1,5 @@
+local utils = require("utils")
+
 return {
 	"nvim-neo-tree/neo-tree.nvim",
 	branch = "v3.x",
@@ -9,7 +11,7 @@ return {
 	keys = {
 		{
 			"<leader>fE",
-			function() require("neo-tree.command").execute({ toggle = true }) end,
+			function() require("neo-tree.command").execute({ toggle = true, dir = utils.get_git_root() }) end,
 			desc = "Explorer NeoTree (Root Dir)",
 		},
 		{
@@ -17,8 +19,6 @@ return {
 			function() require("neo-tree.command").execute({ toggle = true, dir = vim.uv.cwd() }) end,
 			desc = "Explorer NeoTree (cwd)",
 		},
-		{ "<leader>e", "<leader>fE", desc = "Explorer NeoTree (Root Dir)", remap = true },
-		{ "<leader>E", "<leader>fe", desc = "Explorer NeoTree (cwd)", remap = true },
 		{
 			"<leader>ge",
 			function() require("neo-tree.command").execute({ source = "git_status", toggle = true }) end,
@@ -55,8 +55,8 @@ return {
 					-- Status type
 					untracked = "",
 					ignored = "",
-					unstaged = "󰄱",
-					staged = "",
+					unstaged = "",
+					staged = "",
 					conflict = "",
 				},
 			},

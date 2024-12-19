@@ -24,4 +24,14 @@ M.is_buffer_empty = function(buf)
 	return true
 end
 
+M.get_git_root = function()
+	local output = vim.fn.systemlist("git rev-parse --show-toplevel")
+	if vim.v.shell_error == 0 then
+		local git_root = output[1]
+		print("Git root: " .. git_root)
+		return git_root
+	end
+	return vim.uv.cwd()
+end
+
 return M
