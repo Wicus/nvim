@@ -47,7 +47,7 @@ vim.opt.spell = false
 vim.opt.spelllang = "en_us"
 
 -- Clipboard
--- vim.opt.clipboard = "unnamedplus"
+vim.opt.clipboard = "unnamedplus"
 
 -- TODO: Could remove this?
 -- WSL clipboard
