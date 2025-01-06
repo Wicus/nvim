@@ -4,20 +4,6 @@ return {
 		"kristijanhusak/vim-dadbod-completion",
 		dependencies = "vim-dadbod",
 		ft = "sql",
-		init = function()
-			vim.api.nvim_create_autocmd("FileType", {
-				pattern = "sql",
-				callback = function()
-					local cmp = require("cmp")
-					cmp.setup.buffer({
-						sources = {
-							{ name = "vim-dadbod-completion" },
-							{ name = "buffer" },
-						},
-					})
-				end,
-			})
-		end,
 	},
 	{
 		"kristijanhusak/vim-dadbod-ui",
@@ -33,5 +19,17 @@ return {
 				callback = function() vim.keymap.set("n", "<F5>", "<Plug>(DBUI_ExecuteQuery)") end,
 			})
 		end,
+	},
+	{
+		"saghen/blink.cmp",
+		dependencies = "kristijanhusak/vim-dadbod-completion",
+		opts = {
+			sources = {
+				default = { "dadbod" },
+				providers = {
+					dadbod = { name = "Dadbod", module = "vim_dadbod_completion.blink" },
+				},
+			},
+		},
 	},
 }

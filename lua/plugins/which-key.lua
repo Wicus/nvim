@@ -1,20 +1,45 @@
 return {
 	"folke/which-key.nvim",
-	config = function()
-		vim.opt.timeout = true
-		vim.opt.timeoutlen = 300
-
-		local which_key = require("which-key")
-		which_key.setup({
-			preset = "classic",
-			plugins = {
-				registers = false,
+	event = "VeryLazy",
+	opts_extend = { "spec" },
+	opts = {
+		icons = { mappings = false },
+		preset = "helix",
+		defaults = {},
+		spec = {
+			{
+				mode = { "n", "v" },
+				{ "<leader><tab>", group = "tabs" },
+				{ "<leader>c", group = "code" },
+				{ "<leader>d", group = "debug" },
+				{ "<leader>dp", group = "profiler" },
+				{ "<leader>f", group = "file/find" },
+				{ "<leader>g", group = "git" },
+				{ "<leader>gh", group = "hunks" },
+				{ "<leader>q", group = "quit/session" },
+				{ "<leader>s", group = "search" },
+				{ "<leader>u", group = "ui/toggle" },
+				{ "<leader>x", group = "diagnostics/quickfix" },
+				{ "[", group = "prev" },
+				{ "]", group = "next" },
+				{ "g", group = "goto" },
+				{ "gr", group = "lsp" },
+				{ "gs", group = "surround" },
+				{ "z", group = "fold" },
+				{
+					"<leader>b",
+					group = "buffer",
+					expand = function() return require("which-key.extras").expand.buf() end,
+				},
+				{
+					"<leader>w",
+					group = "windows",
+					proxy = "<c-w>",
+					expand = function() return require("which-key.extras").expand.win() end,
+				},
+				-- better descriptions
+				{ "gx", desc = "Open with system app" },
 			},
-			notify = false,
-			icons = {
-				mappings = false,
-			},
-		})
-	end,
-	cond = function() return not vim.g.vscode end,
+		},
+	},
 }

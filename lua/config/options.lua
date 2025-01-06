@@ -20,7 +20,7 @@ vim.opt.breakindent = true
 -- Enable / Disable backup files
 vim.opt.swapfile = false
 vim.opt.backup = true
-vim.opt.backupdir = vim.fn.expand("~/nvim-backup-folder")
+vim.opt.backupdir = vim.fn.expand("~/nvim-new-backup-folder")
 
 -- Save undo history
 vim.opt.undofile = true
@@ -40,7 +40,7 @@ vim.opt.termguicolors = true
 vim.opt.completeopt = "menu,menuone,noselect"
 
 -- Color column
-vim.opt.colorcolumn = "140"
+vim.opt.colorcolumn = "160"
 
 -- Spelling
 vim.opt.spell = false
@@ -48,25 +48,6 @@ vim.opt.spelllang = "en_us"
 
 -- Clipboard
 vim.opt.clipboard = "unnamedplus"
-
--- TODO: Could remove this?
--- WSL clipboard
-if vim.fn.has("wsl") then
-	-- Command to fix interpreter not found (https://github.com/microsoft/WSL/issues/5466):
-	-- `sudo update-binfmts --disable cli`
-	vim.g.clipboard = {
-		name = "WslClipboard",
-		copy = {
-			["+"] = "clip.exe",
-			["*"] = "clip.exe",
-		},
-		paste = {
-			["+"] = 'powershell.exe -c [Console]::Out.Write($(Get-Clipboard -Raw).tostring().replace("`r", ""))',
-			["*"] = 'powershell.exe -c [Console]::Out.Write($(Get-Clipboard -Raw).tostring().replace("`r", ""))',
-		},
-		cache_enabled = 0,
-	}
-end
 
 -- Always show the signcolumn, otherwise it would shift the text each time
 vim.wo.signcolumn = "yes"
@@ -89,9 +70,3 @@ vim.opt.fileformat = "unix"
 
 --  Set unknown filetypes
 vim.filetype.add({ extension = { axaml = "xml" } })
-
--- Set the diagnostic signs
-vim.fn.sign_define("DiagnosticSignError", { text = "- ", texthl = "DiagnosticSignError" })
-vim.fn.sign_define("DiagnosticSignWarn", { text = "- ", texthl = "DiagnosticSignWarn" })
-vim.fn.sign_define("DiagnosticSignInfo", { text = "- ", texthl = "DiagnosticSignInfo" })
-vim.fn.sign_define("DiagnosticSignHint", { text = "- ", texthl = "DiagnosticSignHint" })

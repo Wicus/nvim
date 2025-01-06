@@ -1,5 +1,3 @@
-local utils = require("utils")
-
 return {
 	"nvim-neo-tree/neo-tree.nvim",
 	branch = "v3.x",
@@ -9,11 +7,11 @@ return {
 	},
 	cmd = "Neotree",
 	keys = {
-		{
-			"<leader>fE",
-			function() require("neo-tree.command").execute({ toggle = true, dir = utils.get_git_root() }) end,
-			desc = "Explorer NeoTree (Root Dir)",
-		},
+		-- {
+		-- 	"<leader>fE",
+		-- 	function() require("neo-tree.command").execute({ toggle = true, dir = utils.get_git_root() }) end,
+		-- 	desc = "Explorer NeoTree (Root Dir)",
+		-- },
 		{
 			"<leader>fe",
 			function() require("neo-tree.command").execute({ toggle = true, dir = vim.uv.cwd() }) end,
@@ -48,8 +46,8 @@ return {
 			git_status = {
 				symbols = {
 					-- Change type
-					added = "", -- or "✚", but this is redundant info if you use git_status_colors on the name
-					modified = "", -- or "", but this is redundant info if you use git_status_colors on the name
+					added = "", -- or "Γ£Ü", but this is redundant info if you use git_status_colors on the name
+					modified = "", -- or "∩æä", but this is redundant info if you use git_status_colors on the name
 					deleted = "", -- this can only be used in the git_status source
 					renamed = "", -- this can only be used in the git_status source
 					-- Status type

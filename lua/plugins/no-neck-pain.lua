@@ -1,6 +1,10 @@
 return {
 	"shortcuts/no-neck-pain.nvim",
 	version = "*",
+	keys = {
+		{ "<leader>n", "<cmd>NoNeckPain<cr>", desc = "NoNeckPain" },
+	},
+	cmd = "NoNeckPain",
 	opts = {
 		width = 180,
 		minSideBufferWidth = 41,
@@ -22,8 +26,7 @@ return {
 			},
 		},
 		mappings = {
-			enabled = true,
+			enabled = false,
 		},
 	},
-	cond = function() return not vim.g.vscode end,
 }

@@ -22,11 +22,8 @@ return {
 			help_panel = {},
 		},
 	},
-	config = function(_, opts)
-		require("diffview").setup(opts)
-
-		vim.keymap.set("n", "<leader>gs", "<cmd>DiffviewOpen<CR>", { desc = "Git Diff" })
-		vim.keymap.set("n", "<leader>gf", "<cmd>DiffviewFileHistory %<CR>", { desc = "Git File History" })
-	end,
-	cond = function() return not vim.g.vscode end,
+	keys = {
+		{ "<leader>gs", "<cmd>DiffviewOpen<CR>", desc = "Git Diff" },
+		{ "<leader>gf", "<cmd>DiffviewFileHistory %<CR>", desc = "Git File History" },
+	},
 }

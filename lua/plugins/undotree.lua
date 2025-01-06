@@ -1,17 +1,7 @@
 return {
-	"jiaoshijie/undotree",
-	dependencies = "nvim-lua/plenary.nvim",
+	"mbbill/undotree",
 	keys = {
-		{ "<leader>ut", function() require("undotree").toggle() end, { desc = "Undo tree" } },
+		{ "<leader>uu", "<cmd>UndotreeToggle<cr>", desc = "Undotree" },
 	},
-	opts = {
-		float_diff = true, -- using float window previews diff, set this `true` will disable layout option
-		layout = "left_bottom", -- "left_bottom", "left_left_bottom"
-		position = "left", -- "right", "bottom"
-		ignore_filetype = { "undotree", "undotreeDiff", "qf", "TelescopePrompt", "spectre_panel", "tsplayground" },
-		window = {
-			winblend = 0,
-		},
-	},
-	cond = function() return not vim.g.vscode end,
+	config = function() vim.g.undotree_SplitWidth = 79 end,
 }
