@@ -27,6 +27,8 @@ return {
 	},
 	keys = {
 		{ "<leader>gl", function() Snacks.lazygit() end, desc = "Lazygit" },
+		{ "<leader>.", function() Snacks.scratch() end, desc = "Toggle Scratch Buffer" },
+		{ "<leader>S", function() Snacks.scratch.select() end, desc = "Select Scratch Buffer" },
 	},
 	config = function(_, opts)
 		require("snacks").setup(opts)

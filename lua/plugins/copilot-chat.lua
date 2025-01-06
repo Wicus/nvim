@@ -7,7 +7,7 @@ return {
 	},
 	cmd = "CopilotChat",
 	opts = {
-		auto_insert_mode = true,
+		auto_insert_mode = false,
 		window = {
 			layout = "float",
 			relative = "editor",
