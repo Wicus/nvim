@@ -10,6 +10,24 @@ return {
 	{
 		"echasnovski/mini.trailspace",
 		opts = {},
+		keys = {
+			{
+				"<leader>uw",
+				function()
+					if vim.g.minitrailspace_disable then
+						vim.g.minitrailspace_disable = false
+					else
+						vim.g.minitrailspace_disable = true
+					end
+				end,
+				desc = "Trailing whitespace",
+			},
+			{
+				"<leader>xw",
+				function() require("mini.trailspace").trim() end,
+				desc = "Trim trailing whitespace",
+			},
+		},
 	},
 	{
 		"echasnovski/mini.icons",

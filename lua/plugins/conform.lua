@@ -5,6 +5,8 @@ return {
 		formatters_by_ft = {
 			lua = { "stylua" },
 			cs = { "csharpier" },
+			sql = { "sqlfluff" },
+			json = { "prettierd" },
 		},
 	},
 	keys = {
@@ -21,9 +23,10 @@ return {
 			})
 		end
 
-		format_on_save()
-
-		local format_on_save_enabled = true
+		local format_on_save_enabled = false
+		if format_on_save_enabled then
+			format_on_save()
+		end
 		local function toggle_format_on_save()
 			format_on_save_enabled = not format_on_save_enabled
 			if format_on_save_enabled then

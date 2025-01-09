@@ -13,6 +13,10 @@ return {
 				require("oil.actions").tcd.callback()
 				vim.cmd("silent !explorer .")
 			end,
+			["<C-h>"] = false,
+			["<C-j>"] = false,
+			["<C-k>"] = false,
+			["<C-l>"] = false,
 		},
 	},
 }

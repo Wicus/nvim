@@ -25,8 +25,9 @@ return {
 		-- elsewhere in your config, without redefining it, due to `opts_extend`
 		sources = {
 			default = { "lsp", "path", "snippets", "buffer" },
-			cmdline = {},
 		},
+		cmdline = { enabled = false },
+		signature = { enabled = true },
 	},
 	opts_extend = { "sources.default" },
 }

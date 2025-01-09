@@ -42,7 +42,10 @@ vim.keymap.set("n", "<C-Down>", "<C-W>-")
 -- Remove highligh on Escape
 vim.keymap.set("n", "<Esc>", "<cmd>nohlsearch<cr>")
 
--- Execute lua code 
+-- Execute lua code
 vim.keymap.set("n", "<leader>rf", "<cmd>source %<cr>", { desc = "Reload (Source) file" })
 vim.keymap.set("v", "<leader>r", ":lua<cr>", { desc = "Reload (Execute lua)" })
 vim.keymap.set("n", "<leader>r", "<cmd>.lua<cr>", { desc = "Reload (Execute lua)" })
+
+-- Spelling
+vim.keymap.set("n", "<leader>us", "<cmd>set invspell<cr>", { desc = "Spelling" })

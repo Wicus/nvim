@@ -32,10 +32,11 @@ return {
 				-- "gri" is mapped in Normal mode to |vim.lsp.buf.implementation()|
 				-- "gO" is mapped in Normal mode to |vim.lsp.buf.document_symbol()|
 				-- CTRL-S is mapped in Insert mode to |vim.lsp.buf.signature_help()|
-				vim.keymap.set("n", "grr", "<cmd>FzfLua lsp_references<cr>")
-				vim.keymap.set("n", "gri", "<cmd>FzfLua lsp_implementations<cr>")
-				vim.keymap.set("n", "grt", "<cmd>FzfLua lsp_typedefs<cr>")
-				vim.keymap.set("n", "gd", "<cmd>FzfLua lsp_definitions<cr>")
+				vim.keymap.set("n", "grr", function() Snacks.picker.lsp_references() end)
+				vim.keymap.set("n", "gri", function() Snacks.picker.lsp_implementations() end)
+				vim.keymap.set("n", "grt", function() Snacks.picker.lsp_type_definitions() end)
+				vim.keymap.set("n", "gd", function() Snacks.picker.lsp_definitions() end)
+				vim.keymap.set("n", "gh", vim.diagnostic.open_float)
 				vim.keymap.set("n", "<C-s>", vim.lsp.buf.signature_help)
 			end,
 		})
