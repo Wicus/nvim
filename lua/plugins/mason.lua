@@ -34,7 +34,7 @@ return {
 				"clang-format",
 				"black",
 				"csharpier",
-				{ "roslyn", version = "4.14.0-2.25078.5" },
+				"roslyn",
 				"sqlfluff",
 				"sql-formatter",
 			},
