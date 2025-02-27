@@ -12,11 +12,11 @@ return {
 		-- 	function() require("neo-tree.command").execute({ toggle = true, dir = utils.get_git_root() }) end,
 		-- 	desc = "Explorer NeoTree (Root Dir)",
 		-- },
-		{
-			"<leader>fe",
-			function() require("neo-tree.command").execute({ toggle = true, dir = vim.uv.cwd() }) end,
-			desc = "Explorer NeoTree (cwd)",
-		},
+		-- {
+		-- 	"<leader>fe",
+		-- 	function() require("neo-tree.command").execute({ toggle = true, dir = vim.uv.cwd() }) end,
+		-- 	desc = "Explorer NeoTree (cwd)",
+		-- },
 		{
 			"<leader>ge",
 			function() require("neo-tree.command").execute({ source = "git_status", toggle = true }) end,

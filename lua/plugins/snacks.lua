@@ -28,6 +28,18 @@ return {
 		},
 		picker = {
 			ui_select = true, -- replace `vim.ui.select` with the snacks picker
+			sources = {
+				explorer = {
+					layout = { preset = "sidebar", layout = { preview = false, width = 81 } },
+					-- to show the explorer to the right, add the below to
+					-- your config under `opts.picker.sources.explorer`
+					-- layout = { layout = { position = "right" } },
+					formatters = {
+						file = { filename_only = true },
+						severity = { pos = "right" },
+					},
+				},
+			},
 		},
 	},
 	keys = {
@@ -37,6 +49,7 @@ return {
 		{ "<leader>*", function() Snacks.picker.grep_word() end, desc = "Grep visual selection", mode = "x" },
 		{ "<leader>fr", function() Snacks.picker.recent() end, desc = "Find recent files" },
 		{ "<leader>ff", function() Snacks.picker.files() end, desc = "Find files" },
+		{ "<leader>fe", function() Snacks.picker.explorer() end, desc = "Explorer" },
 		{ "<leader>sl", function() Snacks.picker.resume() end, desc = "Resume" },
 		{ "<leader>sj", function() Snacks.picker.lsp_symbols() end, desc = "LSP document symbols" },
 		{ "<leader>sb", function() Snacks.picker.grep_buffers() end, desc = "Search in buffer" },
@@ -60,5 +73,7 @@ return {
 	config = function(_, opts)
 		require("snacks").setup(opts)
 		vim.g.snacks_animate = false
+
+        require("snacks").picker.explorer()
 	end,
 }
