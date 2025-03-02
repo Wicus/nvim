@@ -23,10 +23,7 @@ return {
 
 		-- Default list of enabled providers defined so that you can extend it
 		-- elsewhere in your config, without redefining it, due to `opts_extend`
-		sources = {
-			default = { "lsp", "path", "snippets", "buffer" },
-		},
-		cmdline = { enabled = false },
+		sources = { default = { "lsp", "path", "snippets", "buffer" } },
 		signature = { enabled = true },
 	},
 	opts_extend = { "sources.default" },
