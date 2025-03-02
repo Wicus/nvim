@@ -13,6 +13,7 @@ return {
 			relative = "editor",
 			width = 0.6,
 			height = 0.8,
+			zindex = 50,
 		},
 	},
 	keys = {

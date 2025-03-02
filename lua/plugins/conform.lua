@@ -15,27 +15,24 @@ return {
 	config = function(_, opts)
 		require("conform").setup(opts)
 
-		local function format_on_save()
-			vim.api.nvim_create_autocmd("BufWritePre", {
-				pattern = "*",
-				group = vim.api.nvim_create_augroup("FormatOnSaveGroup", { clear = true }),
-				callback = function(args) require("conform").format({ bufnr = args.buf }) end,
-			})
-		end
-
-		local format_on_save_enabled = false
-		if format_on_save_enabled then
-			format_on_save()
-		end
-		local function toggle_format_on_save()
-			format_on_save_enabled = not format_on_save_enabled
-			if format_on_save_enabled then
-				format_on_save()
+		vim.g.wp_format_on_save = function(is_enabled)
+			if is_enabled then
+				vim.api.nvim_create_autocmd("BufWritePre", {
+					pattern = "*",
+					group = vim.api.nvim_create_augroup("FormatOnSaveGroup", { clear = true }),
+					callback = function(args) require("conform").format({ bufnr = args.buf }) end,
+				})
 				vim.notify("Format on save enabled", "warn")
 			else
 				vim.api.nvim_del_augroup_by_name("FormatOnSaveGroup")
 				vim.notify("Format on save disabled", "warn")
 			end
+		end
+
+		local is_enabled = false
+		local function toggle_format_on_save()
+			is_enabled = not is_enabled
+			vim.g.wp_format_on_save(is_enabled)
 		end
 
 		vim.keymap.set("n", "<leader>ut", toggle_format_on_save, { desc = "Format on save" })

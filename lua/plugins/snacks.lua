@@ -30,7 +30,7 @@ return {
 			ui_select = true, -- replace `vim.ui.select` with the snacks picker
 			sources = {
 				explorer = {
-					layout = { preset = "sidebar", layout = { preview = false, width = 81 } },
+					layout = { layout = { preview = false, width = 82, zindex = 0 } },
 					-- to show the explorer to the right, add the below to
 					-- your config under `opts.picker.sources.explorer`
 					-- layout = { layout = { position = "right" } },
@@ -74,6 +74,6 @@ return {
 		require("snacks").setup(opts)
 		vim.g.snacks_animate = false
 
-        require("snacks").picker.explorer()
+		require("snacks").picker.explorer()
 	end,
 }
