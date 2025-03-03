@@ -58,7 +58,7 @@ return {
 		{ "<leader>/", function() Snacks.picker.grep() end, desc = "Live grep" },
 		{ "<leader>*", function() Snacks.picker.grep_word() end, desc = "Grep cword" },
 		{ "<leader>*", function() Snacks.picker.grep_word() end, desc = "Grep visual selection", mode = "x" },
-		{ "<leader>fr", function() Snacks.picker.recent() end, desc = "Find recent files" },
+		{ "<leader>fr", function() Snacks.picker.recent({ filter = { cwd = true } }) end, desc = "Find recent files" },
 		{ "<leader>ff", function() Snacks.picker.files() end, desc = "Find files" },
 		{ "<leader>fe", function() Snacks.picker.explorer() end, desc = "Explorer" },
 		{ "<leader>sl", function() Snacks.picker.resume() end, desc = "Resume" },
@@ -66,7 +66,6 @@ return {
 		{ "<leader>sb", function() Snacks.picker.grep_buffers() end, desc = "Search in buffer" },
 		{ "<leader>bb", function() Snacks.picker.buffers() end, desc = "Buffers" },
 		{ "<leader>gg", function() Snacks.picker.git_status() end, desc = "Git status" },
-
 		{ "<leader>gl", function() Snacks.lazygit() end, desc = "Lazygit" },
 		{ "<leader>.", function() Snacks.scratch() end, desc = "Toggle scratch buffer" },
 		{ "<leader>ss", function() Snacks.scratch.select() end, desc = "Select scratch buffer" },
