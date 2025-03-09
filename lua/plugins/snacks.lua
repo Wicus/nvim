@@ -3,6 +3,18 @@ return {
 	lazy = false,
 	---@type snacks.Config
 	opts = {
+		---@type table<string, snacks.win.Config>
+		styles = {
+			input = {
+				relative = "cursor",
+			},
+			scratch = {
+				width = 200,
+				height = 60,
+				zindex = 40,
+			},
+		},
+
 		lazygit = { enabled = true },
 		input = { enabled = true, icon = "" },
 		indent = { enabled = true },
@@ -15,15 +27,12 @@ return {
 				trace = "",
 			},
 		},
-
-		---@type table<string, snacks.win.Config>
-		styles = {
-			input = {
-				relative = "cursor",
-			},
-			scratch = {
-				width = 200,
-				height = 60,
+		scratch = {
+			ft = "markdown",
+			filekey = {
+				cwd = true, -- use current working directory
+				branch = false, -- use current branch name
+				count = false, -- use vim.v.count1
 			},
 		},
 		picker = {
