@@ -70,3 +70,6 @@ vim.opt.fileformat = "unix"
 
 --  Set unknown filetypes
 vim.filetype.add({ extension = { axaml = "xml" } })
+
+-- <EOL> at the end of file will be restored if missing
+vim.opt.fixendofline = false

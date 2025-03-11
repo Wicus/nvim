@@ -5,7 +5,6 @@ return {
 		formatters_by_ft = {
 			lua = { "stylua" },
 			cs = { "csharpier" },
-			sql = { "sqlfluff" },
 			json = { "prettierd" },
 		},
 	},
