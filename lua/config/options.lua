@@ -73,3 +73,6 @@ vim.filetype.add({ extension = { axaml = "xml" } })
 
 -- <EOL> at the end of file will be restored if missing
 vim.opt.fixendofline = false
+
+-- Enable virtual text for diagnostics
+vim.diagnostic.config({ virtual_text = true })
