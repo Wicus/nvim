@@ -35,6 +35,9 @@ return {
 				count = false, -- use vim.v.count1
 			},
 		},
+		explorer = {
+			replace_netrw = true, -- Replace netrw with the snacks explorer
+		},
 		picker = {
 			ui_select = true, -- replace `vim.ui.select` with the snacks picker
 			icons = {
