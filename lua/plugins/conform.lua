@@ -31,10 +31,7 @@ return {
 			end
 		end
 
-		local is_enabled = true
-		if is_enabled then
-			vim.g.wp_format_on_save(is_enabled)
-		end
+		local is_enabled = false
 		local function toggle_format_on_save()
 			is_enabled = not is_enabled
 			vim.g.wp_format_on_save(is_enabled)
