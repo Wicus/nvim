@@ -46,7 +46,7 @@ return {
 		-- Show prompts actions with fzf
 		{
 			"<leader>ap",
-			function() require("CopilotChat.integrations.snacks").pick(require("CopilotChat.actions").prompt_actions()) end,
+			function() require("CopilotChat").select_prompt() end,
 			desc = "Prompt Actions (CopilotChat)",
 			mode = { "n", "v" },
 		},
