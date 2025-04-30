@@ -18,6 +18,9 @@ return {
 		lazygit = { enabled = true },
 		input = { enabled = true, icon = "" },
 		indent = { enabled = true },
+		terminal = {
+			shell = "pwsh", -- shell to use for terminal
+		},
 		notifier = {
 			icons = {
 				error = "",
@@ -72,6 +75,7 @@ return {
 		{ "<leader>*", function() Snacks.picker.grep_word() end, desc = "Grep visual selection", mode = "x" },
 		{ "<leader>fr", function() Snacks.picker.recent({ filter = { cwd = true } }) end, desc = "Find recent files" },
 		{ "<leader>ff", function() Snacks.picker.files() end, desc = "Find files" },
+		{ "<M-e>", function() Snacks.terminal.toggle() end, desc = "Toggle terminal" },
 		-- { "<leader>fe", function() Snacks.picker.explorer() end, desc = "Explorer" },
 		{ "<leader>sl", function() Snacks.picker.resume() end, desc = "Resume" },
 		{ "<leader>sj", function() Snacks.picker.lsp_symbols() end, desc = "LSP document symbols" },

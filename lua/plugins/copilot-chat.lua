@@ -8,7 +8,7 @@ return {
 	cmd = "CopilotChat",
 	opts = {
 		auto_insert_mode = false,
-        -- model = 'gpt-4o',
+        -- model = 'o4-mini',
 		window = {
 			layout = "float",
 			relative = "editor",
@@ -43,7 +43,6 @@ return {
 			desc = "Quick Chat (CopilotChat)",
 			mode = { "n", "v" },
 		},
-		-- Show prompts actions with fzf
 		{
 			"<leader>ap",
 			function() require("CopilotChat").select_prompt() end,
