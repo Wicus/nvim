@@ -8,7 +8,6 @@ return {
 	cmd = "CopilotChat",
 	opts = {
 		auto_insert_mode = false,
-        -- model = 'o4-mini',
 		window = {
 			layout = "float",
 			relative = "editor",
