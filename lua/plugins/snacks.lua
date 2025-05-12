@@ -13,8 +13,13 @@ return {
 				height = 60,
 				zindex = 40,
 			},
+            lazygit = {
+                height = 0.9
+            },
+            terminal = {
+                height = 0.2
+            }
 		},
-
 		lazygit = { enabled = true },
 		input = { enabled = true, icon = "" },
 		indent = { enabled = true },
@@ -75,7 +80,6 @@ return {
 		{ "<leader>*", function() Snacks.picker.grep_word() end, desc = "Grep visual selection", mode = "x" },
 		{ "<leader>fr", function() Snacks.picker.recent({ filter = { cwd = true } }) end, desc = "Find recent files" },
 		{ "<leader>ff", function() Snacks.picker.files() end, desc = "Find files" },
-		{ "<M-e>", function() Snacks.terminal.toggle() end, desc = "Toggle terminal" },
 		-- { "<leader>fe", function() Snacks.picker.explorer() end, desc = "Explorer" },
 		{ "<leader>sl", function() Snacks.picker.resume() end, desc = "Resume" },
 		{ "<leader>sj", function() Snacks.picker.lsp_symbols() end, desc = "LSP document symbols" },
@@ -95,6 +99,8 @@ return {
 			end,
 			desc = "New scratch file",
 		},
+		-- keep this at the bottom, styling issues
+		{ "<M-e>", function() Snacks.terminal.toggle() end, desc = "Toggle terminal", mode = { "n", "t" } },
 	},
 	config = function(_, opts)
 		require("snacks").setup(opts)
