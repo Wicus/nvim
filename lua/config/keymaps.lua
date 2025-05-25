@@ -50,3 +50,7 @@ vim.keymap.set("n", "<leader>r", "<cmd>.lua<cr>", { desc = "Reload (Execute lua)
 
 -- Spelling
 vim.keymap.set("n", "<leader>us", "<cmd>set invspell<cr>", { desc = "Spelling" })
+
+-- Tab navigation
+vim.keymap.set("n", "]t", "<cmd>tabnext<cr>", { desc = "Next tab" })
+vim.keymap.set("n", "[t", "<cmd>tabprevious<cr>", { desc = "Previous tab" })

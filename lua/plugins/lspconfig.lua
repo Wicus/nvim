@@ -22,7 +22,7 @@ return {
 		lspconfig.lemminx.setup(config)
 		lspconfig.astro.setup(config)
 		lspconfig.tailwindcss.setup(config)
-		lspconfig.ts_ls.setup(config)
+		-- lspconfig.ts_ls.setup(config)
 
 		vim.api.nvim_create_autocmd("LspAttach", {
 			group = vim.api.nvim_create_augroup("LspAttachGroup", { clear = true }),
