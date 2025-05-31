@@ -22,12 +22,14 @@ return {
 				SnacksIndent = { fg = "#313244" },
 				SnacksIndentScope = { fg = "#6c7086" },
 				MiniCursorword = { bg = "#45475a", style = {} },
-				MiniCursorwordCurrent = { bg = "#45475a", style = {} },
+				MiniCursorwordCurrent = { bg = "#45475a", style = {} }
 			}
 		end,
 		integrations = {
 			aerial = true,
 			alpha = true,
+			dap = true,
+			dap_ui = true,
 			cmp = true,
 			dashboard = true,
 			flash = true,
@@ -66,10 +68,10 @@ return {
 	},
 	config = function(_, opts)
 		require("catppuccin").setup(opts)
+		vim.cmd.colorscheme("catppuccin")
 		--       vim.notify("catppuccin loaded")
 		--       vim.ui.input({ prompt = "Type something"}, function (input)
 		--           vim.notify(input)
 		--       end)
-		vim.cmd.colorscheme("catppuccin")
 	end,
 }

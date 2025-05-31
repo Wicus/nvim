@@ -1,7 +1,7 @@
 return {
 	{
 		"rcarriga/nvim-dap-ui",
-		dependencies = { "nvim-neotest/nvim-nio" },
+		dependencies = { "nvim-neotest/nvim-nio", "folke/lazydev.nvim" },
 		keys = {
 			{ "<leader>du", function() require("dapui").toggle({}) end, desc = "Dap UI" },
 			{ "<leader>de", function() require("dapui").eval() end, desc = "Eval", mode = { "n", "v" } },
@@ -14,6 +14,11 @@ return {
 			dap.listeners.after.event_initialized["dapui_config"] = function() dapui.open({}) end
 			dap.listeners.before.event_terminated["dapui_config"] = function() dapui.close({}) end
 			dap.listeners.before.event_exited["dapui_config"] = function() dapui.close({}) end
+
+			require("lazydev").setup({
+				library = { "nvim-dap-ui" },
+			})
+
 			-- dap.listeners.before.attach.dapui_config = function() dapui.open() end
 			-- dap.listeners.before.launch.dapui_config = function() dapui.open() end
 			-- dap.listeners.before.event_terminated.dapui_config = function() dapui.close() end
@@ -47,6 +52,10 @@ return {
 			{ "<leader>ds", function() require("dap").session() end, desc = "Session" },
 			{ "<leader>dt", function() require("dap").terminate() end, desc = "Terminate" },
 			{ "<leader>dw", function() require("dap.ui.widgets").hover() end, desc = "Widgets" },
+			{ "<F5>", function() require("dap").continue() end, desc = "Start/Continue Debugging" },
+			{ "<F10>", function() require("dap").step_over() end, desc = "Step Over" },
+			{ "<F11>", function() require("dap").step_into() end, desc = "Step Into" },
+			{ "<S-F11>", function() require("dap").step_out() end, desc = "Step Out" },
 		},
 		config = function()
 			local dap = require("dap")
@@ -56,11 +65,6 @@ return {
 				command = "netcoredbg",
 				args = { "--interpreter=vscode" },
 			}
-
-			vim.keymap.set("n", "<F5>", dap.continue, { desc = "Start/Continue Debugging" })
-			vim.keymap.set("n", "<F10>", dap.step_over, { desc = "Step Over" })
-			vim.keymap.set("n", "<F11>", dap.step_into, { desc = "Step Into" })
-			vim.keymap.set("n", "<S-F11>", dap.step_out, { desc = "Step Out" })
 
 			-- setup dap config by VsCode launch.json file
 			local vscode = require("dap.ext.vscode")
