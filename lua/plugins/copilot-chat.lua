@@ -8,13 +8,9 @@ return {
 	cmd = "CopilotChat",
 	opts = {
 		auto_insert_mode = false,
-        model = 'gpt-4o-mini',
+        model = 'gemini-2.5-pro',
 		window = {
-			layout = "float",
-			relative = "editor",
-			width = 0.6,
-			height = 0.8,
-			zindex = 40,
+			width = 0.33
 		},
 	},
 	keys = {
