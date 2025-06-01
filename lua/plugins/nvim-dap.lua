@@ -6,7 +6,46 @@ return {
 			{ "<leader>du", function() require("dapui").toggle({}) end, desc = "Dap UI" },
 			{ "<leader>de", function() require("dapui").eval() end, desc = "Eval", mode = { "n", "v" } },
 		},
-		opts = {},
+		opts = {
+			layouts = {
+				{
+					elements = {
+						{
+							id = "scopes",
+							size = 0.25,
+						},
+						{
+							id = "watches",
+							size = 0.25,
+						},
+						{
+							id = "stacks",
+							size = 0.25,
+						},
+						{
+							id = "breakpoints",
+							size = 0.25,
+						},
+					},
+					position = "left",
+					size = 80,
+				},
+				{
+					elements = {
+						{
+							id = "repl",
+							size = 1,
+						},
+						-- {
+						-- 	id = "console",
+						-- 	size = 0.5,
+						-- },
+					},
+					position = "bottom",
+					size = 20,
+				},
+			},
+		},
 		config = function(_, opts)
 			local dap = require("dap")
 			local dapui = require("dapui")
@@ -70,6 +109,8 @@ return {
 			local vscode = require("dap.ext.vscode")
 			local json = require("plenary.json")
 			vscode.json_decode = function(str) return vim.json.decode(json.json_strip_comments(str)) end
+
+            vim.cmd[[set noshellslash]]
 
 			-- Example configuration for C# debugging
 			-- dap.configurations.cs = {
