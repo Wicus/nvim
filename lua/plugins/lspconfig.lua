@@ -1,7 +1,7 @@
 return {
 	"neovim/nvim-lspconfig",
 	dependencies = {
-		{ "folke/neodev.nvim", opts = {} },
+		{ "folke/lazydev.nvim", opts = {} },
 		{ "saghen/blink.cmp" },
 	},
 	config = function()
@@ -12,7 +12,6 @@ return {
 		}
 
 		lspconfig.lua_ls.setup(config)
-		lspconfig.eslint.setup(config)
 		lspconfig.clangd.setup(config)
 		lspconfig.pyright.setup(config)
 		lspconfig.jsonls.setup(config)
@@ -22,7 +21,50 @@ return {
 		lspconfig.lemminx.setup(config)
 		lspconfig.astro.setup(config)
 		lspconfig.tailwindcss.setup(config)
-		-- lspconfig.ts_ls.setup(config)
+
+		vim.lsp.config["ts_ls"] = {
+			vim.tbl_deep_extend("force", config, {
+				vtsls = {
+					-- explicitly add default filetypes, so that we can extend
+					-- them in related extras
+					filetypes = {
+						"javascript",
+						"javascriptreact",
+						"javascript.jsx",
+						"typescript",
+						"typescriptreact",
+						"typescript.tsx",
+					},
+					settings = {
+						complete_function_calls = true,
+						vtsls = {
+							enableMoveToFileCodeAction = true,
+							autoUseWorkspaceTsdk = true,
+							experimental = {
+								maxInlayHintLength = 30,
+								completion = {
+									enableServerSideFuzzyMatch = true,
+								},
+							},
+						},
+						typescript = {
+							updateImportsOnFileMove = { enabled = "always" },
+							suggest = {
+								completeFunctionCalls = true,
+							},
+							inlayHints = {
+								enumMemberValues = { enabled = true },
+								functionLikeReturnTypes = { enabled = true },
+								parameterNames = { enabled = "literals" },
+								parameterTypes = { enabled = true },
+								propertyDeclarationTypes = { enabled = true },
+								variableTypes = { enabled = false },
+							},
+						},
+					},
+				},
+			}),
+		}
 
 		vim.api.nvim_create_autocmd("LspAttach", {
 			group = vim.api.nvim_create_augroup("LspAttachGroup", { clear = true }),

@@ -5,6 +5,8 @@ return {
 		events = { "BufWritePost", "BufReadPost", "InsertLeave" },
 		linters_by_ft = {
 			fish = { "fish" },
+            typescript = { "eslint_d" },
+            typescriptreact = { "eslint_d" },
 			-- sql = { "sqlfluff" },
 			-- Use the "*" filetype to run linters on all filetypes.
 			-- ['*'] = { 'global linter' },

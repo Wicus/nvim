@@ -8,7 +8,8 @@ return {
 	cmd = "CopilotChat",
 	opts = {
 		auto_insert_mode = false,
-        model = 'gemini-2.5-pro',
+        -- model = 'claude-3.7-sonnet',
+        model = 'gpt-4.1',
 		window = {
 			width = 0.33
 		},

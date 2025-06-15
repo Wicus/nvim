@@ -15,7 +15,6 @@ return {
 			ensure_installed = {
 				"lua_ls",
 				"ts_ls",
-				"eslint",
 				"clangd",
 				"pyright",
 				"jsonls",
@@ -37,6 +36,7 @@ return {
 				"roslyn",
 				"sqlfluff",
 				"sql-formatter",
+				"eslint_d",
 			},
 		})
 	end,
