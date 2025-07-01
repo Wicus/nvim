@@ -10,6 +10,7 @@ return {
 		keymap = {
 			preset = "enter",
 			["<M-q>"] = { "show", "show_documentation", "hide_documentation" }, -- "M-q" is remapped in AutoHotkey as <C-space>
+			["<M-/>"] = { function(cmp) cmp.show({ providers = { "snippets" } }) end },
 		},
 		appearance = {
 			-- Sets the fallback highlight groups to nvim-cmp's highlight groups

@@ -1,7 +1,7 @@
 return {
 	"catppuccin/nvim",
 	name = "catppuccin",
-	jriority = 1000,
+	priority = 1000,
 	opts = {
 		custom_highlights = function(colors)
 			return {
@@ -22,7 +22,12 @@ return {
 				SnacksIndent = { fg = "#313244" },
 				SnacksIndentScope = { fg = "#6c7086" },
 				MiniCursorword = { bg = "#45475a", style = {} },
-				MiniCursorwordCurrent = { bg = "#45475a", style = {} }
+				MiniCursorwordCurrent = { bg = "#45475a", style = {} },
+				DiagnosticError = { style = {} },
+                DiagnosticWarn = { style = {} },
+                DiagnosticInfo = { style = {} },
+                DiagnosticHint = { style = {} },
+                DiagnosticOk = { style = {} }
 			}
 		end,
 		integrations = {
@@ -69,9 +74,5 @@ return {
 	config = function(_, opts)
 		require("catppuccin").setup(opts)
 		vim.cmd.colorscheme("catppuccin")
-		--       vim.notify("catppuccin loaded")
-		--       vim.ui.input({ prompt = "Type something"}, function (input)
-		--           vim.notify(input)
-		--       end)
 	end,
 }

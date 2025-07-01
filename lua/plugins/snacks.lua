@@ -13,12 +13,12 @@ return {
 				height = 60,
 				zindex = 40,
 			},
-            lazygit = {
-                height = 0.9
-            },
-            terminal = {
-                height = 0.2
-            }
+			lazygit = {
+				height = 0.9,
+			},
+			terminal = {
+				height = 0.2,
+			},
 		},
 		lazygit = { enabled = true },
 		input = { enabled = true, icon = "" },
@@ -27,13 +27,13 @@ return {
 			shell = "pwsh", -- shell to use for terminal
 		},
 		notifier = {
-			icons = {
-				error = "",
-				warn = "",
-				info = "",
-				debug = "",
-				trace = "",
-			},
+			-- icons = {
+			-- 	error = "",
+			-- 	warn = "",
+			-- 	info = "",
+			-- 	debug = "",
+			-- 	trace = "",
+			-- },
 		},
 		scratch = {
 			ft = "markdown",
@@ -60,16 +60,13 @@ return {
 				},
 			},
 			sources = {
-				-- explorer = {
-				-- 	layout = { layout = { preview = false, width = 82, zindex = 0 } },
-				-- 	-- to show the explorer to the right, add the below to
-				-- 	-- your config under `opts.picker.sources.explorer`
-				-- 	-- layout = { layout = { position = "right" } },
-				-- 	formatters = {
-				-- 		file = { filename_only = true },
-				-- 		severity = { pos = "right" },
-				-- 	},
-				-- },
+				explorer = {
+					layout = { layout = { preview = false, width = 82, zindex = 0 } },
+					formatters = {
+						file = { filename_only = true },
+						severity = { pos = "right" },
+					},
+				},
 			},
 		},
 	},
@@ -80,7 +77,7 @@ return {
 		{ "<leader>*", function() Snacks.picker.grep_word() end, desc = "Grep visual selection", mode = "x" },
 		{ "<leader>fr", function() Snacks.picker.recent({ filter = { cwd = true } }) end, desc = "Find recent files" },
 		{ "<leader>ff", function() Snacks.picker.files() end, desc = "Find files" },
-		-- { "<leader>fe", function() Snacks.picker.explorer() end, desc = "Explorer" },
+		{ "<leader>fe", function() Snacks.picker.explorer() end, desc = "Explorer" },
 		{ "<leader>sl", function() Snacks.picker.resume() end, desc = "Resume" },
 		{ "<leader>sj", function() Snacks.picker.lsp_symbols() end, desc = "LSP document symbols" },
 		{ "<leader>sb", function() Snacks.picker.grep_buffers() end, desc = "Search in buffer" },
@@ -105,7 +102,7 @@ return {
 	config = function(_, opts)
 		require("snacks").setup(opts)
 		vim.g.snacks_animate = false
-		-- require("snacks").picker.explorer()
+		require("snacks").picker.explorer()
 	end,
 }
 

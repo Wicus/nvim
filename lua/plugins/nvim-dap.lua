@@ -31,6 +31,13 @@ return {
 		config = function()
 			local dap = require("dap")
 
+			vim.api.nvim_set_hl(0, "DapStoppedLine", { default = true, link = "Visual" })
+            vim.fn.sign_define("DapStopped", { text = "󰁕 ", texthl = "DiagnosticWarn", linehl = "DapStoppedLine", numhl = "DapStoppedLine" })
+            vim.fn.sign_define("DapBreakpoint", { text = " ", texthl = "DiagnosticInfo" })
+            vim.fn.sign_define("DapBreakpointCondition", { text = " ", texthl = "DiagnosticWarn" })
+            vim.fn.sign_define("DapBreakpointRejected", { text = " ", texthl = "DiagnosticError" })
+            vim.fn.sign_define("DapLogPoint", { text = ".>", texthl = "DiagnosticInfo" })
+
 			dap.adapters.coreclr = {
 				type = "executable",
 				command = "netcoredbg",
