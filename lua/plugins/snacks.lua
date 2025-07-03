@@ -61,7 +61,7 @@ return {
 			},
 			sources = {
 				explorer = {
-					layout = { layout = { preview = false, width = 82, zindex = 0 } },
+					layout = { layout = { preview = false, width = 82, zindex = 0 }, cycle = false },
 					formatters = {
 						file = { filename_only = true },
 						severity = { pos = "right" },
