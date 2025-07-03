@@ -3,6 +3,7 @@ return {
 	dependencies = {
 		"williamboman/mason-lspconfig.nvim",
 		"WhoIsSethDaniel/mason-tool-installer.nvim",
+        -- "jay-babu/mason-nvim-dap.nvim",
 	},
 	config = function(_, opts)
 		require("mason").setup({
@@ -39,5 +40,14 @@ return {
 				"eslint_d",
 			},
 		})
+        -- TODO: Needs testing
+        -- require("mason-nvim-dap").setup({
+        --     automatic_installation = true,
+        --     handlers = {}, -- You can provide additional configuration to the handlers
+        --     ensure_installed = {
+        --         -- "debugpy",
+        --         -- "netcoredbg",
+        --     },
+        -- })
 	end,
 }
