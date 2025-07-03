@@ -57,5 +57,5 @@ return {
 
 		chat.setup(opts)
 	end,
-    enabled = true
+    enabled = false
 }

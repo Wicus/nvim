@@ -27,7 +27,7 @@ return {
 			},
 			copilot = {
 				endpoint = "https://api.github.com",
-                model = 'gpt-4.1',
+				model = "gpt-4.1",
 			},
 		},
 		behaviour = {
@@ -72,5 +72,5 @@ return {
 			ft = { "markdown", "Avante" },
 		},
 	},
-    enabled = false
+	enabled = true,
 }
