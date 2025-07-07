@@ -30,34 +30,34 @@ return {
 		},
 		config = function()
 			local dap = require("dap")
+			require("nvim-dap-virtual-text").setup()
 
 			vim.api.nvim_set_hl(0, "DapStoppedLine", { default = true, link = "Visual" })
-            vim.fn.sign_define("DapStopped", { text = "󰁕 ", texthl = "DiagnosticWarn", linehl = "DapStoppedLine", numhl = "DapStoppedLine" })
-            vim.fn.sign_define("DapBreakpoint", { text = " ", texthl = "DiagnosticInfo" })
-            vim.fn.sign_define("DapBreakpointCondition", { text = " ", texthl = "DiagnosticWarn" })
-            vim.fn.sign_define("DapBreakpointRejected", { text = " ", texthl = "DiagnosticError" })
-            vim.fn.sign_define("DapLogPoint", { text = ".>", texthl = "DiagnosticInfo" })
+			vim.fn.sign_define("DapStopped", { text = "󰁕 ", texthl = "DiagnosticWarn", linehl = "DapStoppedLine", numhl = "DapStoppedLine" })
+			vim.fn.sign_define("DapBreakpoint", { text = " ", texthl = "DiagnosticInfo" })
+			vim.fn.sign_define("DapBreakpointCondition", { text = " ", texthl = "DiagnosticWarn" })
+			vim.fn.sign_define("DapBreakpointRejected", { text = " ", texthl = "DiagnosticError" })
+			vim.fn.sign_define("DapLogPoint", { text = ".>", texthl = "DiagnosticInfo" })
 
 			dap.adapters.coreclr = {
 				type = "executable",
-				command = "netcoredbg",
+				command = vim.fn.exepath("netcoredbg"),
 				args = { "--interpreter=vscode" },
+				options = {
+					detached = false,
+				},
 			}
-
-			-- setup dap config by VsCode launch.json file
-			local vscode = require("dap.ext.vscode")
-			local json = require("plenary.json")
-			vscode.json_decode = function(str) return vim.json.decode(json.json_strip_comments(str)) end
 
 			vim.cmd([[set noshellslash]])
 		end,
 	},
 	{
 		"rcarriga/nvim-dap-ui",
-		dependencies = { "nvim-neotest/nvim-nio", "folke/lazydev.nvim" },
+		dependencies = { "nvim-neotest/nvim-nio", "folke/lazydev.nvim", "folke/snacks.nvim" },
 		keys = {
 			{ "<leader>du", function() require("dapui").toggle({}) end, desc = "Dap UI" },
-			{ "<leader>de", function() require("dapui").eval() end, desc = "Eval", mode = { "n", "v" } },
+			{ "gK", function() require("dapui").eval() end, desc = "DAP Eval", mode = { "n", "v" } },
+			{ "gL", function() require("dap").run_to_cursor() end, desc = "Run to Cursor (Line)" },
 		},
 		opts = {
 			layouts = {
@@ -104,12 +104,23 @@ return {
 			local dap = require("dap")
 			local dapui = require("dapui")
 
-			dap.listeners.before.attach.dapui_config = function() dapui.open() end
-			dap.listeners.before.launch.dapui_config = function() dapui.open() end
-			dap.listeners.before.event_terminated.dapui_config = function() dapui.close() end
-			dap.listeners.before.event_exited.dapui_config = function() dapui.close() end
+			local function open_handler()
+				local explorer_picker = require("snacks.picker").get({ source = "explorer" })
+				if explorer_picker and explorer_picker[1] then
+					explorer_picker[1]:close()
+				end
+				dapui.open()
+			end
+
+			local function close_handler() dapui.close() end
+
+			dap.listeners.before.attach.dapui_config = open_handler
+			dap.listeners.before.launch.dapui_config = open_handler
+			dap.listeners.before.event_terminated.dapui_config = close_handler
+			dap.listeners.before.event_exited.dapui_config = close_handler
 
 			dapui.setup(opts)
+
 			require("lazydev").setup({
 				library = { "nvim-dap-ui" },
 			})
