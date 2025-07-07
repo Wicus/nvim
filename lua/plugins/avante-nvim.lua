@@ -12,8 +12,6 @@ return {
 	---@module 'avante'
 	---@type avante.Config
 	opts = {
-		-- add any opts here
-		-- for example
 		provider = "copilot",
 		providers = {
 			claude = {
