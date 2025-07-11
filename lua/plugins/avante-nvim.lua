@@ -30,11 +30,7 @@ return {
 		},
 		behaviour = {
 			enable_token_counting = false, -- Whether to enable token counting. Default to true.
-		},
-		web_search_engine = {
-			provider = "google", -- tavily, serpapi, searchapi, google, kagi, brave, or searxng
-			proxy = nil, -- proxy support, e.g., http://127.0.0.1:7890
-		},
+		}
 	},
 	dependencies = {
 		"nvim-treesitter/nvim-treesitter",

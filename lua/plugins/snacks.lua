@@ -62,9 +62,51 @@ return {
 			sources = {
 				explorer = {
 					layout = { layout = { preview = false, width = 82, zindex = 0 }, cycle = false },
-					formatters = {
-						file = { filename_only = true },
-						severity = { pos = "right" },
+					actions = {
+						avante_add_files = function(_, item)
+							local relative_path = require("avante.utils").relative_path(item.file)
+							local sidebar = require("avante").get()
+
+							local open = sidebar:is_open()
+							-- ensure avante sidebar is open
+							if not open then
+								require("avante.api").ask()
+								sidebar = require("avante").get()
+							end
+
+							sidebar.file_selector:add_selected_file(relative_path)
+						end,
+						copy_path = function(_, item)
+							local filename = vim.fn.fnamemodify(item.file, ":t")
+							local values = { filename, item.file, vim.fn.fnamemodify(item.file, ":."), vim.fn.fnamemodify(item.file, ":r") }
+							local items = { values[1], values[2], values[3], vim.fn.isdirectory(item.file) == 1 and values[4] or nil }
+
+							vim.ui.select(items, { prompt = "Choose to copy to clipboard:" }, function(choice, i)
+								if not choice then
+									vim.notify("Selection cancelled")
+									return
+								end
+								if not i then
+									vim.notify("Invalid selection")
+									return
+								end
+								local result = values[i]
+								vim.fn.setreg("+", result) -- System clipboard
+								vim.notify("Copied: " .. result)
+							end)
+						end,
+					},
+					win = {
+						list = {
+							keys = {
+								["-"] = "explorer_close",
+								["R"] = "explorer_update",
+								["`"] = "cd",
+								["~"] = "tcd",
+								["<leader>a"] = "avante_add_files",
+								["<leader>y"] = "copy_path",
+							},
+						},
 					},
 				},
 			},

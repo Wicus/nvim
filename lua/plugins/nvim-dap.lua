@@ -4,6 +4,7 @@ return {
 		dependencies = {
 			"rcarriga/nvim-dap-ui",
 			"theHamsta/nvim-dap-virtual-text",
+			"jbyuki/one-small-step-for-vimkind",
 		},
 		keys = {
 			{ "<leader>dB", function() require("dap").set_breakpoint(vim.fn.input("Breakpoint condition: ")) end, desc = "Breakpoint Condition" },
@@ -24,6 +25,7 @@ return {
 			{ "<leader>dt", function() require("dap").terminate() end, desc = "Terminate" },
 			{ "<leader>dw", function() require("dap.ui.widgets").hover() end, desc = "Widgets" },
 			{ "<F5>", function() require("dap").continue() end, desc = "Start/Continue Debugging" },
+			{ "<F6>", function() require("osv").launch({ port = 8086 }) end, desc = "Launch lua OSV server" },
 			{ "<F10>", function() require("dap").step_over() end, desc = "Step Over" },
 			{ "<F11>", function() require("dap").step_into() end, desc = "Step Into" },
 			{ "<S-F11>", function() require("dap").step_out() end, desc = "Step Out" },
@@ -45,6 +47,15 @@ return {
 				args = { "--interpreter=vscode" },
 				options = {
 					detached = false,
+				},
+			}
+
+			dap.adapters.nlua = function(callback, config) callback({ type = "server", host = config.host or "127.0.0.1", port = config.port or 8086 }) end
+			dap.configurations.lua = {
+				{
+					type = "nlua",
+					request = "attach",
+					name = "Attach to running Neovim instance",
 				},
 			}
 
